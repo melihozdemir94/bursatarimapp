@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bursa Tarımsal Meteoroloji ve Erken Uyarı Sistemi</title>
+    <style>
+        :root {
+            --bg-cream: #FDFBF7;
+            --panel-cream: #F4EFE6;
+            --light-green: #8DAA91;
+            --dark-green: #2C4A3E;
+            --accent-green: #4E6E5D;
+            --alert-orange: #F0AD4E;
+            --text-color: #333333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-cream);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--dark-green);
+            color: #ffffff;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.4rem;
+        }
+
+        .refresh-badge {
+            background-color: var(--light-green);
+            color: var(--dark-green);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .map-section {
+            flex: 1.5;
+            background: var(--panel-cream);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .alert-banner {
+            width: 100%;
+            background-color: var(--alert-orange);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            box-sizing: border-box;
+        }
+
+        svg {
+            width: 100%;
+            height: auto;
+            max-height: 520px;
+        }
+
+        .district {
+            fill: #E2DACB;
+            stroke: var(--dark-green);
+            stroke-width: 1.5;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .district:hover {
+            fill: var(--light-green);
+            stroke-width: 2.5;
+        }
+
+        .district-label {
+            font-size: 11px;
+            font-weight: bold;
+            fill: var(--dark-green);
+            pointer-events: none;
+            text-anchor: middle;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--bg-cream);
+            width: 90%;
+            max-width: 650px;
+            border-radius: 12px;
+            padding: 25px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--dark-green);
+        }
+
+        .weather-anim-box {
+            height: 90px;
+            background: linear-gradient(to right, #87CEEB, #E0F6FF);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sun {
+            width: 40px;
+            height: 40px;
+            background: #FFD700;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #FFD700;
+            animation: pulse 2s infinite alternate;
+        }
+
+        .cloud {
+            width: 60px;
+            height: 20px;
+            background: #fff;
+            border-radius: 20px;
+            position: relative;
+            animation: float 3.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.9); }
+            100% { transform: scale(1.1); }
+        }
+
+        @keyframes float {
+            0% { transform: translateX(-15px); }
+            100% { transform: translateX(15px); }
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            border-bottom: 2px solid var(--panel-cream);
+            margin-bottom: 15px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--dark-green);
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn.active {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .info-card {
+            background: var(--panel-cream);
+            padding: 14px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--accent-green);
+        }
+
+        footer {
+            background-color: var(--dark-green);
+            color: white;
+            text-align: center;
+            padding: 12px 30px;
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🌾 Bursa 17 İlçe Tarımsal Meteoroloji ve Erken Uyarı Sistemi</h1>
+        <div class="refresh-badge" id="refresh-timer">Oto Güncelleme: 60sn</div>
+    </header>
+
+    <div class="main-container">
+        <div class="map-section">
+            <div class="alert-banner">
+                ⚠️ <b>GENEL İKLİM UYARISI:</b> Bölge genelinde nem oranı yüksek seyretmektedir. Gemlik, Mudanya ve İznik zeytinlik alanlarında 'Halkalı Leke' ve 'Mantar' riskine karşı önleyici tedbir alınız.
+            </div>
+
+            <svg viewBox="0 0 800 500">
+                <g onclick="openPopup('Osmangazi')"><path class="district" d="M 380,240 L 420,230 L 440,270 L 400,290 Z"/><text x="405" y="260" class="district-label">Osmangazi</text></g>
+                <g onclick="openPopup('Nilüfer')"><path class="district" d="M 320,230 L 380,240 L 390,280 L 330,270 Z"/><text x="350" y="255" class="district-label">Nilüfer</text></g>
+                <g onclick="openPopup('Yıldırım')"><path class="district" d="M 420,230 L 450,225 L 455,250 L 430,255 Z"/><text x="435" y="242" class="district-label">Yıldırım</text></g>
+                <g onclick="openPopup('Gemlik')"><path class="district" d="M 400,160 L 470,165 L 460,200 L 410,190 Z"/><text x="435" y="180" class="district-label">Gemlik</text></g>
+                <g onclick="openPopup('Mudanya')"><path class="district" d="M 300,170 L 400,160 L 380,210 L 310,200 Z"/><text x="345" y="185" class="district-label">Mudanya</text></g>
+                <g onclick="openPopup('İnegöl')"><path class="district" d="M 500,250 L 610,240 L 590,360 L 490,320 Z"/><text x="545" y="295" class="district-label">İnegöl</text></g>
+                <g onclick="openPopup('Orhangazi')"><path class="district" d="M 470,110 L 550,115 L 540,175 L 470,165 Z"/><text x="505" y="145" class="district-label">Orhangazi</text></g>
+                <g onclick="openPopup('İznik')"><path class="district" d="M 550,100 L 670,105 L 650,180 L 540,175 Z"/><text x="600" y="140" class="district-label">İznik</text></g>
+                <g onclick="openPopup('Karacabey')"><path class="district" d="M 160,200 L 300,210 L 290,310 L 170,300 Z"/><text x="225" y="255" class="district-label">Karacabey</text></g>
+                <g onclick="openPopup('Mustafakemalpaşa')"><path class="district" d="M 170,300 L 290,310 L 270,410 L 180,390 Z"/><text x="230" y="355" class="district-label">Mustafakemalpaşa</text></g>
+                <g onclick="openPopup('Yenişehir')"><path class="district" d="M 530,180 L 630,185 L 610,240 L 510,230 Z"/><text x="565" y="210" class="district-label">Yenişehir</text></g>
+                <g onclick="openPopup('Kestel')"><path class="district" d="M 455,225 L 510,230 L 500,280 L 450,270 Z"/><text x="475" y="250" class="district-label">Kestel</text></g>
+                <g onclick="openPopup('Gürsu')"><path class="district" d="M 445,200 L 485,205 L 475,225 L 440,220 Z"/><text x="460" y="215" class="district-label">Gürsu</text></g>
+                <g onclick="openPopup('Orhaneli')"><path class="district" d="M 330,310 L 420,315 L 410,390 L 320,380 Z"/><text x="365" y="345" class="district-label">Orhaneli</text></g>
+                <g onclick="openPopup('Keles')"><path class="district" d="M 420,315 L 490,320 L 470,410 L 410,390 Z"/><text x="445" y="360" class="district-label">Keles</text></g>
+                <g onclick="openPopup('Büyükorhan')"><path class="district" d="M 310,380 L 390,390 L 370,450 L 300,430 Z"/><text x="345" y="415" class="district-label">Büyükorhan</text></g>
+                <g onclick="openPopup('Harmancık')"><path class="district" d="M 390,390 L 470,410 L 440,470 L 370,450 Z"/><text x="415" y="435" class="district-label">Harmancık</text></g>
+            </svg>
+        </div>
+    </div>
+
+    <div class="modal" id="info-modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+            <h2 id="modal-district-name" style="color: var(--dark-green); margin-top:0;">İlçe Adı</h2>
+            
+            <div class="weather-anim-box">
+                <div class="sun"></div>
+                <div class="cloud"></div>
+                <div id="weather-text" style="font-weight: bold; color: #2C4A3E;">Veri Yükleniyor...</div>
+            </div>
+
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('climate')">İklim Tahmini</button>
+                <button class="tab-btn" onclick="switchTab('pests')">Zararlı & Hastalık</button>
+                <button class="tab-btn" onclick="switchTab('spraying')">İlaçlama</button>
+                <button class="tab-btn" onclick="switchTab('fertilizer')">Gübreleme</button>
+            </div>
+
+            <div class="tab-content active" id="tab-climate">
+                <div class="info-card" id="climate-data">Yükleniyor...</div>
+            </div>
+            <div class="tab-content" id="tab-pests">
+                <div class="info-card" id="pest-data">Yükleniyor...</div>
+            </div>
+            <div class="tab-content" id="tab-spraying">
+                <div class="info-card" id="spraying-data">Yükleniyor...</div>
+            </div>
+            <div class="tab-content" id="tab-fertilizer">
+                <div class="info-card" id="fertilizer-data">Yükleniyor...</div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div>Hazırlayan: <b>Melih Özdemir</b> | Akıllı Tarımsal Erken Uyarı Portalı</div>
+        <div>Canlı Ziyaretçi Sayacı: <strong>{{ visitor_count }}</strong></div>
+    </footer>
+
+    <script>
+        let currentDistrict = null;
+
+        function openPopup(districtName) {
+            currentDistrict = districtName;
+            document.getElementById('modal-district-name').innerText = districtName + " İlçesi Tarım Raporu";
+            document.getElementById('info-modal').style.display = 'flex';
+            
+            fetchDistrictData(districtName);
+        }
+
+        function fetchDistrictData(districtName) {
+            fetch(`/api/ilce/${districtName}`)
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        document.getElementById('weather-text').innerText = `🌡️ ${data.temp}°C | 💧 Nem: %${data.humidity} | 💨 Rüzgar: ${data.wind} km/s`;
+                        document.getElementById('climate-data').innerHTML = `<strong>Bölgesel Ürün Odağı:</strong> ${data.crop}<br><strong>Canlı Durum:</strong> Sıcaklık ${data.temp}°C, Nem %${data.humidity}.`;
+                        document.getElementById('pest-data').innerHTML = `<strong>Olası Riski / Zararlı:</strong><br>⚠️ ${data.pest}`;
+                        document.getElementById('spraying-data').innerHTML = `<strong>Önerilen İlaçlama Dönemi:</strong><br>🕒 ${data.spray}`;
+                        document.getElementById('fertilizer-data').innerHTML = `<strong>Gübreleme Tavsiyesi:</strong><br>🧪 ${data.fertilizer}`;
+                    }
+                });
+        }
+
+        function closePopup() {
+            document.getElementById('info-modal').style.display = 'none';
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+
+        let timer = 60;
+        setInterval(() => {
+            timer--;
+            document.getElementById('refresh-timer').innerText = `Oto Güncelleme: ${timer}sn`;
+            if (timer <= 0) {
+                timer = 60;
+                if (currentDistrict && document.getElementById('info-modal').style.display === 'flex') {
+                    fetchDistrictData(currentDistrict);
+                }
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
