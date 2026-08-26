@@ -8,15 +8,12 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; color: #333; }
 
-        /* Üst Başlık Barı */
         header { background-color: #1b5e20; color: white; padding: 18px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
         header h1 { font-size: 22px; font-weight: 600; }
         header .badge { background-color: #4caf50; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; }
 
-        /* Ana Sayfa Düzeni */
         .layout { display: flex; max-width: 1400px; margin: 25px auto; padding: 0 20px; gap: 25px; }
 
-        /* Sol Yan Panel (Filtre ve Genel Durum) */
         .sidebar { width: 320px; flex-shrink: 0; }
         .side-card { background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
         .side-card h3 { font-size: 16px; color: #1b5e20; margin-bottom: 12px; border-bottom: 2px solid #e8f5e9; padding-bottom: 6px; }
@@ -26,12 +23,10 @@
         .alert-item { background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 10px 12px; border-radius: 4px; margin-bottom: 10px; font-size: 13px; }
         .alert-item.danger { background-color: #f8d7da; border-left-color: #dc3545; color: #721c24; }
 
-        /* Sağ İçerik Alanı (17 İlçe Izgarası) */
         .content { flex: 1; }
         .content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .content-header h2 { font-size: 20px; color: #2c3e50; }
 
-        /* İlçe Kartları Grid (Izgara) */
         .district-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
         
         .district-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border: 1px solid #e0e0e0; transition: transform 0.2s, box-shadow 0.2s; }
@@ -48,8 +43,51 @@
         .info-row { display: flex; justify-content: space-between; font-size: 13px; color: #666; margin-bottom: 6px; }
         .info-row span.val { font-weight: bold; color: #333; }
 
-        .card-btn { display: block; width: 100%; text-align: center; padding: 8px; margin-top: 12px; background-color: #f0f4f8; color: #1b5e20; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; text-decoration: none; font-size: 13px; }
-        .card-btn:hover { background-color: #e2eaf1; }
+        .card-btn { display: block; width: 100%; text-align: center; padding: 8px; margin-top: 12px; background-color: #1b5e20; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; text-decoration: none; font-size: 13px; transition: background 0.2s; }
+        .card-btn:hover { background-color: #2e7d32; }
+
+        /* POP-UP (MODAL) STİLLERİ */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-container { background: white; width: 90%; max-width: 650px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: modalAnim 0.3s ease-out; position: relative; max-height: 90vh; overflow-y: auto; }
+        
+        @keyframes modalAnim {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-close { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.8); border: none; font-size: 20px; font-weight: bold; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; z-index: 10; color: #333; }
+        .modal-close:hover { background: white; }
+
+        /* ANİMASYONLU HAVA DURUMU HEADER */
+        .weather-banner { position: relative; height: 180px; padding: 20px; color: white; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; }
+        
+        /* Gündüz Animasyonu Stili */
+        .weather-banner.day { background: linear-gradient(to bottom, #2980b9, #6dd5fa, #ffffff); }
+        .weather-banner.day .sun { position: absolute; top: 20px; right: 40px; width: 60px; height: 60px; background: #f1c40f; border-radius: 50%; box-shadow: 0 0 40px #f39c12; animation: pulse 3s infinite alternate; }
+        .weather-banner.day .cloud { position: absolute; top: 40px; right: 90px; width: 100px; height: 35px; background: rgba(255,255,255,0.8); border-radius: 20px; animation: floatCloud 8s linear infinite alternate; }
+
+        /* Gece Animasyonu Stili */
+        .weather-banner.night { background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364); }
+        .weather-banner.night .moon { position: absolute; top: 25px; right: 40px; width: 50px; height: 50px; background: #f5f6fa; border-radius: 50%; box-shadow: 0 0 20px #dcdde1; }
+        .weather-banner.night .star { position: absolute; background: white; border-radius: 50%; animation: blink 2s infinite alternate; }
+
+        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.1); } }
+        @keyframes floatCloud { from { transform: translateX(0); } to { transform: translateX(-30px); } }
+        @keyframes blink { from { opacity: 0.3; } to { opacity: 1; } }
+
+        .banner-info h2 { font-size: 26px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .banner-info p { font-size: 14px; opacity: 0.9; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+
+        /* MODAL İÇERİK SEKSİYONLARI */
+        .modal-body { padding: 20px; }
+        .modal-section { margin-bottom: 18px; }
+        .modal-section h4 { font-size: 15px; color: #1b5e20; margin-bottom: 8px; border-bottom: 2px solid #e8f5e9; padding-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+        .modal-section p, .modal-section ul { font-size: 13.5px; color: #444; line-height: 1.5; }
+        .modal-section ul { padding-left: 20px; }
+        .modal-section ul li { margin-bottom: 5px; }
+
+        .badge-danger-text { color: #c0392b; font-weight: bold; }
+        .badge-warning-text { color: #d35400; font-weight: bold; }
 
         @media (max-width: 900px) {
             .layout { flex-direction: column; }
@@ -108,7 +146,7 @@
                     <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">24°C / %58</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Şeftali, Siyah İncir</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Osmangazi', '24°C', '%58', 'Açık / Nem Dengeli', 'Şeftali, Siyah İncir', 'Şeftali Güvesi & Monilya Takibi', 'Normal / Düşük', ['Bahçelerde rutin havalandırma ve sulama takibi yapılmalı.', 'Meyve dökümlerine karşı ağaç altı temizliği sürdürülmeli.'])">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 2. Yıldırım -->
@@ -120,7 +158,7 @@
                     <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">25°C / %55</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Şeftali, Sebze</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Yıldırım', '25°C', '%55', 'Güneşli', 'Şeftali, Örtüaltı Sebzeleri', 'Yaprak Biti (Aphididae)', 'Normal', ['Sebze seralarında havalandırma saatleri düzenlenmeli.', 'Damlama sulama sistemlerinde filtre temizliği yapılmalı.'])">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 3. Nilüfer -->
@@ -132,7 +170,7 @@
                     <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">23°C / %62</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Zeytin, Bağcılık</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Nilüfer', '23°C', '%62', 'Parçalı Bulutlu', 'Zeytin, Bağ, Hububat', 'Bağ Küllemesi / Zeytin Güvesi', 'Düşük', ['Bağlarda sürgün kontrolü yapılmalı.', 'Toprak nemine göre damlama sulama programlanmalı.'])">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 4. Gemlik -->
@@ -144,7 +182,7 @@
                     <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">26°C / %78</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Sofralık Zeytin</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Zeytin Sineği</span></div>
-                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Gemlik', '26°C', '%78', 'Yüksek Nemli & Sıcak', 'Sofralık Gemlik Zeytini', 'Zeytin Sineği (Bactrocera oleae) & Halkalı Leke', 'YÜKSEK RİSK ⚠️', ['Sarı yapışkan tuzaklar kontrol edilerek ergin yoğunluğu izlenmeli.', 'Tuzaklarda eşik aşıldıysa ruhsatlı koruyucu ilaçlama yapılmalı.', 'Yüksek nem nedeniyle mantari hastalıklara karşı bahçe içi havalandırma budaması yapılmalı.'])">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 5. İznik -->
@@ -156,7 +194,7 @@
                     <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">25°C / %75</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Zeytin, Meyve, Bağ</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Zeytin Sineği, Mildiyö</span></div>
-                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('İznik', '25°C', '%75', 'Nemli & Ilık', 'Zeytin, Taze Meyve, Bağ', 'Zeytin Sineği & Bağ Mildiyösü', 'YÜKSEK RİSK ⚠️', ['Göl çevresindeki yüksek nem mikro-kliması nedeniyle fungisit uygulaması aksatılmamalı.', 'Erken uyarı tuzaklarındaki zararlı sayımı günlük yapılmalı.', 'Sulama işlemlerinin gece geç saatler yerine sabah erken yapılması önerilir.'])">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 6. Mudanya -->
@@ -168,7 +206,7 @@
                     <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">24°C / %70</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Zeytin, İncir</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Nem Takibi Gerekiyor</span></div>
-                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Mudanya', '24°C', '%70', 'Rüzgarlı & Nemli', 'Zeytin, Siyah İncir', 'Zeytin Pamuklu Biti & İncir Sineği', 'ORTA RİSK ⚡', ['Deniz etkisiyle artan neme karşı zeytin bahçelerinde sürgün kontrolleri yapılmalı.', 'Rüzgar direnci az olan genç fidanlarda destek çubukları kontrol edilmeli.'])">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 7. Mustafakemalpaşa -->
@@ -180,7 +218,7 @@
                     <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">22°C / %60</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Mısır, Domates, Biber</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Mustafakemalpaşa', '22°C', '%60', 'Mevsim Normali', 'Sanayi Domatesi, Mısır, Biber', 'Yeşilkurt & Kırmızı Örümcek', 'Normal', ['Salçalık domates tarlalarında yaprak altı Kırmızı Örümcek kontrolleri sürdürülmeli.', 'Damlama sulama hatları düzenli debi kontrolünden geçirilmeli.'])">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 8. Karacabey -->
@@ -192,7 +230,7 @@
                     <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">23°C / %64</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Domates, Soğan, Çeltik</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Karacabey', '23°C', '%64', 'Açık / Ilıman', 'Salçalık Domates, Soğan, Çeltik', 'Erken Yaprak Yanıklığı (Alternaria)', 'Normal', ['Ova genelinde mevsimsel rutin tarla gözlemleri devam etmeli.', 'Çeltik tavalarında su seviyesi ve sıcaklığı dengede tutulmalı.'])">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 9. İnegöl -->
@@ -204,7 +242,7 @@
                     <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">19°C / %52</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Meyvecilik, Ayçiçeği</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Gece Erken Don</span></div>
-                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('İnegöl', '19°C', '%52', 'Serin & Gece Açık', 'Elma, Şeftali, Ayçiçeği', 'Radyasyon Donu Riski', 'ORTA RİSK (DON) ⚡', ['Gece saatlerinde düşecek sıcaklığa karşı hassas meyve bahçelerinde don perdesi veya rüzgar pervaneleri hazır tutulmalı.', 'Toprak nemi don etkisini azaltacağı için hafif sulama değerlendirilebilir.'])">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 10. Yenişehir -->
@@ -216,7 +254,7 @@
                     <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">21°C / %58</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Biber, Domates, Tahıl</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Yenişehir', '21°C', '%58', 'Hafif Rüzgarlı', 'Biber, Bezelye, Tahıllar', 'Tripse & Biber Leke Virüsü', 'Normal', ['Biber tarlalarında Thrips emgi zararları kontrol edilmeli.', 'Hasat zamanı yaklaşan ürünlerde ilaç kalıntı sürelerine dikkat edilmeli.'])">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 11. Orhangazi -->
@@ -228,7 +266,7 @@
                     <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">25°C / %72</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Zeytin, Turşu Kivi</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Mantari Hastalıklar</span></div>
-                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Orhangazi', '25°C', '%72', 'Nemli & Yüksek Isı', 'Sofralık Zeytin, Kivi', 'Zeytin Halkalı Leke Hastalığı', 'ORTA RİSK ⚡', ['Nem yüksekliği sebebiyle bakırlı bileşik uygulamaları takvimine uyulmalı.', 'Kivi bahçelerinde sulama düzeni gövde ıslanmayacak şekilde yapılmalı.'])">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 12. Gürsu -->
@@ -240,7 +278,7 @@
                     <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">24°C / %56</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Deveci Armudu, Şeftali</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Gürsu', '24°C', '%56', 'Açık / Tatlı Sert Rüzgar', 'Deveci Armudu, Şeftali', 'Armut Psillidi (Cacopsylla pyri)', 'Normal', ['Armut bahçelerinde tatlımsı madde akıntısı ve nimf kontrolü yapılmalı.', 'Meyve büyütme döneminde gübreleme programına uyulmalı.'])">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 13. Kestel -->
@@ -252,7 +290,7 @@
                     <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">22°C / %60</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Şeftali, Böğürtlen, Çilek</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Kestel', '22°C', '%60', 'Güneşli', 'Şeftali, Yayla Çileği, Böğürtlen', 'Kanadı Benekli Sirke Sineği (Drosophila suzukii)', 'Normal', ['Üzümsü meyvelerde olgunlaşma döneminde hijyenik toplayıcılık yapılmalı.', 'Çürük meyveler bahçeden uzaklaştırılmalı.'])">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 14. Orhaneli -->
@@ -264,7 +302,7 @@
                     <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">18°C / %50</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Çilek, Yaban Mersini, Hayvancılık</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Orhaneli', '18°C', '%50', 'Ferah & Serin', 'Dağ Çileği, Yaban Mersini, Ceviz', 'Külleme & Kök Çürüklüğü', 'Normal', ['Yaban mersini parcellerinde toprak pH seviyeleri ve asitlik kontrol edilmeli.', 'Damlama sulama aralıkları serin havaya göre uzatılmalı.'])">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 15. Büyükorhan -->
@@ -276,7 +314,7 @@
                     <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">17°C / %48</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Görecik Çileği, Tahıl</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Büyükorhan', '17°C', '%48', 'Az Bulutlu', 'Görecik Çileği, Göre Yöresi Görecik Göleti Sulamaları', 'Kırmızı Örümcek', 'Normal', ['Çilek tarlalarında malçlama örtü altları kontrol edilmeli.', 'Gece serinliği nedeniyle sulamalar öğle saatlerine yakın tamamlanmalı.'])">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 16. Harmancık -->
@@ -288,7 +326,7 @@
                     <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">18°C / %45</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Ceviz, Çilek, Tahıl</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Harmancık', '18°C', '%45', 'Açık & Serin', 'Ceviz, Tıbbi Aromatik Bitkiler', 'Ceviz İçi Kurdu & Antraknoz', 'Normal', ['Ceviz bahçelerinde iç kurdu tuzak sayımları yapılmalı.', 'Kuru şartlara karşı sulama desteği planlanmalı.'])">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 17. Keles -->
@@ -300,14 +338,50 @@
                     <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">17°C / %50</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Çilek, Vişne, Yaban Mersini</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Keles', '17°C', '%50', 'Açık / Serin Yayla İklimi', 'Keles Çileği, Vişne, Kiraz', 'Monilya & Bakteriyel Kanser', 'Normal', ['Kiraz/Vişne hasadı sonrası kuruyan dallar budanarak uzaklaştırılmalı.', 'Gelecek sezon için yaprak gübrelemesi değerlendirilmeli.'])">İlçe Detayı & Analiz</button>
                 </div>
 
             </div>
         </div>
     </div>
 
-    <!-- Filtreleme Scripti -->
+    <!-- DETAY POP-UP (MODAL) -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-container">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            
+            <!-- Dynamic Banner (Day/Night Animation) -->
+            <div class="weather-banner" id="modalBanner">
+                <div id="skyAnimation"></div>
+                <div class="banner-info">
+                    <h2 id="mDistrict">İlçe Adı</h2>
+                    <p id="mWeatherSummary">Sıcaklık ve Durum</p>
+                </div>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="modal-body">
+                <div class="modal-section">
+                    <h4>🌱 Öne Çıkan Ürünler</h4>
+                    <p id="mProducts">-</p>
+                </div>
+
+                <div class="modal-section">
+                    <h4>🦠 Hastalık ve Zararlı Riski</h4>
+                    <p><span id="mRiskBadge" class="status-badge normal">Normal</span> - <span id="mPestInfo">-</span></p>
+                </div>
+
+                <div class="modal-section">
+                    <h4>🛡️ Alınması Gereken Tedbirler ve Öneriler</h4>
+                    <ul id="mMeasures">
+                        <li>Tedbirler yükleniyor...</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT KODLARI -->
     <script>
         function filterDistricts() {
             var searchVal = document.getElementById('searchInput').value.toLowerCase();
@@ -327,6 +401,59 @@
                 } else {
                     card.style.display = 'none';
                 }
+            }
+        }
+
+        function openModal(district, temp, humidity, weatherText, products, pest, riskLevel, measures) {
+            document.getElementById('mDistrict').innerText = district + " İlçesi Detaylı Analizi";
+            document.getElementById('mWeatherSummary').innerText = "Güncel Sıcaklık: " + temp + " | Nem: " + humidity + " (" + weatherText + ")";
+            document.getElementById('mProducts').innerText = products;
+            document.getElementById('mPestInfo').innerText = pest;
+            
+            var riskBadge = document.getElementById('mRiskBadge');
+            riskBadge.innerText = riskLevel;
+            if(riskLevel.includes("YÜKSEK")) riskBadge.className = "status-badge danger";
+            else if(riskLevel.includes("ORTA")) riskBadge.className = "status-badge warning";
+            else riskBadge.className = "status-badge normal";
+
+            var measuresList = document.getElementById('mMeasures');
+            measuresList.innerHTML = "";
+            measures.forEach(function(item) {
+                var li = document.createElement('li');
+                li.innerText = item;
+                measuresList.appendChild(li);
+            });
+
+            // Saate Bakarak Gece/Gündüz Animasyonu Seçimi
+            var hour = new Date().getHours();
+            var banner = document.getElementById('modalBanner');
+            var skyAnim = document.getElementById('skyAnimation');
+
+            if (hour >= 6 && hour < 19) {
+                // GÜNDÜZ MODU
+                banner.className = "weather-banner day";
+                skyAnim.innerHTML = '<div class="sun"></div><div class="cloud"></div>';
+            } else {
+                // GECE MODU
+                banner.className = "weather-banner night";
+                skyAnim.innerHTML = '<div class="moon"></div>' +
+                    '<div class="star" style="top:20px; left:30px; width:3px; height:3px;"></div>' +
+                    '<div class="star" style="top:50px; left:120px; width:2px; height:2px;"></div>' +
+                    '<div class="star" style="top:80px; left:200px; width:4px; height:4px;"></div>';
+            }
+
+            document.getElementById('modalOverlay').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+        }
+
+        // Overlay dışına tıklandığında kapatma
+        window.onclick = function(event) {
+            var modal = document.getElementById('modalOverlay');
+            if (event.target == modal) {
+                closeModal();
             }
         }
     </script>
