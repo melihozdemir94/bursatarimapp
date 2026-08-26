@@ -3,50 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bursa Tarımsal Erken Uyarı Sistemi</title>
-    <!-- Leaflet Harita Haritalama Kütüphanesi CSS -->
+    <title>Bursa Tarımsal Erken Uyarı ve Takip Sistemi</title>
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f6f9; }
-        h1 { color: #1b5e20; text-align: center; margin-bottom: 20px; }
-        #map { height: 600px; width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; color: #333; }
+        
+        /* Üst Başlık Barı */
+        header { background-color: #1b5e20; color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        header h1 { font-size: 20px; font-weight: 600; }
+        header .badge { background-color: #4caf50; padding: 5px 12px; border-radius: 15px; font-size: 12px; font-weight: bold; }
+
+        /* Ana Düzen (Yan Yana Çift Panel) */
+        .container { display: flex; height: calc(100vh - 60px); }
+
+        /* Sol Kontrol Paneli */
+        .sidebar { width: 380px; background: white; padding: 20px; overflow-y: auto; border-right: 1px solid #e0e0e0; box-shadow: 2px 0 5px rgba(0,0,0,0.05); }
+        .section-title { font-size: 14px; text-transform: uppercase; color: #666; font-weight: bold; margin-bottom: 10px; margin-top: 15px; }
+        
+        /* Form Elemanları */
+        select, input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; margin-bottom: 12px; }
+
+        /* Erken Uyarı Kartı */
+        .alert-card { background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 12px; border-radius: 4px; margin-bottom: 15px; }
+        .alert-card.danger { background-color: #f8d7da; border-left-color: #dc3545; }
+        .alert-card h4 { font-size: 14px; color: #856404; margin-bottom: 5px; }
+        .alert-card.danger h4 { color: #721c24; }
+        .alert-card p { font-size: 12px; color: #555; }
+
+        /* İstatistik Kutuları */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .stat-box { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 6px; padding: 10px; text-align: center; }
+        .stat-box .val { font-size: 18px; font-weight: bold; color: #2e7d32; }
+        .stat-box .lbl { font-size: 11px; color: #777; }
+
+        /* Sağ Harita Alanı */
+        .map-container { flex: 1; position: relative; }
+        #map { height: 100%; width: 100%; }
     </style>
 </head>
 <body>
 
-    <h1>Bursa Tarımsal Erken Uyarı Sistemi Haritası</h1>
-    <!-- Bursa Haritasının Görüneceği Alan -->
-    <div id="map"></div>
+    <header>
+        <h1>Bursa Tarımsal Erken Uyarı & Analiz Sistemi</h1>
+        <span class="badge">Sistem Aktif</span>
+    </header>
+
+    <div class="container">
+        <!-- SOL PANEL: İŞLEMLER VE ANALİZLER -->
+        <div class="sidebar">
+            <div class="section-title">İlçe / Bölge Seçimi</div>
+            <select id="ilceSelect" onchange="ilceDegisti()">
+                <option value="tum">Tüm Bursa Geneli</option>
+                <option value="gemlik">Gemlik</option>
+                <option value="iznik">İznik</option>
+                <option value="mustafakemalpasa">Mustafakemalpaşa</option>
+                <option value="inegol">İnegöl</option>
+                <option value="nilufer">Nilüfer</option>
+            </select>
+
+            <div class="section-title">Ürün Grubu</div>
+            <select id="urunSelect">
+                <option>Zeytin</option>
+                <option>Şeftali / Neftarin</option>
+                <option>Yaban Mersini</option>
+                <option>Çilek</option>
+                <option>Bağ / Üzüm</option>
+            </select>
+
+            <div class="section-title">Anlık Erken Uyaralar</div>
+            <div class="alert-card danger">
+                <h4>⚠️ Zeytin Sinek Riski (Yüksek)</h4>
+                <p>Gemlik ve İznik havzasında nem %78. İlaçlama zamanı yaklaşıyor.</p>
+            </div>
+            <div class="alert-card">
+                <h4>⚡ Don Riski Uyarısı</h4>
+                <p>İnegöl çevresinde gece sıcaklıklarının 2°C'ye düşmesi bekleniyor.</p>
+            </div>
+
+            <div class="section-title">Bölgesel İklim Özeti</div>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="val">24°C</div>
+                    <div class="lbl">Ort. Sıcaklık</div>
+                </div>
+                <div class="stat-box">
+                    <div class="val">%65</div>
+                    <div class="lbl">Ort. Nem</div>
+                </div>
+                <div class="stat-box">
+                    <div class="val">12 km/s</div>
+                    <div class="lbl">Rüzgar Hızı</div>
+                </div>
+                <div class="stat-box">
+                    <div class="val">0 mm</div>
+                    <div class="lbl">Yağış Miktarı</div>
+                </div>
+            </div>
+
+            <button style="width:100%; padding:12px; background:#1b5e20; color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">
+                📊 Detaylı Rapor İndir (PDF)
+            </button>
+        </div>
+
+        <!-- SAĞ PANEL: HARİTA -->
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+    </div>
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // 1. Haritayı doğrudan Bursa merkezli aç (Enlem: 40.1885, Boylam: 29.0610, Zoom: 9)
+        // 1. Haritayı başlat
         var map = L.map('map').setView([40.1885, 29.0610], 9);
 
-        // 2. Harita Tabanını Ekle (OpenStreetMap)
+        // 2. Taban harita
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap'
         }).addTo(map);
 
-        // 3. Bursa İl Sınırlarını Yükle
+        // 3. Tarımsal Gözlem İstasyonları (Örnek Marker'lar)
+        var istasyonlar = [
+            { id: "gemlik", name: "Gemlik Zeytin Araştırma İstasyonu", lat: 40.4312, lng: 29.1565, durum: "Zeytin Sineği Riski Yüksek" },
+            { id: "iznik", name: "İznik Meteoroloji ve Tarım İstasyonu", lat: 40.4286, lng: 29.7215, durum: "Hastalık Riski Normal" },
+            { id: "mustafakemalpasa", name: "Mustafakemalpaşa Ovaazatlı Tesis İstasyonu", lat: 39.9980, lng: 28.4060, durum: "Sulama İhtiyacı Yüksek" },
+            { id: "inegol", name: "İnegöl Meyvecilik İstasyonu", lat: 40.0783, lng: 29.5133, durum: "Erken Don Riski" }
+        ];
+
+        var markerGroup = L.layerGroup().addTo(map);
+
+        function istasyonlariYukle() {
+            markerGroup.clearLayers();
+            istasyonlar.forEach(function(item) {
+                var marker = L.marker([item.lat, item.lng])
+                    .bindPopup("<b>" + item.name + "</b><br>Durum: " + item.durum);
+                markerGroup.addLayer(marker);
+            });
+        }
+        istasyonlariYukle();
+
+        // 4. Bursa İl ve İlçe Sınırlarını Yükle
         fetch('https://raw.githubusercontent.com/cihad/turkey-geojson/master/pdf/bursa.json')
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
                 L.geoJSON(data, {
-                    style: {
-                        color: "#2e7d32",     // İlçe sınır çizgi rengi (Bursa Yeşil)
-                        weight: 2,             // Çizgi kalınlığı
-                        fillColor: "#81c784",  // İlçe dolgu rengi
-                        fillOpacity: 0.3       // Şeffaflık
-                    },
-                    onEachFeature: function (feature, layer) {
-                        if (feature.properties && feature.properties.name) {
-                            layer.bindPopup("<b>İlçe: </b>" + feature.properties.name);
-                        }
+                    style: { color: "#2e7d32", weight: 2, fillColor: "#81c784", fillOpacity: 0.2 },
+                    onEachFeature: function(feature, layer) {
+                        layer.bindPopup("<b>İlçe: </b>" + feature.properties.name);
                     }
                 }).addTo(map);
             });
+
+        // 5. Sol panelden ilçe seçilince haritada o bölgeye odaklanma
+        function ilceDegisti() {
+            var val = document.getElementById("ilceSelect").value;
+            if(val === "gemlik") map.setView([40.4312, 29.1565], 11);
+            else if(val === "iznik") map.setView([40.4286, 29.7215], 11);
+            else if(val === "mustafakemalpasa") map.setView([39.9980, 28.4060], 11);
+            else if(val === "inegol") map.setView([40.0783, 29.5133], 11);
+            else map.setView([40.1885, 29.0610], 9);
+        }
     </script>
 </body>
 </html>
