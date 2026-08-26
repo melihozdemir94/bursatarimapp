@@ -48,29 +48,77 @@
         .card-btn:hover { background-color: #2e7d32; }
 
         /* POP-UP (MODAL) STİLLERİ */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-container { background: white; width: 92%; max-width: 750px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: modalAnim 0.3s ease-out; position: relative; max-height: 90vh; overflow-y: auto; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
+        .modal-container { background: white; width: 92%; max-width: 750px; border-radius: 16px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.3); animation: modalBounce 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; max-height: 90vh; overflow-y: auto; }
         
-        @keyframes modalAnim {
-            from { transform: translateY(-30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        @keyframes modalBounce {
+            from { transform: scale(0.85); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
-        .modal-close { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.8); border: none; font-size: 20px; font-weight: bold; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; z-index: 10; color: #333; }
-        .modal-close:hover { background: white; }
+        .modal-close { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.85); border: none; font-size: 20px; font-weight: bold; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; z-index: 30; color: #333; transition: all 0.2s; }
+        .modal-close:hover { background: white; transform: rotate(90deg); }
 
-        .weather-banner { position: relative; height: 160px; padding: 20px; color: white; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; }
-        .weather-banner.day { background: linear-gradient(to bottom, #1976d2, #64b5f6, #ffffff); }
-        .weather-banner.night { background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364); }
+        /* HAVA ANİMASYON BANNER'I */
+        .weather-banner { position: relative; height: 180px; padding: 22px; color: white; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; transition: background 0.5s ease; }
+        
+        /* Tema Arka Planları */
+        .weather-banner.day-clear { background: linear-gradient(180deg, #1e88e5 0%, #64b5f6 60%, #e3f2fd 100%); }
+        .weather-banner.night-clear { background: linear-gradient(180deg, #0b132b 0%, #1c2541 60%, #3a506b 100%); }
+        .weather-banner.rainy { background: linear-gradient(180deg, #37474f 0%, #546e7a 60%, #78909c 100%); }
+        .weather-banner.stormy { background: linear-gradient(180deg, #102a43 0%, #243b53 60%, #486581 100%); }
+        .weather-banner.snowy { background: linear-gradient(180deg, #78909c 0%, #b0bec5 60%, #eceff1 100%); }
 
-        .banner-info h2 { font-size: 24px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-        .banner-info p { font-size: 14px; opacity: 0.95; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+        /* GÜNEŞ & AY */
+        .sun-wrapper { position: absolute; top: 15px; right: 45px; width: 70px; height: 70px; }
+        .sun { width: 100%; height: 100%; background: radial-gradient(circle, #fff7aa 0%, #ffb300 60%, #f57c00 100%); border-radius: 50%; box-shadow: 0 0 45px #ffb300, 0 0 90px rgba(255, 179, 0, 0.4); animation: sunPulse 4s ease-in-out infinite alternate; }
+        @keyframes sunPulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 35px #ffb300; }
+            100% { transform: scale(1.08); box-shadow: 0 0 60px #ffb300, 0 0 100px rgba(255, 235, 59, 0.6); }
+        }
+
+        .moon-wrapper { position: absolute; top: 20px; right: 45px; width: 55px; height: 55px; }
+        .moon { width: 100%; height: 100%; background: #f4f5f7; border-radius: 50%; box-shadow: 0 0 25px rgba(244, 245, 247, 0.8), inset -8px -5px 0 0 #d1d5db; }
+        .star { position: absolute; background: white; border-radius: 50%; animation: starBlink 2s infinite alternate; }
+        @keyframes starBlink { 0% { opacity: 0.2; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1.3); } }
+
+        /* YAĞMUR DAMLALARI */
+        .rain-drop { position: absolute; background: linear-gradient(transparent, rgba(255,255,255,0.8)); width: 2px; height: 18px; opacity: 0.7; animation: fall linear infinite; }
+        @keyframes fall {
+            0% { transform: translateY(-20px); }
+            100% { transform: translateY(200px); }
+        }
+
+        /* KAR TANELERİ */
+        .snowflake { position: absolute; color: white; opacity: 0.9; user-select: none; animation: snowFall linear infinite; }
+        @keyframes snowFall {
+            0% { transform: translateY(-20px) rotate(0deg); }
+            100% { transform: translateY(200px) rotate(360deg); }
+        }
+
+        /* ŞİMŞEK ÇAKMASI */
+        .lightning-flash { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: white; opacity: 0; pointer-events: none; animation: flash 4s infinite; }
+        @keyframes flash {
+            0%, 92%, 96%, 100% { opacity: 0; }
+            93%, 95% { opacity: 0.8; }
+        }
+
+        /* RÜZGAR ÇİZGİLERİ */
+        .wind-streak { position: absolute; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent); height: 2px; border-radius: 50%; animation: windBlow linear infinite; }
+        @keyframes windBlow {
+            0% { transform: translateX(-150px); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateX(750px); opacity: 0; }
+        }
+
+        .banner-info { position: relative; z-index: 10; }
+        .banner-info h2 { font-size: 24px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .banner-info p { font-size: 13.5px; opacity: 0.95; text-shadow: 0 1px 3px rgba(0,0,0,0.5); margin-top: 3px; }
 
         .modal-body { padding: 20px; }
         .modal-section { margin-bottom: 20px; }
         .modal-section h4 { font-size: 15px; color: #1b5e20; margin-bottom: 10px; border-bottom: 2px solid #e8f5e9; padding-bottom: 4px; display: flex; align-items: center; gap: 8px; }
 
-        /* SAATLİK VE GÜNLÜK TAHMİN KUTULARI */
         .hourly-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; }
         .hourly-card { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; min-width: 90px; padding: 10px; text-align: center; flex-shrink: 0; }
         .hourly-card .time { font-size: 12px; font-weight: bold; color: #555; }
@@ -119,10 +167,10 @@
             <div class="side-card">
                 <h3>⚠️ Genel Erken Uyarılar</h3>
                 <div class="alert-item danger">
-                    <strong>Gemlik & İznik:</strong> Cuma günü beklenen gökgürültülü sağanak yağış nedeniyle ilaçlama takvimini öne çekin!
+                    <strong>Gemlik & İznik:</strong> Gökgürültülü sağanak yağış bekleniyor!
                 </div>
                 <div class="alert-item wind">
-                    <strong>Mudanya & Karacabey:</strong> Rüzgar hızı öğle saatlerinde 18 km/s üzerine çıkıyor. Sürüklenme riski!
+                    <strong>Mudanya:</strong> Rüzgar hızı 19 km/s. Sürüklenme riski!
                 </div>
             </div>
         </div>
@@ -135,43 +183,40 @@
 
             <div class="district-grid" id="districtGrid">
 
-                <!-- 1. Gemlik Örneği (Yüksek Risk & Yağış Tahmini Entegreli) -->
+                <!-- 1. Gemlik (Yoğun Sağanak / Fırtına Örneği) -->
                 <div class="district-card" data-name="gemlik" data-risk="danger">
                     <div class="card-header">
                         <h3>Gemlik</h3>
                         <span class="status-badge danger">Yüksek Risk</span>
                     </div>
-                    <div class="info-row"><span>Anlık Sıcaklık / Nem:</span><span class="val">26°C / %78</span></div>
-                    <div class="info-row"><span>Anlık Rüzgar Hızı:</span><span class="val">12 km/s</span></div>
-                    <div class="info-row"><span>Ana Ürünler:</span><span class="val">Sofralık Zeytin</span></div>
-                    <div class="info-row"><span>Zararlı Riski:</span><span class="val">Zeytin Sineği</span></div>
-                    <button class="card-btn" onclick="showDistrictDetails('Gemlik', '26°C', '%78', 12, 'Sofralık Gemlik Zeytini', 'Zeytin Sineği & Halkalı Leke', 'YÜKSEK RİSK ⚠️', gemlikHourly, gemlikDaily)">İlçe Detayı & Saatlik Tahmin</button>
+                    <div class="info-row"><span>Anlık Sıcaklık / Nem:</span><span class="val">21°C / %85</span></div>
+                    <div class="info-row"><span>Anlık Rüzgar Hızı:</span><span class="val">14 km/s</span></div>
+                    <div class="info-row"><span>Hava Durumu:</span><span class="val">Şiddetli Yağmurlu</span></div>
+                    <button class="card-btn" onclick="showDistrictDetails('Gemlik', '21°C', '%85', 14, 80, 'rain', 'Sofralık Gemlik Zeytini', 'Zeytin Sineği', 'YÜKSEK RİSK ⚠️', gemlikHourly, gemlikDaily)">İlçe Detayı & Tahmin</button>
                 </div>
 
-                <!-- 2. Mudanya Örneği (Rüzgar Riski Entegreli) -->
+                <!-- 2. Mudanya (Rüzgarlı Örneği) -->
                 <div class="district-card" data-name="mudanya" data-risk="warning">
                     <div class="card-header">
                         <h3>Mudanya</h3>
                         <span class="status-badge warning">Orta Risk</span>
                     </div>
                     <div class="info-row"><span>Anlık Sıcaklık / Nem:</span><span class="val">24°C / %70</span></div>
-                    <div class="info-row"><span>Anlık Rüzgar Hızı:</span><span class="val">19 km/s</span></div>
-                    <div class="info-row"><span>Ana Ürünler:</span><span class="val">Zeytin, İncir</span></div>
-                    <div class="info-row"><span>Zararlı Riski:</span><span class="val">Rüzgar & Nem Takibi</span></div>
-                    <button class="card-btn" onclick="showDistrictDetails('Mudanya', '24°C', '%70', 19, 'Zeytin, Siyah İncir', 'Zeytin Pamuklu Biti', 'ORTA RİSK ⚡', mudanyaHourly, mudanyaDaily)">İlçe Detayı & Saatlik Tahmin</button>
+                    <div class="info-row"><span>Anlık Rüzgar Hızı:</span><span class="val">22 km/s</span></div>
+                    <div class="info-row"><span>Hava Durumu:</span><span class="val">Rüzgarlı / Parçalı</span></div>
+                    <button class="card-btn" onclick="showDistrictDetails('Mudanya', '24°C', '%70', 22, 10, 'clear', 'Zeytin, Siyah İncir', 'Zeytin Pamuklu Biti', 'ORTA RİSK ⚡', mudanyaHourly, mudanyaDaily)">İlçe Detayı & Tahmin</button>
                 </div>
 
-                <!-- 3. Gürsu Örneği -->
+                <!-- 3. Gürsu (Açık Güneşli Örneği) -->
                 <div class="district-card" data-name="gürsu gursu" data-risk="normal">
                     <div class="card-header">
                         <h3>Gürsu</h3>
                         <span class="status-badge normal">Normal</span>
                     </div>
-                    <div class="info-row"><span>Anlık Sıcaklık / Nem:</span><span class="val">24°C / %56</span></div>
-                    <div class="info-row"><span>Anlık Rüzgar Hızı:</span><span class="val">14 km/s</span></div>
-                    <div class="info-row"><span>Ana Ürünler:</span><span class="val">Deveci Armudu, Şeftali</span></div>
-                    <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn" onclick="showDistrictDetails('Gürsu', '24°C', '%56', 14, 'Deveci Armudu, Şeftali', 'Armut Psillidi', 'Normal', gursuHourly, gursuDaily)">İlçe Detayı & Saatlik Tahmin</button>
+                    <div class="info-row"><span>Anlık Sıcaklık / Nem:</span><span class="val">26°C / %50</span></div>
+                    <div class="info-row"><span>Anlık Rüzgar Hızı:</span><span class="val">9 km/s</span></div>
+                    <div class="info-row"><span>Hava Durumu:</span><span class="val">Açık / Güneşli</span></div>
+                    <button class="card-btn" onclick="showDistrictDetails('Gürsu', '26°C', '%50', 9, 0, 'clear', 'Deveci Armudu, Şeftali', 'Düşük Risk', 'Normal', gursuHourly, gursuDaily)">İlçe Detayı & Tahmin</button>
                 </div>
 
             </div>
@@ -183,7 +228,8 @@
         <div class="modal-container">
             <button class="modal-close" onclick="closeModal()">&times;</button>
             
-            <div class="weather-banner day" id="modalBanner">
+            <div class="weather-banner" id="modalBanner">
+                <div id="skyAnimation" style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></div>
                 <div class="banner-info">
                     <h2 id="mDistrict">İlçe Adı</h2>
                     <p id="mWeatherSummary">Sıcaklık ve Nem Durumu</p>
@@ -191,23 +237,16 @@
             </div>
 
             <div class="modal-body">
-                <!-- 1. BUGÜNÜN SAATLİK TAHMİNİ -->
                 <div class="modal-section">
                     <h4>🕒 Bugünün Saatlik Hava Tahmini (Yağış & Rüzgar)</h4>
-                    <div class="hourly-scroll" id="mHourlyContainer">
-                        <!-- JS ile dolacak -->
-                    </div>
+                    <div class="hourly-scroll" id="mHourlyContainer"></div>
                 </div>
 
-                <!-- 2. SONRAKİ 4 GÜNÜN TAHMİNİ -->
                 <div class="modal-section">
                     <h4>📅 Sonraki 4 Günün Hava Tahmini</h4>
-                    <div class="forecast-grid" id="mDailyContainer">
-                        <!-- JS ile dolacak -->
-                    </div>
+                    <div class="forecast-grid" id="mDailyContainer"></div>
                 </div>
 
-                <!-- 3. RÜZGAR VE İLAÇLAMA UYARISI -->
                 <div class="modal-section">
                     <h4>💨 Zirai İlaçlama & Rüzgar Uyarısı</h4>
                     <div id="mWindWarning" class="wind-warning-box safe">
@@ -215,7 +254,6 @@
                     </div>
                 </div>
 
-                <!-- 4. ÜRÜN VE ZARARLI ANALİZİ -->
                 <div class="modal-section">
                     <h4>🌱 Ürün & Zararlı Analizi</h4>
                     <p><strong>Öne Çıkan Ürünler:</strong> <span id="mProducts">-</span></p>
@@ -225,61 +263,58 @@
         </div>
     </div>
 
-    <!-- TAHMİN VERİLERİ VE SCRIPT -->
     <script>
-        // METEOROLOJİ DOĞRULANMIŞ HAVA TAHMİN VERİLERİ (Örnek Veri Setleri)
+        // VERİ SETLERİ
         const gemlikHourly = [
-            { time: "09:00", temp: "24°C", rain: "%5 Yağış", wind: "10 km/s" },
-            { time: "12:00", temp: "27°C", rain: "%10 Yağış", wind: "12 km/s" },
-            { time: "15:00", temp: "28°C", rain: "%15 Yağış", wind: "14 km/s" },
-            { time: "18:00", temp: "25°C", rain: "%20 Yağış", wind: "11 km/s" },
-            { time: "21:00", temp: "22°C", rain: "%10 Yağış", wind: "8 km/s" }
+            { time: "09:00", temp: "20°C", rain: "%70 Yağış", wind: "12 km/s" },
+            { time: "12:00", temp: "21°C", rain: "%85 Yağış", wind: "14 km/s" },
+            { time: "15:00", temp: "22°C", rain: "%80 Yağış", wind: "16 km/s" },
+            { time: "18:00", temp: "20°C", rain: "%40 Yağış", wind: "10 km/s" },
+            { time: "21:00", temp: "18°C", rain: "%10 Yağış", wind: "8 km/s" }
         ];
-
         const gemlikDaily = [
-            { day: "Perşembe", temp: "22°C / 30°C", rain: "%10 Yağış", wind: "11 km/s" },
-            { day: "Cuma ⚠️", temp: "20°C / 27°C", rain: "%85 Sağanak", wind: "18 km/s" },
-            { day: "Cumartesi", temp: "19°C / 26°C", rain: "%20 Yağış", wind: "15 km/s" },
-            { day: "Pazar", temp: "20°C / 28°C", rain: "%5 Yağış", wind: "12 km/s" }
+            { day: "Perşembe", temp: "18°C / 24°C", rain: "%85 Sağanak", wind: "14 km/s" },
+            { day: "Cuma ⚠️", temp: "17°C / 22°C", rain: "%90 Fırtına", wind: "22 km/s" },
+            { day: "Cumartesi", temp: "19°C / 25°C", rain: "%20 Yağış", wind: "12 km/s" },
+            { day: "Pazar", temp: "20°C / 27°C", rain: "%5 Yağış", wind: "10 km/s" }
         ];
 
         const mudanyaHourly = [
-            { time: "09:00", temp: "22°C", rain: "%0 Yağış", wind: "14 km/s" },
-            { time: "12:00", temp: "25°C", rain: "%5 Yağış", wind: "19 km/s" },
-            { time: "15:00", temp: "26°C", rain: "%10 Yağış", wind: "21 km/s" },
-            { time: "18:00", temp: "23°C", rain: "%5 Yağış", wind: "16 km/s" },
-            { time: "21:00", temp: "21°C", rain: "%0 Yağış", wind: "12 km/s" }
+            { time: "09:00", temp: "22°C", rain: "%0 Yağış", wind: "18 km/s" },
+            { time: "12:00", temp: "24°C", rain: "%10 Yağış", wind: "22 km/s" },
+            { time: "15:00", temp: "25°C", rain: "%10 Yağış", wind: "24 km/s" },
+            { time: "18:00", temp: "23°C", rain: "%5 Yağış", wind: "19 km/s" },
+            { time: "21:00", temp: "21°C", rain: "%0 Yağış", wind: "14 km/s" }
         ];
-
         const mudanyaDaily = [
-            { day: "Perşembe", temp: "21°C / 29°C", rain: "%5 Yağış", wind: "16 km/s" },
-            { day: "Cuma ⚠️", temp: "19°C / 25°C", rain: "%80 Sağanak", wind: "22 km/s" },
-            { day: "Cumartesi", temp: "18°C / 25°C", rain: "%15 Yağış", wind: "17 km/s" },
-            { day: "Pazar", temp: "19°C / 27°C", rain: "%0 Yağış", wind: "14 km/s" }
+            { day: "Perşembe", temp: "21°C / 26°C", rain: "%10 Yağış", wind: "22 km/s" },
+            { day: "Cuma ⚠️", temp: "19°C / 24°C", rain: "%80 Sağanak", wind: "26 km/s" },
+            { day: "Cumartesi", temp: "18°C / 25°C", rain: "%15 Yağış", wind: "18 km/s" },
+            { day: "Pazar", temp: "19°C / 27°C", rain: "%0 Yağış", wind: "12 km/s" }
         ];
 
         const gursuHourly = [
-            { time: "09:00", temp: "22°C", rain: "%0 Yağış", wind: "8 km/s" },
-            { time: "12:00", temp: "25°C", rain: "%0 Yağış", wind: "14 km/s" },
-            { time: "15:00", temp: "26°C", rain: "%5 Yağış", wind: "15 km/s" },
-            { time: "18:00", temp: "23°C", rain: "%0 Yağış", wind: "10 km/s" },
-            { time: "21:00", temp: "20°C", rain: "%0 Yağış", wind: "6 km/s" }
+            { time: "09:00", temp: "22°C", rain: "%0 Yağış", wind: "6 km/s" },
+            { time: "12:00", temp: "26°C", rain: "%0 Yağış", wind: "9 km/s" },
+            { time: "15:00", temp: "28°C", rain: "%0 Yağış", wind: "10 km/s" },
+            { time: "18:00", temp: "25°C", rain: "%0 Yağış", wind: "7 km/s" },
+            { time: "21:00", temp: "21°C", rain: "%0 Yağış", wind: "5 km/s" }
         ];
-
         const gursuDaily = [
-            { day: "Perşembe", temp: "20°C / 31°C", rain: "%0 Yağış", wind: "12 km/s" },
-            { day: "Cuma ⚠️", temp: "18°C / 27°C", rain: "%75 Sağanak", wind: "19 km/s" },
-            { day: "Cumartesi", temp: "17°C / 26°C", rain: "%20 Yağış", wind: "14 km/s" },
-            { day: "Pazar", temp: "18°C / 29°C", rain: "%0 Yağış", wind: "10 km/s" }
+            { day: "Perşembe", temp: "20°C / 30°C", rain: "%0 Yağış", wind: "9 km/s" },
+            { day: "Cuma ⚠️", temp: "18°C / 26°C", rain: "%75 Sağanak", wind: "18 km/s" },
+            { day: "Cumartesi", temp: "17°C / 26°C", rain: "%10 Yağış", wind: "11 km/s" },
+            { day: "Pazar", temp: "18°C / 29°C", rain: "%0 Yağış", wind: "8 km/s" }
         ];
 
-        function showDistrictDetails(district, temp, humidity, windVal, products, pest, riskLevel, hourlyData, dailyData) {
+        // DİNAMİK POP-UP FONKSİYONU
+        function showDistrictDetails(district, temp, humidity, windVal, rainPercent, conditionType, products, pest, riskLevel, hourlyData, dailyData) {
             document.getElementById('mDistrict').innerText = district + " İlçesi Detaylı Analizi";
             document.getElementById('mWeatherSummary').innerText = "Anlık Sıcaklık: " + temp + " | Nem: " + humidity + " | Rüzgar: " + windVal + " km/s";
             document.getElementById('mProducts').innerText = products;
             document.getElementById('mPestInfo').innerText = pest;
 
-            // Saatlik Tahminleri Bas
+            // Saatlik Listeleme
             const hourlyContainer = document.getElementById('mHourlyContainer');
             hourlyContainer.innerHTML = "";
             hourlyData.forEach(item => {
@@ -293,7 +328,7 @@
                 `;
             });
 
-            // Günlük Tahminleri Bas
+            // Günlük Listeleme
             const dailyContainer = document.getElementById('mDailyContainer');
             dailyContainer.innerHTML = "";
             dailyData.forEach(item => {
@@ -307,14 +342,14 @@
                 `;
             });
 
-            // Rüzgar ve Yağışa Bağlı İlaçlama Uyarısı Eşik Kontrolü
+            // Rüzgar ve İlaçlama Durumu
             const windBox = document.getElementById('mWindWarning');
             if (windVal >= 15) {
                 windBox.className = "wind-warning-box unsafe";
-                windBox.innerHTML = `⚠️ <strong>İLAÇLAMA RİSKLİ:</strong> Anlık rüzgar hızı (${windVal} km/s) yüksek. İlaç damlacıklarının sürüklenme riski bulunmaktadır. Ayrıca Cuma günü yüksek ihtimalli yağış beklendiğinden ilaçlama zamanlaması dikkatle yapılmalıdır.`;
+                windBox.innerHTML = `⚠️ <strong>İLAÇLAMA RİSKLİ:</strong> Anlık rüzgar hızı (${windVal} km/s) yüksek. İlaç damlacıklarının sürüklenme riski bulunmaktadır.`;
             } else {
                 windBox.className = "wind-warning-box safe";
-                windBox.innerHTML = `✅ <strong>İLAÇLAMA ŞARTLARI UYGUN:</strong> Rüzgar hızı (${windVal} km/s) zirai mücadele sınırları dâhilindedir. Cuma günkü yağış öncesinde ilaçlamanın tamamlanması önerilir.`;
+                windBox.innerHTML = `✅ <strong>İLAÇLAMA ŞARTLARI UYGUN:</strong> Rüzgar hızı (${windVal} km/s) zirai mücadele sınırları dâhilindedir.`;
             }
 
             // Risk Rozeti
@@ -324,6 +359,72 @@
             else if(riskLevel.includes("ORTA")) riskBadge.className = "status-badge warning";
             else riskBadge.className = "status-badge normal";
 
+            // GERÇEKÇİ DİNAMİK ANİMASYON MOTORU
+            const hour = new Date().getHours();
+            const isDay = (hour >= 6 && hour < 19);
+            const banner = document.getElementById('modalBanner');
+            const skyAnim = document.getElementById('skyAnimation');
+            
+            let htmlContent = "";
+
+            // 1. Yağış & Fırtına Kontrolü
+            if (conditionType === 'snow') {
+                banner.className = "weather-banner snowy";
+                for (let i = 0; i < 30; i++) {
+                    let left = Math.random() * 100;
+                    let duration = 2 + Math.random() * 3;
+                    let delay = Math.random() * 2;
+                    let size = 10 + Math.random() * 12;
+                    htmlContent += `<div class="snowflake" style="left:${left}%; font-size:${size}px; animation-duration:${duration}s; animation-delay:${delay}s;">❄</div>`;
+                }
+            } else if (rainPercent >= 75) {
+                // Şiddetli Yağmur & Şimşek
+                banner.className = "weather-banner stormy";
+                htmlContent += `<div class="lightning-flash"></div>`;
+                for (let i = 0; i < 40; i++) {
+                    let left = Math.random() * 100;
+                    let duration = 0.5 + Math.random() * 0.4;
+                    let delay = Math.random() * 2;
+                    htmlContent += `<div class="rain-drop" style="left:${left}%; animation-duration:${duration}s; animation-delay:${delay}s; height: 22px;"></div>`;
+                }
+            } else if (rainPercent >= 30 || conditionType === 'rain') {
+                // Normal Yağmur
+                banner.className = "weather-banner rainy";
+                for (let i = 0; i < 25; i++) {
+                    let left = Math.random() * 100;
+                    let duration = 0.8 + Math.random() * 0.5;
+                    let delay = Math.random() * 2;
+                    htmlContent += `<div class="rain-drop" style="left:${left}%; animation-duration:${duration}s; animation-delay:${delay}s;"></div>`;
+                }
+            } else {
+                // Açık / Parçalı Hava
+                if (isDay) {
+                    banner.className = "weather-banner day-clear";
+                    htmlContent += `<div class="sun-wrapper"><div class="sun"></div></div>`;
+                } else {
+                    banner.className = "weather-banner night-clear";
+                    htmlContent += `<div class="moon-wrapper"><div class="moon"></div></div>`;
+                    for (let i = 0; i < 12; i++) {
+                        let top = Math.random() * 100;
+                        let left = Math.random() * 100;
+                        let delay = Math.random() * 2;
+                        htmlContent += `<div class="star" style="top:${top}px; left:${left}%; width:3px; height:3px; animation-delay:${delay}s;"></div>`;
+                    }
+                }
+            }
+
+            // 2. Rüzgar Katmanı (Eğer Rüzgar Hızı ≥ 15 km/s ise)
+            if (windVal >= 15) {
+                for (let i = 0; i < 5; i++) {
+                    let top = 20 + Math.random() * 100;
+                    let width = 60 + Math.random() * 100;
+                    let duration = 1 + Math.random() * 1.5;
+                    let delay = Math.random() * 2;
+                    htmlContent += `<div class="wind-streak" style="top:${top}px; width:${width}px; animation-duration:${duration}s; animation-delay:${delay}s;"></div>`;
+                }
+            }
+
+            skyAnim.innerHTML = htmlContent;
             document.getElementById('modalOverlay').style.display = 'flex';
         }
 
@@ -345,6 +446,13 @@
                 var matchesRisk = (riskVal === 'all') || (risk === riskVal);
 
                 card.style.display = (matchesSearch && matchesRisk) ? 'block' : 'none';
+            }
+        }
+
+        window.onclick = function(event) {
+            var modal = document.getElementById('modalOverlay');
+            if (event.target == modal) {
+                closeModal();
             }
         }
     </script>
