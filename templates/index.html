@@ -3,167 +3,331 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bursa Tarımsal Erken Uyarı ve Takip Sistemi</title>
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <title>Bursa Tarımsal Erken Uyarı ve İlçe Takip Sistemi</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; color: #333; }
-        
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; color: #333; }
+
         /* Üst Başlık Barı */
-        header { background-color: #1b5e20; color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        header h1 { font-size: 20px; font-weight: 600; }
-        header .badge { background-color: #4caf50; padding: 5px 12px; border-radius: 15px; font-size: 12px; font-weight: bold; }
+        header { background-color: #1b5e20; color: white; padding: 18px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+        header h1 { font-size: 22px; font-weight: 600; }
+        header .badge { background-color: #4caf50; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; }
 
-        /* Ana Düzen (Yan Yana Çift Panel) */
-        .container { display: flex; height: calc(100vh - 60px); }
+        /* Ana Sayfa Düzeni */
+        .layout { display: flex; max-width: 1400px; margin: 25px auto; padding: 0 20px; gap: 25px; }
 
-        /* Sol Kontrol Paneli */
-        .sidebar { width: 380px; background: white; padding: 20px; overflow-y: auto; border-right: 1px solid #e0e0e0; box-shadow: 2px 0 5px rgba(0,0,0,0.05); }
-        .section-title { font-size: 14px; text-transform: uppercase; color: #666; font-weight: bold; margin-bottom: 10px; margin-top: 15px; }
+        /* Sol Yan Panel (Filtre ve Genel Durum) */
+        .sidebar { width: 320px; flex-shrink: 0; }
+        .side-card { background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+        .side-card h3 { font-size: 16px; color: #1b5e20; margin-bottom: 12px; border-bottom: 2px solid #e8f5e9; padding-bottom: 6px; }
         
-        /* Form Elemanları */
-        select, input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; margin-bottom: 12px; }
+        select, input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; margin-bottom: 12px; outline: none; }
+        
+        .alert-item { background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 10px 12px; border-radius: 4px; margin-bottom: 10px; font-size: 13px; }
+        .alert-item.danger { background-color: #f8d7da; border-left-color: #dc3545; color: #721c24; }
 
-        /* Erken Uyarı Kartı */
-        .alert-card { background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 12px; border-radius: 4px; margin-bottom: 15px; }
-        .alert-card.danger { background-color: #f8d7da; border-left-color: #dc3545; }
-        .alert-card h4 { font-size: 14px; color: #856404; margin-bottom: 5px; }
-        .alert-card.danger h4 { color: #721c24; }
-        .alert-card p { font-size: 12px; color: #555; }
+        /* Sağ İçerik Alanı (17 İlçe Izgarası) */
+        .content { flex: 1; }
+        .content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .content-header h2 { font-size: 20px; color: #2c3e50; }
 
-        /* İstatistik Kutuları */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .stat-box { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 6px; padding: 10px; text-align: center; }
-        .stat-box .val { font-size: 18px; font-weight: bold; color: #2e7d32; }
-        .stat-box .lbl { font-size: 11px; color: #777; }
+        /* İlçe Kartları Grid (Izgara) */
+        .district-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+        
+        .district-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border: 1px solid #e0e0e0; transition: transform 0.2s, box-shadow 0.2s; }
+        .district-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #f0f0f0; padding-bottom: 8px; }
+        .card-header h3 { font-size: 17px; color: #1b5e20; }
+        
+        .status-badge { font-size: 11px; padding: 4px 8px; border-radius: 12px; font-weight: bold; }
+        .status-badge.normal { background-color: #e8f5e9; color: #2e7d32; }
+        .status-badge.warning { background-color: #fff3cd; color: #856404; }
+        .status-badge.danger { background-color: #f8d7da; color: #721c24; }
 
-        /* Sağ Harita Alanı */
-        .map-container { flex: 1; position: relative; }
-        #map { height: 100%; width: 100%; }
+        .info-row { display: flex; justify-content: space-between; font-size: 13px; color: #666; margin-bottom: 6px; }
+        .info-row span.val { font-weight: bold; color: #333; }
+
+        .card-btn { display: block; width: 100%; text-align: center; padding: 8px; margin-top: 12px; background-color: #f0f4f8; color: #1b5e20; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; text-decoration: none; font-size: 13px; }
+        .card-btn:hover { background-color: #e2eaf1; }
+
+        @media (max-width: 900px) {
+            .layout { flex-direction: column; }
+            .sidebar { width: 100%; }
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Bursa Tarımsal Erken Uyarı & Analiz Sistemi</h1>
-        <span class="badge">Sistem Aktif</span>
+        <h1>Bursa Tarımsal Erken Uyarı & İlçe Takip Sistemi</h1>
+        <span class="badge">17 İlçe Aktif İzleniyor</span>
     </header>
 
-    <div class="container">
-        <!-- SOL PANEL: İŞLEMLER VE ANALİZLER -->
+    <div class="layout">
+        <!-- SOL YAN PANEL -->
         <div class="sidebar">
-            <div class="section-title">İlçe / Bölge Seçimi</div>
-            <select id="ilceSelect" onchange="ilceDegisti()">
-                <option value="tum">Tüm Bursa Geneli</option>
-                <option value="gemlik">Gemlik</option>
-                <option value="iznik">İznik</option>
-                <option value="mustafakemalpasa">Mustafakemalpaşa</option>
-                <option value="inegol">İnegöl</option>
-                <option value="nilufer">Nilüfer</option>
-            </select>
-
-            <div class="section-title">Ürün Grubu</div>
-            <select id="urunSelect">
-                <option>Zeytin</option>
-                <option>Şeftali / Neftarin</option>
-                <option>Yaban Mersini</option>
-                <option>Çilek</option>
-                <option>Bağ / Üzüm</option>
-            </select>
-
-            <div class="section-title">Anlık Erken Uyaralar</div>
-            <div class="alert-card danger">
-                <h4>⚠️ Zeytin Sinek Riski (Yüksek)</h4>
-                <p>Gemlik ve İznik havzasında nem %78. İlaçlama zamanı yaklaşıyor.</p>
-            </div>
-            <div class="alert-card">
-                <h4>⚡ Don Riski Uyarısı</h4>
-                <p>İnegöl çevresinde gece sıcaklıklarının 2°C'ye düşmesi bekleniyor.</p>
+            <div class="side-card">
+                <h3>🔍 İlçe Arama / Filtreleme</h3>
+                <input type="text" id="searchInput" onkeyup="filterDistricts()" placeholder="İlçe adı yazın...">
+                
+                <label style="font-size: 12px; color: #666;">Risk Durumuna Göre Filtrele:</label>
+                <select id="riskFilter" onchange="filterDistricts()">
+                    <option value="all">Tüm Risk Seviyeleri</option>
+                    <option value="danger">Yüksek Riskli İlçeler</option>
+                    <option value="warning">Orta Riskli İlçeler</option>
+                    <option value="normal">Normal / Düşük Riskli</option>
+                </select>
             </div>
 
-            <div class="section-title">Bölgesel İklim Özeti</div>
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <div class="val">24°C</div>
-                    <div class="lbl">Ort. Sıcaklık</div>
+            <div class="side-card">
+                <h3>⚠️ Genel Erken Uyarılar</h3>
+                <div class="alert-item danger">
+                    <strong>Gemlik & İznik:</strong> Zeytin sineği popülasyon artışı tespit edildi. İlaçlama uyarısı!
                 </div>
-                <div class="stat-box">
-                    <div class="val">%65</div>
-                    <div class="lbl">Ort. Nem</div>
-                </div>
-                <div class="stat-box">
-                    <div class="val">12 km/s</div>
-                    <div class="lbl">Rüzgar Hızı</div>
-                </div>
-                <div class="stat-box">
-                    <div class="val">0 mm</div>
-                    <div class="lbl">Yağış Miktarı</div>
+                <div class="alert-item">
+                    <strong>İnegöl:</strong> Gece sıcaklığı düşüşü nedeniyle hafif don riski.
                 </div>
             </div>
-
-            <button style="width:100%; padding:12px; background:#1b5e20; color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">
-                📊 Detaylı Rapor İndir (PDF)
-            </button>
         </div>
 
-        <!-- SAĞ PANEL: HARİTA -->
-        <div class="map-container">
-            <div id="map"></div>
+        <!-- SAĞ İÇERİK ALANI (17 İLÇE KARTLARI) -->
+        <div class="content">
+            <div class="content-header">
+                <h2>Bursa İlçeleri Genel Durumu</h2>
+            </div>
+
+            <div class="district-grid" id="districtGrid">
+
+                <!-- 1. Osmangazi -->
+                <div class="district-card" data-name="osmangazi" data-risk="normal">
+                    <div class="card-header">
+                        <h3>Osmangazi</h3>
+                        <span class="status-badge normal">Normal</span>
+                    </div>
+                    <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">24°C / %58</span></div>
+                    <div class="info-row"><span>Ana Ürünler:</span><span class="val">Şeftali, Siyah İncir</span></div>
+                    <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
+                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                </div>
+
+                <!-- 2. Yıldırım -->
+                <div class="district-card" data-name="yıldırım yildirim" data-risk="normal">
+                    <div class="card-header">
+                        <h3>Yıldırım</h3>
+                        <span class="status-badge normal">Normal</span>
+                    </div>
+                    <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">25°C / %55</span></div>
+                    <div class="info-row"><span>Ana Ürünler:</span><span class="val">Şeftali, Sebze</span></div>
+                    <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
+                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                </div>
+
+                <!-- 3. Nilüfer -->
+                <div class="district-card" data-name="nilüfer nilufer" data-risk="normal">
+                    <div class="card-header">
+                        <h3>Nilüfer</h3>
+                        <span class="status-badge normal">Normal</span>
+                    </div>
+                    <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">23°C / %62</span></div>
+                    <div class="info-row"><span>Ana Ürünler:</span><span class="val">Zeytin, Bağcılık</span></div>
+                    <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
+                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                </div>
+
+                <!-- 4. Gemlik -->
+                <div class="district-card" data-name="gemlik" data-risk="danger">
+                    <div class="card-header">
+                        <h3>Gemlik</h3>
+                        <span class="status-badge danger">Yüksek Risk</span>
+                    </div>
+                    <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">26°C / %78</span></div>
+                    <div class="info-row"><span>Ana Ürünler:</span><span class="val">Sofralık Zeytin</span></div>
+                    <div class="info-row"><span>Zararlı Riski:</span><span class="val">Zeytin Sineği</span></div>
+                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                </div>
+
+                <!-- 5. İznik -->
+                <div class="district-card" data-name="iznik" data-risk="danger">
+                    <div class="card-header">
+                        <h3>İznik</h3>
+                        <span class="status-badge danger">Yüksek Risk</span>
+                    </div>
+                    <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">25°C / %75</span></div>
+                    <div class="info-row"><span>Ana Ürünler:</span><span class="val">Zeytin, Meyve, Bağ</span></div>
+                    <div class="info-row"><span>Zararlı Riski:</span><span class="val">Zeytin Sineği, Mildiyö</span></div>
+                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                </div>
+
+                <!-- 6. Mudanya -->
+                <div class="district-card" data-name="mudanya" data-risk="warning">
+                    <div class="card-header">
+                        <h3>Mudanya</h3>
+                        <span class="status-badge warning">Orta Risk</span>
+                    </div>
+                    <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">24°C / %70</span></div>
+                    <div class="info-row"><span>Ana Ürünler:</span><span class="val">Zeytin, İncir</span></div>
+                    <div class="info-row"><span>Zararlı Riski:</span><span class="val">Nem Takibi Gerekiyor</span></div>
+                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                </div>
+
+                <!-- 7. Mustafakemalpaşa -->
+                <div class="district-card" data-name="mustafakemalpaşa mustafakemalpasa" data-risk="normal">
+                    <div class="card-header">
+                        <h3>Mustafakemalpaşa</h3>
+                        <span class="status-badge normal">Normal</span>
+                    </div>
+                    <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">22°C / %60</span></div>
+                    <div class="info-row"><span>Ana Ürünler:</span><span class="val">Mısır, Domates, Biber</span></div>
+                    <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
+                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                </div>
+
+                <!-- 8. Karacabey -->
+                <div class="district-card" data-name="karacabey" data-risk="normal">
+                    <div class="card-header">
+                        <h3>Karacabey</h3>
+                        <span class="status-badge normal">Normal</span>
+                    </div>
+                    <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">23°C / %64</span></div>
+                    <div class="info-row"><span>Ana Ürünler:</span><span class="val">Domates, Soğan, Çeltik</span></div>
+                    <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
+                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                </div>
+
+                <!-- 9. İnegöl -->
+                <div class="district-card" data-name="inegöl inegol" data-risk="warning">
+                    <div class="card-header">
+                        <h3>İnegöl</h3>
+                        <span class="status-badge warning">Orta Risk</span>
+                    </div>
+                    <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">19°C / %52</span></div>
+                    <div class="info-row"><span>Ana Ürünler:</span><span class="val">Meyvecilik, Ayçiçeği</span></div>
+                    <div class="info-row"><span>Zararlı Riski:</span><span class="val">Gece Erken Don</span></div>
+                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                </div>
+
+                <!-- 10. Yenişehir -->
+                <div class="district-card" data-name="yenişehir yenisehir" data-risk="normal">
+                    <div class="card-header">
+                        <h3>Yenişehir</h3>
+                        <span class="status-badge normal">Normal</span>
+                    </div>
+                    <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">21°C / %58</span></div>
+                    <div class="info-row"><span>Ana Ürünler:</span><span class="val">Biber, Domates, Tahıl</span></div>
+                    <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
+                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                </div>
+
+                <!-- 11. Orhangazi -->
+                <div class="district-card" data-name="orhangazi" data-risk="warning">
+                    <div class="card-header">
+                        <h3>Orhangazi</h3>
+                        <span class="status-badge warning">Orta Risk</span>
+                    </div>
+                    <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">25°C / %72</span></div>
+                    <div class="info-row"><span>Ana Ürünler:</span><span class="val">Zeytin, Turşu Kivi</span></div>
+                    <div class="info-row"><span>Zararlı Riski:</span><span class="val">Mantari Hastalıklar</span></div>
+                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                </div>
+
+                <!-- 12. Gürsu -->
+                <div class="district-card" data-name="gürsu gursu" data-risk="normal">
+                    <div class="card-header">
+                        <h3>Gürsu</h3>
+                        <span class="status-badge normal">Normal</span>
+                    </div>
+                    <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">24°C / %56</span></div>
+                    <div class="info-row"><span>Ana Ürünler:</span><span class="val">Deveci Armudu, Şeftali</span></div>
+                    <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
+                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                </div>
+
+                <!-- 13. Kestel -->
+                <div class="district-card" data-name="kestel" data-risk="normal">
+                    <div class="card-header">
+                        <h3>Kestel</h3>
+                        <span class="status-badge normal">Normal</span>
+                    </div>
+                    <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">22°C / %60</span></div>
+                    <div class="info-row"><span>Ana Ürünler:</span><span class="val">Şeftali, Böğürtlen, Çilek</span></div>
+                    <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
+                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                </div>
+
+                <!-- 14. Orhaneli -->
+                <div class="district-card" data-name="orhaneli" data-risk="normal">
+                    <div class="card-header">
+                        <h3>Orhaneli</h3>
+                        <span class="status-badge normal">Normal</span>
+                    </div>
+                    <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">18°C / %50</span></div>
+                    <div class="info-row"><span>Ana Ürünler:</span><span class="val">Çilek, Yaban Mersini, Hayvancılık</span></div>
+                    <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
+                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                </div>
+
+                <!-- 15. Büyükorhan -->
+                <div class="district-card" data-name="büyükorhan buyukorhan" data-risk="normal">
+                    <div class="card-header">
+                        <h3>Büyükorhan</h3>
+                        <span class="status-badge normal">Normal</span>
+                    </div>
+                    <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">17°C / %48</span></div>
+                    <div class="info-row"><span>Ana Ürünler:</span><span class="val">Görecik Çileği, Tahıl</span></div>
+                    <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
+                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                </div>
+
+                <!-- 16. Harmancık -->
+                <div class="district-card" data-name="harmancık harmancik" data-risk="normal">
+                    <div class="card-header">
+                        <h3>Harmancık</h3>
+                        <span class="status-badge normal">Normal</span>
+                    </div>
+                    <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">18°C / %45</span></div>
+                    <div class="info-row"><span>Ana Ürünler:</span><span class="val">Ceviz, Çilek, Tahıl</span></div>
+                    <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
+                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                </div>
+
+                <!-- 17. Keles -->
+                <div class="district-card" data-name="keles" data-risk="normal">
+                    <div class="card-header">
+                        <h3>Keles</h3>
+                        <span class="status-badge normal">Normal</span>
+                    </div>
+                    <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">17°C / %50</span></div>
+                    <div class="info-row"><span>Ana Ürünler:</span><span class="val">Çilek, Vişne, Yaban Mersini</span></div>
+                    <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
+                    <button class="card-btn">İlçe Detayı & Analiz</button>
+                </div>
+
+            </div>
         </div>
     </div>
 
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Filtreleme Scripti -->
     <script>
-        // 1. Haritayı başlat
-        var map = L.map('map').setView([40.1885, 29.0610], 9);
+        function filterDistricts() {
+            var searchVal = document.getElementById('searchInput').value.toLowerCase();
+            var riskVal = document.getElementById('riskFilter').value;
+            var cards = document.getElementsByClassName('district-card');
 
-        // 2. Taban harita
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap'
-        }).addTo(map);
+            for (var i = 0; i < cards.length; i++) {
+                var card = cards[i];
+                var name = card.getAttribute('data-name');
+                var risk = card.getAttribute('data-risk');
 
-        // 3. Tarımsal Gözlem İstasyonları (Örnek Marker'lar)
-        var istasyonlar = [
-            { id: "gemlik", name: "Gemlik Zeytin Araştırma İstasyonu", lat: 40.4312, lng: 29.1565, durum: "Zeytin Sineği Riski Yüksek" },
-            { id: "iznik", name: "İznik Meteoroloji ve Tarım İstasyonu", lat: 40.4286, lng: 29.7215, durum: "Hastalık Riski Normal" },
-            { id: "mustafakemalpasa", name: "Mustafakemalpaşa Ovaazatlı Tesis İstasyonu", lat: 39.9980, lng: 28.4060, durum: "Sulama İhtiyacı Yüksek" },
-            { id: "inegol", name: "İnegöl Meyvecilik İstasyonu", lat: 40.0783, lng: 29.5133, durum: "Erken Don Riski" }
-        ];
+                var matchesSearch = name.includes(searchVal);
+                var matchesRisk = (riskVal === 'all') || (risk === riskVal);
 
-        var markerGroup = L.layerGroup().addTo(map);
-
-        function istasyonlariYukle() {
-            markerGroup.clearLayers();
-            istasyonlar.forEach(function(item) {
-                var marker = L.marker([item.lat, item.lng])
-                    .bindPopup("<b>" + item.name + "</b><br>Durum: " + item.durum);
-                markerGroup.addLayer(marker);
-            });
-        }
-        istasyonlariYukle();
-
-        // 4. Bursa İl ve İlçe Sınırlarını Yükle
-        fetch('https://raw.githubusercontent.com/cihad/turkey-geojson/master/pdf/bursa.json')
-            .then(res => res.json())
-            .then(data => {
-                L.geoJSON(data, {
-                    style: { color: "#2e7d32", weight: 2, fillColor: "#81c784", fillOpacity: 0.2 },
-                    onEachFeature: function(feature, layer) {
-                        layer.bindPopup("<b>İlçe: </b>" + feature.properties.name);
-                    }
-                }).addTo(map);
-            });
-
-        // 5. Sol panelden ilçe seçilince haritada o bölgeye odaklanma
-        function ilceDegisti() {
-            var val = document.getElementById("ilceSelect").value;
-            if(val === "gemlik") map.setView([40.4312, 29.1565], 11);
-            else if(val === "iznik") map.setView([40.4286, 29.7215], 11);
-            else if(val === "mustafakemalpasa") map.setView([39.9980, 28.4060], 11);
-            else if(val === "inegol") map.setView([40.0783, 29.5133], 11);
-            else map.setView([40.1885, 29.0610], 9);
+                if (matchesSearch && matchesRisk) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            }
         }
     </script>
 </body>
