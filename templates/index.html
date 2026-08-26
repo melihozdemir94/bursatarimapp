@@ -49,7 +49,7 @@
 
         /* POP-UP (MODAL) STİLLERİ */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-container { background: white; width: 90%; max-width: 650px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: modalAnim 0.3s ease-out; position: relative; max-height: 90vh; overflow-y: auto; }
+        .modal-container { background: white; width: 92%; max-width: 720px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: modalAnim 0.3s ease-out; position: relative; max-height: 90vh; overflow-y: auto; }
         
         @keyframes modalAnim {
             from { transform: translateY(-30px); opacity: 0; }
@@ -59,26 +59,24 @@
         .modal-close { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.8); border: none; font-size: 20px; font-weight: bold; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; z-index: 10; color: #333; }
         .modal-close:hover { background: white; }
 
-        .weather-banner { position: relative; height: 180px; padding: 20px; color: white; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; }
+        .weather-banner { position: relative; height: 160px; padding: 20px; color: white; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; }
         
         .weather-banner.day { background: linear-gradient(to bottom, #2980b9, #6dd5fa, #ffffff); }
-        .weather-banner.day .sun { position: absolute; top: 20px; right: 40px; width: 60px; height: 60px; background: #f1c40f; border-radius: 50%; box-shadow: 0 0 40px #f39c12; animation: pulse 3s infinite alternate; }
-        .weather-banner.day .cloud { position: absolute; top: 40px; right: 90px; width: 100px; height: 35px; background: rgba(255,255,255,0.8); border-radius: 20px; animation: floatCloud 8s linear infinite alternate; }
+        .weather-banner.day .sun { position: absolute; top: 20px; right: 40px; width: 50px; height: 50px; background: #f1c40f; border-radius: 50%; box-shadow: 0 0 30px #f39c12; animation: pulse 3s infinite alternate; }
+        .weather-banner.day .cloud { position: absolute; top: 35px; right: 80px; width: 90px; height: 30px; background: rgba(255,255,255,0.8); border-radius: 20px; animation: floatCloud 8s linear infinite alternate; }
 
         .weather-banner.night { background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364); }
-        .weather-banner.night .moon { position: absolute; top: 25px; right: 40px; width: 50px; height: 50px; background: #f5f6fa; border-radius: 50%; box-shadow: 0 0 20px #dcdde1; }
-        .weather-banner.night .star { position: absolute; background: white; border-radius: 50%; animation: blink 2s infinite alternate; }
+        .weather-banner.night .moon { position: absolute; top: 20px; right: 40px; width: 45px; height: 45px; background: #f5f6fa; border-radius: 50%; box-shadow: 0 0 15px #dcdde1; }
 
         @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.1); } }
-        @keyframes floatCloud { from { transform: translateX(0); } to { transform: translateX(-30px); } }
-        @keyframes blink { from { opacity: 0.3; } to { opacity: 1; } }
+        @keyframes floatCloud { from { transform: translateX(0); } to { transform: translateX(-25px); } }
 
-        .banner-info h2 { font-size: 26px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-        .banner-info p { font-size: 14px; opacity: 0.9; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+        .banner-info h2 { font-size: 24px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .banner-info p { font-size: 13px; opacity: 0.9; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
 
         .modal-body { padding: 20px; }
-        .modal-section { margin-bottom: 18px; }
-        .modal-section h4 { font-size: 15px; color: #1b5e20; margin-bottom: 8px; border-bottom: 2px solid #e8f5e9; padding-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+        .modal-section { margin-bottom: 20px; }
+        .modal-section h4 { font-size: 15px; color: #1b5e20; margin-bottom: 10px; border-bottom: 2px solid #e8f5e9; padding-bottom: 4px; display: flex; align-items: center; gap: 8px; }
         .modal-section p, .modal-section ul { font-size: 13.5px; color: #444; line-height: 1.5; }
         .modal-section ul { padding-left: 20px; }
         .modal-section ul li { margin-bottom: 5px; }
@@ -86,6 +84,20 @@
         .wind-warning-box { padding: 10px 14px; border-radius: 6px; font-size: 13px; font-weight: 500; margin-top: 6px; }
         .wind-warning-box.safe { background-color: #e8f5e9; color: #1b5e20; border: 1px solid #c8e6c9; }
         .wind-warning-box.unsafe { background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+
+        /* SAATLİK VE 4 GÜNLÜK HAVA TAHMİNİ TABLOLARI */
+        .hourly-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; margin-top: 8px; }
+        .hourly-card { min-width: 95px; background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 8px; text-align: center; flex-shrink: 0; }
+        .hourly-card .time { font-size: 12px; font-weight: bold; color: #2c3e50; margin-bottom: 4px; }
+        .hourly-card .temp { font-size: 15px; font-weight: bold; color: #1b5e20; margin: 2px 0; }
+        .hourly-card .rain { font-size: 11px; color: #0288d1; font-weight: 600; }
+        .hourly-card .wind { font-size: 11px; color: #555; }
+
+        .forecast-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 8px; }
+        .forecast-card { background: #e8f5e9; border: 1px solid #c8e6c9; border-radius: 8px; padding: 10px; text-align: center; }
+        .forecast-card .day { font-size: 13px; font-weight: bold; color: #1b5e20; margin-bottom: 4px; }
+        .forecast-card .temp { font-size: 14px; font-weight: bold; color: #333; }
+        .forecast-card .details { font-size: 11.5px; color: #444; margin-top: 4px; line-height: 1.3; }
 
         @media (max-width: 900px) {
             .layout { flex-direction: column; }
@@ -148,7 +160,7 @@
                     <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">8 km/s</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Şeftali, Siyah İncir</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn" onclick="openModal('Osmangazi', '24°C', '%58', '8 km/s', 'Açık / Nem Dengeli', 'Şeftali, Siyah İncir', 'Şeftali Güvesi & Monilya Takibi', 'Normal / Düşük', ['Bahçelerde rutin havalandırma ve sulama takibi yapılmalı.', 'Meyve dökümlerine karşı ağaç altı temizliği sürdürülmeli.'])">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Osmangazi', '24°C', '%58', '8 km/s', 'Açık / Nem Dengeli', 'Şeftali, Siyah İncir', 'Şeftali Güvesi & Monilya Takibi', 'Normal / Düşük', ['Bahçelerde rutin havalandırma ve sulama takibi yapılmalı.', 'Meyve dökümlerine karşı ağaç altı temizliği sürdürülmeli.'], hourlyDataOsmangazi, forecastDataOsmangazi)">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 2. Yıldırım -->
@@ -161,7 +173,7 @@
                     <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">9 km/s</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Şeftali, Sebze</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn" onclick="openModal('Yıldırım', '25°C', '%55', '9 km/s', 'Güneşli', 'Şeftali, Örtüaltı Sebzeleri', 'Yaprak Biti (Aphididae)', 'Normal', ['Sebze seralarında havalandırma saatleri düzenlenmeli.', 'Damlama sulama sistemlerinde filtre temizliği yapılmalı.'])">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Yıldırım', '25°C', '%55', '9 km/s', 'Güneşli', 'Şeftali, Örtüaltı Sebzeleri', 'Yaprak Biti (Aphididae)', 'Normal', ['Sebze seralarında havalandırma saatleri düzenlenmeli.', 'Damlama sulama sistemlerinde filtre temizliği yapılmalı.'], hourlyDataGeneric('25°C', '8 km/s', '%10'), forecastDataGeneric('26°C', '18°C'))">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 3. Nilüfer -->
@@ -174,7 +186,7 @@
                     <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">11 km/s</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Zeytin, Bağcılık</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn" onclick="openModal('Nilüfer', '23°C', '%62', '11 km/s', 'Parçalı Bulutlu', 'Zeytin, Bağ, Hububat', 'Bağ Küllemesi / Zeytin Güvesi', 'Düşük', ['Bağlarda sürgün kontrolü yapılmalı.', 'Toprak nemine göre damlama sulama programlanmalı.'])">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Nilüfer', '23°C', '%62', '11 km/s', 'Parçalı Bulutlu', 'Zeytin, Bağ, Hububat', 'Bağ Küllemesi / Zeytin Güvesi', 'Düşük', ['Bağlarda sürgün kontrolü yapılmalı.', 'Toprak nemine göre damlama sulama programlanmalı.'], hourlyDataGeneric('23°C', '11 km/s', '%15'), forecastDataGeneric('24°C', '16°C'))">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 4. Gemlik -->
@@ -187,7 +199,7 @@
                     <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">12 km/s</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Sofralık Zeytin</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Zeytin Sineği</span></div>
-                    <button class="card-btn" onclick="openModal('Gemlik', '26°C', '%78', '12 km/s', 'Yüksek Nemli & Sıcak', 'Sofralık Gemlik Zeytini', 'Zeytin Sineği (Bactrocera oleae) & Halkalı Leke', 'YÜKSEK RİSK ⚠️', ['Sarı yapışkan tuzaklar kontrol edilerek ergin yoğunluğu izlenmeli.', 'Tuzaklarda eşik aşıldıysa ruhsatlı koruyucu ilaçlama yapılmalı.', 'Yüksek nem nedeniyle mantari hastalıklara karşı bahçe içi havalandırma budaması yapılmalı.'])">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Gemlik', '26°C', '%78', '12 km/s', 'Yüksek Nemli & Sıcak', 'Sofralık Gemlik Zeytini', 'Zeytin Sineği (Bactrocera oleae) & Halkalı Leke', 'YÜKSEK RİSK ⚠️', ['Sarı yapışkan tuzaklar kontrol edilerek ergin yoğunluğu izlenmeli.', 'Tuzaklarda eşik aşıldıysa ruhsatlı koruyucu ilaçlama yapılmalı.', 'Yüksek nem nedeniyle mantari hastalıklara karşı bahçe içi havalandırma budaması yapılmalı.'], hourlyDataGemlik, forecastDataGemlik)">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 5. İznik -->
@@ -200,7 +212,7 @@
                     <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">7 km/s</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Zeytin, Meyve, Bağ</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Zeytin Sineği, Mildiyö</span></div>
-                    <button class="card-btn" onclick="openModal('İznik', '25°C', '%75', '7 km/s', 'Nemli & Ilık', 'Zeytin, Taze Meyve, Bağ', 'Zeytin Sineği & Bağ Mildiyösü', 'YÜKSEK RİSK ⚠️', ['Göl çevresindeki yüksek nem mikro-kliması nedeniyle fungisit uygulaması aksatılmamalı.', 'Erken uyarı tuzaklarındaki zararlı sayımı günlük yapılmalı.', 'Sulama işlemlerinin gece geç saatler yerine sabah erken yapılması önerilir.'])">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('İznik', '25°C', '%75', '7 km/s', 'Nemli & Ilık', 'Zeytin, Taze Meyve, Bağ', 'Zeytin Sineği & Bağ Mildiyösü', 'YÜKSEK RİSK ⚠️', ['Göl çevresindeki yüksek nem mikro-kliması nedeniyle fungisit uygulaması aksatılmamalı.', 'Erken uyarı tuzaklarındaki zararlı sayımı günlük yapılmalı.', 'Sulama işlemlerinin gece geç saatler yerine sabah erken yapılması önerilir.'], hourlyDataGeneric('25°C', '7 km/s', '%40'), forecastDataGeneric('25°C', '17°C'))">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 6. Mudanya -->
@@ -213,7 +225,7 @@
                     <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">19 km/s</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Zeytin, İncir</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Nem & Rüzgar Takibi</span></div>
-                    <button class="card-btn" onclick="openModal('Mudanya', '24°C', '%70', '19 km/s', 'Rüzgarlı & Nemli', 'Zeytin, Siyah İncir', 'Zeytin Pamuklu Biti & İncir Sineği', 'ORTA RİSK ⚡', ['Deniz etkisiyle artan neme karşı zeytin bahçelerinde sürgün kontrolleri yapılmalı.', 'Rüzgarlı havalarda pülverizatör basıncı ve damla büyüklüğü ayarlanarak sürüklenme engellenmeli.'])">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Mudanya', '24°C', '%70', '19 km/s', 'Rüzgarlı & Nemli', 'Zeytin, Siyah İncir', 'Zeytin Pamuklu Biti & İncir Sineği', 'ORTA RİSK ⚡', ['Deniz etkisiyle artan neme karşı zeytin bahçelerinde sürgün kontrolleri yapılmalı.', 'Rüzgarlı havalarda pülverizatör basıncı ve damla büyüklüğü ayarlanarak sürüklenme engellenmeli.'], hourlyDataMudanya, forecastDataMudanya)">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 7. Mustafakemalpaşa -->
@@ -226,7 +238,7 @@
                     <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">10 km/s</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Mısır, Domates, Biber</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn" onclick="openModal('Mustafakemalpaşa', '22°C', '%60', '10 km/s', 'Mevsim Normali', 'Sanayi Domatesi, Mısır, Biber', 'Yeşilkurt & Kırmızı Örümcek', 'Normal', ['Salçalık domates tarlalarında yaprak altı Kırmızı Örümcek kontrolleri sürdürülmeli.', 'Damlama sulama hatları düzenli debi kontrolünden geçirilmeli.'])">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Mustafakemalpaşa', '22°C', '%60', '10 km/s', 'Mevsim Normali', 'Sanayi Domatesi, Mısır, Biber', 'Yeşilkurt & Kırmızı Örümcek', 'Normal', ['Salçalık domates tarlalarında yaprak altı Kırmızı Örümcek kontrolleri sürdürülmeli.', 'Damlama sulama hatları düzenli debi kontrolünden geçirilmeli.'], hourlyDataGeneric('22°C', '10 km/s', '%10'), forecastDataGeneric('23°C', '14°C'))">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 8. Karacabey -->
@@ -239,7 +251,7 @@
                     <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">18 km/s</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Domates, Soğan, Çeltik</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Rüzgarlı / İlaçlama Riskli</span></div>
-                    <button class="card-btn" onclick="openModal('Karacabey', '23°C', '%64', '18 km/s', 'Rüzgarlı & Açık', 'Salçalık Domates, Soğan, Çeltik', 'Erken Yaprak Yanıklığı (Alternaria)', 'ORTA RİSK (RÜZGAR) ⚡', ['Ova genelinde yüksek rüzgar nedeniyle pülverizatörle ilaçlama akşam saatlerine ertelenmeli.', 'Çeltik tavalarında su seviyesi ve sıcaklığı dengede tutulmalı.'])">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Karacabey', '23°C', '%64', '18 km/s', 'Rüzgarlı & Açık', 'Salçalık Domates, Soğan, Çeltik', 'Erken Yaprak Yanıklığı (Alternaria)', 'ORTA RİSK (RÜZGAR) ⚡', ['Ova genelinde yüksek rüzgar nedeniyle pülverizatörle ilaçlama akşam saatlerine ertelenmeli.', 'Çeltik tavalarında su seviyesi ve sıcaklığı dengede tutulmalı.'], hourlyDataGeneric('23°C', '18 km/s', '%5'), forecastDataGeneric('24°C', '15°C'))">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 9. İnegöl -->
@@ -252,7 +264,7 @@
                     <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">6 km/s</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Meyvecilik, Ayçiçeği</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Gece Erken Don</span></div>
-                    <button class="card-btn" onclick="openModal('İnegöl', '19°C', '%52', '6 km/s', 'Serin & Gece Açık', 'Elma, Şeftali, Ayçiçeği', 'Radyasyon Donu Riski', 'ORTA RİSK (DON) ⚡', ['Gece saatlerinde düşecek sıcaklığa karşı hassas meyve bahçelerinde don perdesi veya rüzgar pervaneleri hazır tutulmalı.', 'Toprak nemi don etkisini azaltacağı için hafif sulama değerlendirilebilir.'])">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('İnegöl', '19°C', '%52', '6 km/s', 'Serin & Gece Açık', 'Elma, Şeftali, Ayçiçeği', 'Radyasyon Donu Riski', 'ORTA RİSK (DON) ⚡', ['Gece saatlerinde düşecek sıcaklığa karşı hassas meyve bahçelerinde don perdesi veya rüzgar pervaneleri hazır tutulmalı.', 'Toprak nemi don etkisini azaltacağı için hafif sulama değerlendirilebilir.'], hourlyDataGeneric('19°C', '6 km/s', '%0'), forecastDataGeneric('20°C', '11°C'))">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 10. Yenişehir -->
@@ -265,7 +277,7 @@
                     <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">13 km/s</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Biber, Domates, Tahıl</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn" onclick="openModal('Yenişehir', '21°C', '%58', '13 km/s', 'Tatlı Rüzgarlı', 'Biber, Bezelye, Tahıllar', 'Tripse & Biber Leke Virüsü', 'Normal', ['Biber tarlalarında Thrips emgi zararları kontrol edilmeli.', 'Hasat zamanı yaklaşan ürünlerde ilaç kalıntı sürelerine dikkat edilmeli.'])">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Yenişehir', '21°C', '%58', '13 km/s', 'Tatlı Rüzgarlı', 'Biber, Bezelye, Tahıllar', 'Tripse & Biber Leke Virüsü', 'Normal', ['Biber tarlalarında Thrips emgi zararları kontrol edilmeli.', 'Hasat zamanı yaklaşan ürünlerde ilaç kalıntı sürelerine dikkat edilmeli.'], hourlyDataGeneric('21°C', '13 km/s', '%15'), forecastDataGeneric('22°C', '13°C'))">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 11. Orhangazi -->
@@ -278,7 +290,7 @@
                     <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">11 km/s</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Zeytin, Turşu Kivi</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Mantari Hastalıklar</span></div>
-                    <button class="card-btn" onclick="openModal('Orhangazi', '25°C', '%72', '11 km/s', 'Nemli & Yüksek Isı', 'Sofralık Zeytin, Kivi', 'Zeytin Halkalı Leke Hastalığı', 'ORTA RİSK ⚡', ['Nem yüksekliği sebebiyle bakırlı bileşik uygulamaları takvimine uyulmalı.', 'Kivi bahçelerinde sulama düzeni gövde ıslanmayacak şekilde yapılmalı.'])">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Orhangazi', '25°C', '%72', '11 km/s', 'Nemli & Yüksek Isı', 'Sofralık Zeytin, Kivi', 'Zeytin Halkalı Leke Hastalığı', 'ORTA RİSK ⚡', ['Nem yüksekliği sebebiyle bakırlı bileşik uygulamaları takvimine uyulmalı.', 'Kivi bahçelerinde sulama düzeni gövde ıslanmayacak şekilde yapılmalı.'], hourlyDataGeneric('25°C', '11 km/s', '%30'), forecastDataGeneric('25°C', '16°C'))">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 12. Gürsu -->
@@ -291,7 +303,7 @@
                     <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">14 km/s</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Deveci Armudu, Şeftali</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn" onclick="openModal('Gürsu', '24°C', '%56', '14 km/s', 'Açık / Tatlı Sert Rüzgar', 'Deveci Armudu, Şeftali', 'Armut Psillidi (Cacopsylla pyri)', 'Normal', ['Armut bahçelerinde tatlımsı madde akıntısı ve nimf kontrolü yapılmalı.', 'Meyve büyütme döneminde gübreleme programına uyulmalı.'])">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Gürsu', '24°C', '%56', '14 km/s', 'Açık / Tatlı Sert Rüzgar', 'Deveci Armudu, Şeftali', 'Armut Psillidi (Cacopsylla pyri)', 'Normal', ['Armut bahçelerinde tatlımsı madde akıntısı ve nimf kontrolü yapılmalı.', 'Meyve büyütme döneminde gübreleme programına uyulmalı.'], hourlyDataGeneric('24°C', '14 km/s', '%10'), forecastDataGeneric('24°C', '15°C'))">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 13. Kestel -->
@@ -304,7 +316,7 @@
                     <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">9 km/s</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Şeftali, Böğürtlen, Çilek</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn" onclick="openModal('Kestel', '22°C', '%60', '9 km/s', 'Güneşli', 'Şeftali, Yayla Çileği, Böğürtlen', 'Kanadı Benekli Sirke Sineği (Drosophila suzukii)', 'Normal', ['Üzümsü meyvelerde olgunlaşma döneminde hijyenik toplayıcılık yapılmalı.', 'Çürük meyveler bahçeden uzaklaştırılmalı.'])">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Kestel', '22°C', '%60', '9 km/s', 'Güneşli', 'Şeftali, Yayla Çileği, Böğürtlen', 'Kanadı Benekli Sirke Sineği (Drosophila suzukii)', 'Normal', ['Üzümsü meyvelerde olgunlaşma döneminde hijyenik toplayıcılık yapılmalı.', 'Çürük meyveler bahçeden uzaklaştırılmalı.'], hourlyDataGeneric('22°C', '9 km/s', '%20'), forecastDataGeneric('23°C', '14°C'))">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 14. Orhaneli -->
@@ -317,7 +329,7 @@
                     <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">8 km/s</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Çilek, Yaban Mersini</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn" onclick="openModal('Orhaneli', '18°C', '%50', '8 km/s', 'Ferah & Serin', 'Dağ Çileği, Yaban Mersini, Ceviz', 'Külleme & Kök Çürüklüğü', 'Normal', ['Yaban mersini parcellerinde toprak pH seviyeleri ve asitlik kontrol edilmeli.', 'Damlama sulama aralıkları serin havaya göre uzatılmalı.'])">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Orhaneli', '18°C', '%50', '8 km/s', 'Ferah & Serin', 'Dağ Çileği, Yaban Mersini, Ceviz', 'Külleme & Kök Çürüklüğü', 'Normal', ['Yaban mersini parcellerinde toprak pH seviyeleri ve asitlik kontrol edilmeli.', 'Damlama sulama aralıkları serin havaya göre uzatılmalı.'], hourlyDataGeneric('18°C', '8 km/s', '%0'), forecastDataGeneric('19°C', '10°C'))">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 15. Büyükorhan -->
@@ -330,7 +342,7 @@
                     <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">10 km/s</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Görecik Çileği, Tahıl</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn" onclick="openModal('Büyükorhan', '17°C', '%48', '10 km/s', 'Az Bulutlu', 'Görecik Çileği, Tahıl', 'Kırmızı Örümcek', 'Normal', ['Çilek tarlalarında malçlama örtü altları kontrol edilmeli.', 'Gece serinliği nedeniyle sulamalar öğle saatlerine yakın tamamlanmalı.'])">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Büyükorhan', '17°C', '%48', '10 km/s', 'Az Bulutlu', 'Görecik Çileği, Tahıl', 'Kırmızı Örümcek', 'Normal', ['Çilek tarlalarında malçlama örtü altları kontrol edilmeli.', 'Gece serinliği nedeniyle sulamalar öğle saatlerine yakın tamamlanmalı.'], hourlyDataGeneric('17°C', '10 km/s', '%5'), forecastDataGeneric('18°C', '9°C'))">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 16. Harmancık -->
@@ -343,7 +355,7 @@
                     <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">7 km/s</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Ceviz, Çilek, Tahıl</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn" onclick="openModal('Harmancık', '18°C', '%45', '7 km/s', 'Açık & Serin', 'Ceviz, Tıbbi Aromatik Bitkiler', 'Ceviz İçi Kurdu & Antraknoz', 'Normal', ['Ceviz bahçelerinde iç kurdu tuzak sayımları yapılmalı.', 'Kuru şartlara karşı sulama desteği planlanmalı.'])">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Harmancık', '18°C', '%45', '7 km/s', 'Açık & Serin', 'Ceviz, Tıbbi Aromatik Bitkiler', 'Ceviz İçi Kurdu & Antraknoz', 'Normal', ['Ceviz bahçelerinde iç kurdu tuzak sayımları yapılmalı.', 'Kuru şartlara karşı sulama desteği planlanmalı.'], hourlyDataGeneric('18°C', '7 km/s', '%0'), forecastDataGeneric('19°C', '10°C'))">İlçe Detayı & Analiz</button>
                 </div>
 
                 <!-- 17. Keles -->
@@ -356,7 +368,7 @@
                     <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">9 km/s</span></div>
                     <div class="info-row"><span>Ana Ürünler:</span><span class="val">Çilek, Vişne, Yaban Mersini</span></div>
                     <div class="info-row"><span>Zararlı Riski:</span><span class="val">Düşük</span></div>
-                    <button class="card-btn" onclick="openModal('Keles', '17°C', '%50', '9 km/s', 'Açık / Serin Yayla İklimi', 'Keles Çileği, Vişne, Kiraz', 'Monilya & Bakteriyel Kanser', 'Normal', ['Kiraz/Vişne hasadı sonrası kuruyan dallar budanarak uzaklaştırılmalı.', 'Gelecek sezon için yaprak gübrelemesi değerlendirilmeli.'])">İlçe Detayı & Analiz</button>
+                    <button class="card-btn" onclick="openModal('Keles', '17°C', '%50', '9 km/s', 'Açık / Serin Yayla İklimi', 'Keles Çileği, Vişne, Kiraz', 'Monilya & Bakteriyel Kanser', 'Normal', ['Kiraz/Vişne hasadı sonrası kuruyan dallar budanarak uzaklaştırılmalı.', 'Gelecek sezon için yaprak gübrelemesi değerlendirilmeli.'], hourlyDataGeneric('17°C', '9 km/s', '%10'), forecastDataGeneric('18°C', '9°C'))">İlçe Detayı & Analiz</button>
                 </div>
 
             </div>
@@ -377,6 +389,7 @@
             </div>
 
             <div class="modal-body">
+                <!-- 1. RÜZGAR VE İLAÇLAMA UYARISI -->
                 <div class="modal-section">
                     <h4>💨 Rüzgar ve İlaçlama Durumu</h4>
                     <p>Anlık Rüzgar Hızı: <strong id="mWindSpeed">-</strong></p>
@@ -385,16 +398,30 @@
                     </div>
                 </div>
 
+                <!-- 2. BUGÜNÜN SAATLİK HAVA TAHMİNİ -->
                 <div class="modal-section">
-                    <h4>🌱 Öne Çıkan Ürünler</h4>
-                    <p id="mProducts">-</p>
+                    <h4>⏱️ Bugünün Saatlik Hava Tahmini</h4>
+                    <div class="hourly-scroll" id="mHourlyContainer">
+                        <!-- JS ile dolacak -->
+                    </div>
                 </div>
 
+                <!-- 3. GELECEK 4 GÜNÜN TAHMİNİ -->
                 <div class="modal-section">
-                    <h4>🦠 Hastalık ve Zararlı Riski</h4>
-                    <p><span id="mRiskBadge" class="status-badge normal">Normal</span> - <span id="mPestInfo">-</span></p>
+                    <h4>📅 Önümüzdeki 4 Günün Tahmini</h4>
+                    <div class="forecast-grid" id="mForecastContainer">
+                        <!-- JS ile dolacak -->
+                    </div>
                 </div>
 
+                <!-- 4. ÜRÜNLER & HASTALIKLAR -->
+                <div class="modal-section">
+                    <h4>🌱 Öne Çıkan Ürünler & Zararlı Riski</h4>
+                    <p><strong>Ürünler:</strong> <span id="mProducts">-</span></p>
+                    <p style="margin-top: 4px;"><strong>Zararlı / Hastalık:</strong> <span id="mRiskBadge" class="status-badge normal">Normal</span> - <span id="mPestInfo">-</span></p>
+                </div>
+
+                <!-- 5. ÖNERİLER -->
                 <div class="modal-section">
                     <h4>🛡️ Alınması Gereken Tedbirler ve Öneriler</h4>
                     <ul id="mMeasures">
@@ -405,8 +432,83 @@
         </div>
     </div>
 
-    <!-- SCRIPT KODLARI -->
+    <!-- SCRIPT KODLARI & VERİ YAPILARI -->
     <script>
+        // ÖRNEK SAATLİK VE 4 GÜNLÜK HAVA TAHMİN VERİLERİ (Özel Veriler)
+        var hourlyDataOsmangazi = [
+            { time: "06:00", temp: "18°C", rain: "%5", wind: "5 km/s" },
+            { time: "09:00", temp: "21°C", rain: "%10", wind: "7 km/s" },
+            { time: "12:00", temp: "24°C", rain: "%15", wind: "8 km/s" },
+            { time: "15:00", temp: "25°C", rain: "%10", wind: "10 km/s" },
+            { time: "18:00", temp: "22°C", rain: "%5", wind: "7 km/s" },
+            { time: "21:00", temp: "19°C", rain: "%0", wind: "4 km/s" }
+        ];
+
+        var forecastDataOsmangazi = [
+            { day: "Yarın", temp: "25°C / 16°C", rain: "%10", wind: "9 km/s" },
+            { day: "Cuma", temp: "26°C / 17°C", rain: "%20", wind: "11 km/s" },
+            { day: "Cumartesi", temp: "23°C / 15°C", rain: "%60 (Sağanak)", wind: "16 km/s" },
+            { day: "Pazar", temp: "22°C / 14°C", rain: "%15", wind: "8 km/s" }
+        ];
+
+        var hourlyDataGemlik = [
+            { time: "06:00", temp: "20°C", rain: "%20", wind: "8 km/s" },
+            { time: "09:00", temp: "23°C", rain: "%35", wind: "10 km/s" },
+            { time: "12:00", temp: "26°C", rain: "%45", wind: "12 km/s" },
+            { time: "15:00", temp: "27°C", rain: "%30", wind: "14 km/s" },
+            { time: "18:00", temp: "24°C", rain: "%20", wind: "9 km/s" },
+            { time: "21:00", temp: "21°C", rain: "%10", wind: "6 km/s" }
+        ];
+
+        var forecastDataGemlik = [
+            { day: "Yarın", temp: "27°C / 18°C", rain: "%40", wind: "13 km/s" },
+            { day: "Cuma", temp: "28°C / 19°C", rain: "%30", wind: "12 km/s" },
+            { day: "Cumartesi", temp: "24°C / 16°C", rain: "%75 (Sağanak)", wind: "18 km/s" },
+            { day: "Pazar", temp: "23°C / 15°C", rain: "%20", wind: "10 km/s" }
+        ];
+
+        var hourlyDataMudanya = [
+            { time: "06:00", temp: "19°C", rain: "%10", wind: "14 km/s" },
+            { time: "09:00", temp: "22°C", rain: "%15", wind: "17 km/s" },
+            { time: "12:00", temp: "24°C", rain: "%20", wind: "19 km/s" },
+            { time: "15:00", temp: "25°C", rain: "%15", wind: "22 km/s" },
+            { time: "18:00", temp: "22°C", rain: "%10", wind: "18 km/s" },
+            { time: "21:00", temp: "20°C", rain: "%5", wind: "12 km/s" }
+        ];
+
+        var forecastDataMudanya = [
+            { day: "Yarın", temp: "25°C / 17°C", rain: "%15", wind: "20 km/s" },
+            { day: "Cuma", temp: "26°C / 18°C", rain: "%25", wind: "18 km/s" },
+            { day: "Cumartesi", temp: "22°C / 15°C", rain: "%80 (Fırtınalı Yağış)", wind: "28 km/s" },
+            { day: "Pazar", temp: "21°C / 14°C", rain: "%20", wind: "15 km/s" }
+        ];
+
+        // DİĞER İLÇELER İÇİN OTOMATİK DİNAMİK YARDIMCI FONKSİYONLAR
+        function hourlyDataGeneric(baseTemp, baseWind, baseRain) {
+            var bTemp = parseInt(baseTemp);
+            var bWind = parseInt(baseWind);
+            return [
+                { time: "06:00", temp: (bTemp - 5) + "°C", rain: baseRain, wind: Math.max(3, bWind - 4) + " km/s" },
+                { time: "09:00", temp: (bTemp - 2) + "°C", rain: baseRain, wind: (bWind - 2) + " km/s" },
+                { time: "12:00", temp: bTemp + "°C", rain: baseRain, wind: bWind + " km/s" },
+                { time: "15:00", temp: (bTemp + 1) + "°C", rain: baseRain, wind: (bWind + 2) + " km/s" },
+                { time: "18:00", temp: (bTemp - 2) + "°C", rain: "%5", wind: (bWind - 1) + " km/s" },
+                { time: "21:00", temp: (bTemp - 4) + "°C", rain: "%0", wind: Math.max(2, bWind - 5) + " km/s" }
+            ];
+        }
+
+        function forecastDataGeneric(maxTemp, minTemp) {
+            var maxT = parseInt(maxTemp);
+            var minT = parseInt(minTemp);
+            return [
+                { day: "Yarın", temp: maxT + "°C / " + minT + "°C", rain: "%15", wind: "10 km/s" },
+                { day: "Cuma", temp: (maxT + 1) + "°C / " + (minT + 1) + "°C", rain: "%20", wind: "12 km/s" },
+                { day: "Cumartesi", temp: (maxT - 3) + "°C / " + (minT - 2) + "°C", rain: "%65 (Yağmurlu)", wind: "18 km/s" },
+                { day: "Pazar", temp: (maxT - 2) + "°C / " + (minT - 2) + "°C", rain: "%10", wind: "9 km/s" }
+            ];
+        }
+
+        // FİLTRELEME FONKSİYONU
         function filterDistricts() {
             var searchVal = document.getElementById('searchInput').value.toLowerCase();
             var riskVal = document.getElementById('riskFilter').value;
@@ -428,7 +530,8 @@
             }
         }
 
-        function openModal(district, temp, humidity, windSpeed, weatherText, products, pest, riskLevel, measures) {
+        // POP-UP AÇMA FONKSİYONU
+        function openModal(district, temp, humidity, windSpeed, weatherText, products, pest, riskLevel, measures, hourlyList, forecastList) {
             document.getElementById('mDistrict').innerText = district + " İlçesi Detaylı Analizi";
             document.getElementById('mWeatherSummary').innerText = "Sıcaklık: " + temp + " | Nem: " + humidity + " (" + weatherText + ")";
             document.getElementById('mWindSpeed').innerText = windSpeed;
@@ -445,13 +548,44 @@
                 windBox.className = "wind-warning-box safe";
                 windBox.innerHTML = "✅ <strong>İLAÇLAMA ŞARTLARI UYGUN:</strong> Rüzgar hızı (" + windSpeed + ") standart ilaçlama sınırları dahilindedir.";
             }
+
+            // Saatlik Hava Durumunu Doldur
+            var hourlyContainer = document.getElementById('mHourlyContainer');
+            hourlyContainer.innerHTML = "";
+            if (hourlyList && hourlyList.length > 0) {
+                hourlyList.forEach(function(item) {
+                    var card = document.createElement('div');
+                    card.className = 'hourly-card';
+                    card.innerHTML = '<div class="time">' + item.time + '</div>' +
+                                     '<div class="temp">' + item.temp + '</div>' +
+                                     '<div class="rain">💧 ' + item.rain + '</div>' +
+                                     '<div class="wind">💨 ' + item.wind + '</div>';
+                    hourlyContainer.appendChild(card);
+                });
+            }
+
+            // 4 Günlük Tahmini Doldur
+            var forecastContainer = document.getElementById('mForecastContainer');
+            forecastContainer.innerHTML = "";
+            if (forecastList && forecastList.length > 0) {
+                forecastList.forEach(function(item) {
+                    var card = document.createElement('div');
+                    card.className = 'forecast-card';
+                    card.innerHTML = '<div class="day">' + item.day + '</div>' +
+                                     '<div class="temp">' + item.temp + '</div>' +
+                                     '<div class="details">💧 Yağış: <strong>' + item.rain + '</strong><br>💨 Rüzgar: <strong>' + item.wind + '</strong></div>';
+                    forecastContainer.appendChild(card);
+                });
+            }
             
+            // Risk Rozeti
             var riskBadge = document.getElementById('mRiskBadge');
             riskBadge.innerText = riskLevel;
             if(riskLevel.includes("YÜKSEK")) riskBadge.className = "status-badge danger";
             else if(riskLevel.includes("ORTA")) riskBadge.className = "status-badge warning";
             else riskBadge.className = "status-badge normal";
 
+            // Tedbir Listesi
             var measuresList = document.getElementById('mMeasures');
             measuresList.innerHTML = "";
             measures.forEach(function(item) {
@@ -460,7 +594,7 @@
                 measuresList.appendChild(li);
             });
 
-            // Saate Bakarak Gece/Gündüz Animasyonu Seçimi
+            // Gece/Gündüz Teması
             var hour = new Date().getHours();
             var banner = document.getElementById('modalBanner');
             var skyAnim = document.getElementById('skyAnimation');
@@ -470,10 +604,7 @@
                 skyAnim.innerHTML = '<div class="sun"></div><div class="cloud"></div>';
             } else {
                 banner.className = "weather-banner night";
-                skyAnim.innerHTML = '<div class="moon"></div>' +
-                    '<div class="star" style="top:20px; left:30px; width:3px; height:3px;"></div>' +
-                    '<div class="star" style="top:50px; left:120px; width:2px; height:2px;"></div>' +
-                    '<div class="star" style="top:80px; left:200px; width:4px; height:4px;"></div>';
+                skyAnim.innerHTML = '<div class="moon"></div>';
             }
 
             document.getElementById('modalOverlay').style.display = 'flex';
