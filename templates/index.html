@@ -10,6 +10,9 @@
 
         header { background-color: #1b5e20; color: white; padding: 18px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
         header h1 { font-size: 22px; font-weight: 600; }
+        .header-right { display: flex; align-items: center; gap: 15px; }
+        .datetime-box { text-align: right; font-size: 13px; background: rgba(0, 0, 0, 0.2); padding: 5px 12px; border-radius: 6px; }
+        .datetime-box .time { font-weight: bold; font-size: 14px; color: #a5d6a7; }
         header .badge { background-color: #4caf50; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; }
 
         .layout { display: flex; max-width: 1400px; margin: 25px auto; padding: 0 20px; gap: 25px; }
@@ -27,6 +30,7 @@
         .content { flex: 1; }
         .content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .content-header h2 { font-size: 20px; color: #2c3e50; }
+        .last-update-tag { font-size: 12px; color: #666; background: #e0e0e0; padding: 4px 10px; border-radius: 12px; }
 
         .district-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
         
@@ -90,6 +94,8 @@
             .layout { flex-direction: column; }
             .sidebar { width: 100%; }
             .forecast-grid { grid-template-columns: repeat(2, 1fr); }
+            header { flex-direction: column; gap: 10px; text-align: center; }
+            .header-right { width: 100%; justify-content: center; }
         }
     </style>
 </head>
@@ -97,7 +103,13 @@
 
     <header>
         <h1>🚜Bursa Tarımsal Erken Uyarı Sistemi🚜</h1>
-        <span class="badge">🟢Sistem Aktif</span>
+        <div class="header-right">
+            <div class="datetime-box">
+                <div id="liveDate">--.--.----</div>
+                <div id="liveTime" class="time">--:--:--</div>
+            </div>
+            <span class="badge">🟢Sistem Aktif</span>
+        </div>
     </header>
 
     <div class="layout">
@@ -129,6 +141,7 @@
         <div class="content">
             <div class="content-header">
                 <h2>Bursa İlçeleri Genel Durumu (17 İlçe - Canlı Veri)</h2>
+                <span id="lastUpdateText" class="last-update-tag">Son Güncelleme: --:--</span>
             </div>
 
             <div class="district-grid" id="districtGrid">
@@ -181,7 +194,7 @@
         </div>
     </div>
 
-    <!-- BURSA 17 İLÇE VERİ TABANI, ENLEM/BOYLAM VE CANLI API MOTORU -->
+    <!-- JAVASCRIPT MOTORU & TARİH/SAAT ENTEGRASYONU -->
     <script>
         // 17 İLÇENİN GERÇEK COĞRAFİ KOORDİNATLARI VE ÜRÜN VERİ HARİTASI
         const districtsData = [
@@ -204,6 +217,18 @@
             { id: "harmancik", name: "Harmancık", lat: 39.6967, lon: 29.1558, products: "Ceviz, Biber, Hububat", pest: "Sürme & Rastık" }
         ];
 
+        // --- TARİH & SAAT MODÜLÜ ---
+        function updateClock() {
+            const now = new Date();
+            const dateOptions = { day: '2-digit', month: 'long', year: 'numeric', weekday: 'long' };
+            const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            
+            document.getElementById('liveDate').innerText = now.toLocaleDateString('tr-TR', dateOptions);
+            document.getElementById('liveTime').innerText = now.toLocaleTimeString('tr-TR', timeOptions);
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
         // WMO HAVA KODLARINI TÜRKÇE VE SİSTEME EŞLEME TABLOSU
         function parseWMO(code) {
             if ([0].includes(code)) return { condition: "Açık", isRain: false, rainMm: 0 };
@@ -222,10 +247,9 @@
             return { risk: "normal", riskLabel: "Normal" };
         }
 
-        // CANLI VERİ ÇEKME & ÖNBELLEK ENGELLEME (NO-CACHE MECHANISM)
+        // CANLI VERİ ÇEKME & ÖNBELLEK ENGELLEME
         async function fetchLiveWeatherData(district) {
             try {
-                // nocache parametresi ve no-store başlığı ile önbellekleme hatası engellenir
                 const cacheBuster = `nocache=${Date.now()}`;
                 const url = `https://api.open-meteo.com/v1/forecast?latitude=${district.lat}&longitude=${district.lon}&current_weather=true&hourly=temperature_2m,relativehumidity_2m,precipitation,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max&timezone=auto&${cacheBuster}`;
                 
@@ -235,7 +259,6 @@
                 const current = data.current_weather;
                 const parsedWeather = parseWMO(current.weathercode);
                 
-                // Anlık bağıl nem tahmini
                 const humidityVal = data.hourly?.relativehumidity_2m?.[0] || 60;
                 const windSpeed = Math.round(current.windspeed);
                 const tempVal = Math.round(current.temperature);
@@ -264,7 +287,7 @@
             }
         }
 
-        // İLÇE KARTLARINI ANLIK VERİLERLE EKRANA BASTIRMA
+        // İLÇE KARTLARINI EKRANA BASTIRMA
         async function renderDistrictCards() {
             const grid = document.getElementById('districtGrid');
             grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 20px;'>Canlı meteoroloji verileri ilçelere göre yükleniyor...</p>";
@@ -274,7 +297,6 @@
 
             grid.innerHTML = "";
             updatedDistricts.forEach(d => {
-                // Global dizi güncellemesi
                 const targetIdx = districtsData.findIndex(item => item.id === d.id);
                 if (targetIdx !== -1) districtsData[targetIdx] = d;
 
@@ -292,6 +314,10 @@
                     </div>
                 `;
             });
+
+            // Son güncelleme zaman damgasını bas
+            const now = new Date();
+            document.getElementById('lastUpdateText').innerText = `Son Güncelleme: ${now.toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'})}`;
         }
 
         // DETAY POP-UP (MODAL) AÇILIŞI VE CANLI TAHMİNLER
@@ -304,32 +330,39 @@
             document.getElementById('mProducts').innerText = d.products;
             document.getElementById('mPestInfo').innerText = d.pest;
 
-            // 1. Saatlik Verileri Oluştur
+            // 1. DİNAMİK SAATLİK VERİLER (Mevcut saatten itibaren sonraki 5 saati hesaplar)
             const hourlyContainer = document.getElementById('mHourlyContainer');
             hourlyContainer.innerHTML = "";
-            const hourlyTimes = ["09:00", "12:00", "15:00", "18:00", "21:00"];
+            const currentHour = new Date().getHours();
             
-            hourlyTimes.forEach((t, index) => {
-                const hourlyTemp = d.rawHourly?.temperature_2m?.[index * 3] || parseInt(d.temp);
-                const hourlyRainProb = d.rawHourly?.precipitation?.[index * 3] > 0 ? 70 : (index * 5);
-                const hourlyWind = d.rawHourly?.windspeed_10m?.[index * 3] ? Math.round(d.rawHourly.windspeed_10m[index * 3]) : d.wind;
+            for (let i = 0; i < 5; i++) {
+                const nextHour = (currentHour + (i * 3)) % 24;
+                const timeStr = `${nextHour.toString().padStart(2, '0')}:00`;
+                
+                const hourlyTemp = d.rawHourly?.temperature_2m?.[i * 3] || parseInt(d.temp);
+                const hourlyRainProb = d.rawHourly?.precipitation?.[i * 3] > 0 ? 70 : (i * 5);
+                const hourlyWind = d.rawHourly?.windspeed_10m?.[i * 3] ? Math.round(d.rawHourly.windspeed_10m[i * 3]) : d.wind;
 
                 hourlyContainer.innerHTML += `
                     <div class="hourly-card">
-                        <div class="time">${t}</div>
+                        <div class="time">${timeStr}</div>
                         <div class="temp">${Math.round(hourlyTemp)}°C</div>
                         <div class="rain">💧 %${hourlyRainProb} Yağış</div>
                         <div class="wind">💨 ${hourlyWind} km/s</div>
                     </div>
                 `;
-            });
+            }
 
-            // 2. 4 Günlük Tahmin Verilerini Oluştur
+            // 2. DİNAMİK 4 GÜNLÜK TAHMİN VERİLERİ (Gerçek Gün İsimleri ile)
             const dailyContainer = document.getElementById('mDailyContainer');
             dailyContainer.innerHTML = "";
-            const days = ["Bugün", "Yarın", "3. Gün", "4. Gün"];
             
-            days.forEach((dayName, idx) => {
+            const dayNames = ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"];
+            const todayIndex = new Date().getDay();
+
+            for (let idx = 0; idx < 4; idx++) {
+                let dayLabel = idx === 0 ? "Bugün" : idx === 1 ? "Yarın" : dayNames[(todayIndex + idx) % 7];
+                
                 const maxTemp = d.rawDaily?.temperature_2m_max?.[idx] ? Math.round(d.rawDaily.temperature_2m_max[idx]) : 24;
                 const minTemp = d.rawDaily?.temperature_2m_min?.[idx] ? Math.round(d.rawDaily.temperature_2m_min[idx]) : 15;
                 const rainProb = d.rawDaily?.precipitation_probability_max?.[idx] ?? (d.rainMm > 10 ? 80 : 15);
@@ -337,13 +370,13 @@
 
                 dailyContainer.innerHTML += `
                     <div class="forecast-card">
-                        <div class="day">${dayName}</div>
+                        <div class="day">${dayLabel}</div>
                         <div class="temp-range">${minTemp}°C / ${maxTemp}°C</div>
                         <div class="sub-info">💧 %${rainProb} Yağış</div>
                         <div class="sub-info">💨 ${dayWind} km/s</div>
                     </div>
                 `;
-            });
+            }
 
             // 3. İlaçlama Rüzgar Uyarısı
             const windBox = document.getElementById('mWindWarning');
@@ -390,7 +423,7 @@
             }
         }
 
-        // --- REALİSTİK REAKSİYONEL HAVA TAHMİN ANIMASYON MOTORU ---
+        // --- CANLI CANVAS ANIMASYON MOTORU ---
         let animFrameId = null;
 
         function initPopupWeatherAnimation(weatherData) {
@@ -437,7 +470,6 @@
             function render() {
                 ctx.clearRect(0, 0, width, height);
 
-                // 1. Açık ve Güneşli Hava Animasyonu
                 if (isClear) {
                     const gradient = ctx.createRadialGradient(width * 0.85, 20, 5, width * 0.85, 20, 80);
                     gradient.addColorStop(0, 'rgba(255, 223, 0, 0.45)');
@@ -446,7 +478,6 @@
                     ctx.fillRect(0, 0, width, height);
                 }
 
-                // 2. Rüzgar Dalgası Animasyonu
                 if (isWindy) {
                     ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
                     ctx.lineWidth = 1.5;
@@ -460,7 +491,6 @@
                     }
                 }
 
-                // 3. Yağmur Animasyonu
                 if (isRaining) {
                     ctx.strokeStyle = 'rgba(174, 194, 224, 0.75)';
                     ctx.lineWidth = 1.2;
@@ -478,7 +508,6 @@
                     ctx.stroke();
                 }
 
-                // 4. Şimşek / Yıldırım Animasyonu
                 if (isThunder) {
                     if (Math.random() < 0.025 && lightningOpacity <= 0) {
                         lightningOpacity = 0.7;
@@ -490,7 +519,6 @@
                     }
                 }
 
-                // 5. Kar Yağışı Animasyonu
                 if (isSnowing) {
                     ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
                     ctx.beginPath();
@@ -513,7 +541,6 @@
             render();
         }
 
-        // Sayfa Açıldığında 17 İlçeyi Canlı Verilerle Yükle
         document.addEventListener("DOMContentLoaded", renderDistrictCards);
     </script>
 </body>
