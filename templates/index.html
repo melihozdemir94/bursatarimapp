@@ -172,7 +172,7 @@
                     <input type="tel" id="farmerPhone" placeholder="Telefon Numaranız (05XX...)" required>
                     <select id="farmerDistrict" required>
                         <option value="">İlçenizi Seçin</option>
-                        <!-- BURSA'NIN 17 İLÇESI OTOMATIK YÜKLENIR -->
+                        <!-- BURSA'NIN 17 İLÇESİ OTOMATİK YÜKLENİR -->
                     </select>
                     <button type="submit" id="submitBtn" class="card-btn">Kayıt Ol ve Gönder</button>
                 </form>
@@ -238,10 +238,10 @@
     </div>
 
     <script>
-        // EMAILJS AYARLARI
-        const EMAILJS_PUBLIC_KEY = "YOUR_PUBLIC_KEY";  // EmailJS -> Account / Settings -> Public Key
-        const EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID";  // EmailJS -> Email Services -> Service ID
-        const EMAILJS_TEMPLATE_ID = "template_57wqimj"; // Tanımladığınız Template ID
+        // EMAILJS GÜNCEL AYARLARI
+        const EMAILJS_PUBLIC_KEY = "h7WQL2mykERx25PTm";
+        const EMAILJS_SERVICE_ID = "service_2gpgkrw";
+        const EMAILJS_TEMPLATE_ID = "template_57wqimj";
 
         // BURSA'NIN 17 İLÇESİNİN EKSİKSİZ TAM LİSTESİ
         const districtsData = [
@@ -575,7 +575,7 @@
                     alert(`Teşekkürler Sayın ${name}!\n\nKayıt bilgileriniz bursatarimapp@hotmail.com adresine iletilmiştir. ${district} ilçesi zirai ikaz bildirimleriniz tanımlanmıştır.`);
                     document.getElementById('subscribeForm').reset();
                 }, function(error) {
-                    alert('Gönderim sırasında bir hata oluştu. Lütfen EMAILJS_PUBLIC_KEY ve EMAILJS_SERVICE_ID değerlerinizi kontrol edin.');
+                    alert('Gönderim sırasında bir hata oluştu. Lütfen bağlantınızı kontrol edin.');
                     console.error('EmailJS Hata:', error);
                 })
                 .finally(() => {
