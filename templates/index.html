@@ -108,7 +108,7 @@
         .modal-section h4 { font-size: 15px; color: var(--primary-green); margin-bottom: 10px; border-bottom: 2px solid #e8f5e9; padding-bottom: 4px; }
 
         .hourly-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; }
-        .hourly-card { background: rgba(0,0,0,0.03); border: 1px solid var(--border-color); border-radius: 8px; min-width: 95px; padding: 10px; text-align: center; flex-shrink: 0; }
+        .hourly-card { background: rgba(0,0,0,0.03); border: 1px solid var(--border-color); border-radius: 8px; min-width: 100px; padding: 10px; text-align: center; flex-shrink: 0; }
         
         .forecast-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
         .forecast-card { background: rgba(0,0,0,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; text-align: center; }
@@ -215,7 +215,7 @@
                 </div>
 
                 <div class="modal-section">
-                    <h4>🕒 Saatlik Detaylı Hava Tahmini</h4>
+                    <h4>🕒 Saatlik Detaylı Hava & Yağış Tahmini</h4>
                     <div class="hourly-scroll" id="mHourlyContainer">Yükleniyor...</div>
                 </div>
 
@@ -333,7 +333,7 @@
             }
 
             try {
-                const url = `https://api.open-meteo.com/v1/forecast?latitude=${district.lat}&longitude=${district.lon}&current_weather=true&hourly=temperature_2m,relativehumidity_2m,precipitation,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max&timezone=auto`;
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${district.lat}&longitude=${district.lon}&current_weather=true&hourly=temperature_2m,relativehumidity_2m,precipitation,precipitation_probability,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,windspeed_10m_max&timezone=auto`;
                 const response = await fetch(url);
                 const data = await response.json();
 
@@ -343,7 +343,10 @@
                 const windSpeed = Math.round(current.windspeed);
                 const tempVal = Math.round(current.temperature);
                 
-                const riskInfo = calculateRisk(windSpeed, parsedWeather.rainMm, tempVal);
+                // Canlı saatlik veriden veya günlük toplamdan yağış miktarını al
+                const currentRain = data.hourly?.precipitation?.[0] !== undefined ? data.hourly.precipitation[0] : parsedWeather.rainMm;
+                
+                const riskInfo = calculateRisk(windSpeed, currentRain, tempVal);
                 const gdd = Math.max(0, tempVal - district.baseTemp);
 
                 const result = {
@@ -353,7 +356,7 @@
                     humidity: `%${humidityVal}`,
                     wind: windSpeed,
                     condition: parsedWeather.condition,
-                    rainMm: parsedWeather.rainMm,
+                    rainMm: currentRain,
                     risk: riskInfo.risk,
                     riskLabel: riskInfo.riskLabel,
                     gdd: gdd.toFixed(1),
@@ -421,7 +424,7 @@
                     fillColor: markerColor,
                     fillOpacity: 0.7,
                     radius: 9
-                }).addTo(map).bindPopup(`<b>${d.name}</b><br>Sıcaklık: ${d.tempStr}<br>Durum: ${d.riskLabel}`);
+                }).addTo(map).bindPopup(`<b>${d.name}</b><br>Sıcaklık: ${d.tempStr}<br>Yağış: ${d.rainMm} mm<br>Durum: ${d.riskLabel}`);
                 
                 mapMarkers.push(marker);
 
@@ -432,6 +435,7 @@
                             <span class="status-badge ${d.risk}">${d.riskLabel}</span>
                         </div>
                         <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">${d.tempStr} / ${d.humidity}</span></div>
+                        <div class="info-row"><span>Yağış Durumu:</span><span class="val" style="color: ${d.rainMm > 0 ? '#0288d1' : 'inherit'};">${d.rainMm} mm (${d.condition})</span></div>
                         <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">${d.wind} km/s</span></div>
                         <div class="info-row"><span>Gelişim Birikimi (GDD):</span><span class="val">${d.gdd} °C-gün</span></div>
                         <div class="info-row"><span>Ana Ürünler:</span><span class="val">${d.products}</span></div>
@@ -449,7 +453,7 @@
             if (!d) return;
 
             document.getElementById('mDistrict').innerText = `${d.name} Zirai & Fenolojik Analiz`;
-            document.getElementById('mWeatherSummary').innerText = `Anlık: ${d.tempStr} | Nem: ${d.humidity} | Rüzgar: ${d.wind} km/s | Günlük GDD: ${d.gdd}`;
+            document.getElementById('mWeatherSummary').innerText = `Anlık: ${d.tempStr} | Nem: ${d.humidity} | Yağış: ${d.rainMm} mm (${d.condition}) | Rüzgar: ${d.wind} km/s`;
 
             const recipeBox = document.getElementById('mRecipeBox');
             recipeBox.innerHTML = `
@@ -489,11 +493,14 @@
             for (let i = 0; i < 6; i++) {
                 const hourVal = (new Date().getHours() + (i * 2)) % 24;
                 const tempVal = d.rawHourly?.temperature_2m?.[i * 2] || d.temp;
+                const rainHourly = d.rawHourly?.precipitation?.[i * 2] !== undefined ? d.rawHourly.precipitation[i * 2] : 0;
+                
                 hourlyContainer.innerHTML += `
                     <div class="hourly-card">
                         <div style="font-weight:bold; font-size:12px;">${hourVal}:00</div>
-                        <div style="font-size:15px; font-weight:bold; color:#1b5e20;">${Math.round(tempVal)}°C</div>
-                        <div style="font-size:11px; color:#666;">💨 ${d.wind} km/s</div>
+                        <div style="font-size:14px; font-weight:bold; color:#1b5e20;">${Math.round(tempVal)}°C</div>
+                        <div style="font-size:11px; color:#0288d1; margin-top:3px;">🌧️ ${rainHourly} mm</div>
+                        <div style="font-size:11px; color:#666; margin-top:2px;">💨 ${d.wind} km/s</div>
                     </div>
                 `;
             }
@@ -507,11 +514,14 @@
                 const dayLabel = idx === 0 ? "Bugün" : days[(todayIdx + idx) % 7];
                 const maxTemp = d.rawDaily?.temperature_2m_max?.[idx] ? Math.round(d.rawDaily.temperature_2m_max[idx]) : 24;
                 const minTemp = d.rawDaily?.temperature_2m_min?.[idx] ? Math.round(d.rawDaily.temperature_2m_min[idx]) : 15;
+                const rainProb = d.rawDaily?.precipitation_probability_max?.[idx] !== undefined ? d.rawDaily.precipitation_probability_max[idx] : 0;
+                const rainSum = d.rawDaily?.precipitation_sum?.[idx] !== undefined ? d.rawDaily.precipitation_sum[idx] : 0;
 
                 dailyContainer.innerHTML += `
                     <div class="forecast-card">
                         <div style="font-weight:bold; font-size:13px; color:#1b5e20;">${dayLabel}</div>
                         <div style="font-size:13px; margin:4px 0;">${minTemp}°C / ${maxTemp}°C</div>
+                        <div style="font-size:11px; color:#0288d1; font-weight:600;">🌧️ %${rainProb} (${rainSum} mm)</div>
                     </div>
                 `;
             }
@@ -520,9 +530,12 @@
             if (d.wind >= 18) {
                 windBox.className = "wind-warning-box unsafe";
                 windBox.innerHTML = `⚠️ <strong>İLAÇLAMA YAPMAYIN:</strong> Rüzgar hızı (${d.wind} km/s) yüksek. Sürüklenme riski var.`;
+            } else if (d.rainMm > 0) {
+                windBox.className = "wind-warning-box unsafe";
+                windBox.innerHTML = `🌧️ <strong>İLAÇLAMA YAPMAYIN:</strong> Yağış (${d.rainMm} mm) veya yıkanma riski mevcut.`;
             } else {
                 windBox.className = "wind-warning-box safe";
-                windBox.innerHTML = `✅ <strong>İLAÇLAMA UYGUN:</strong> Rüzgar hızı (${d.wind} km/s) ideal seviyededir.`;
+                windBox.innerHTML = `✅ <strong>İLAÇLAMA UYPUN:</strong> Hava ve rüzgar şartları ideal seviyededir.`;
             }
 
             document.getElementById('modalOverlay').style.display = 'flex';
