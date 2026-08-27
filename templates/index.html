@@ -8,12 +8,15 @@
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4383802505372588" crossorigin="anonymous"></script>
 
-    <!-- Leaflet.js (Harita Kütüphanesi) -->
+    <!-- Leaflet.js (Harita) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- Chart.js (Grafik Kütüphanesi) -->
+    <!-- Chart.js (Grafik) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- EmailJS SDK (Mail Gönderimi İçin) -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <style>
         :root {
@@ -82,10 +85,10 @@
         .info-row { display: flex; justify-content: space-between; font-size: 13px; opacity: 0.85; margin-bottom: 6px; }
         .info-row span.val { font-weight: bold; opacity: 1; }
 
-        .card-btn { display: block; width: 100%; text-align: center; padding: 8px; margin-top: 12px; background-color: var(--primary-green); color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; text-decoration: none; font-size: 13px; transition: background 0.2s; }
+        .card-btn { display: block; width: 100%; text-align: center; padding: 10px; margin-top: 12px; background-color: var(--primary-green); color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; text-decoration: none; font-size: 13px; transition: background 0.2s; }
         .card-btn:hover { opacity: 0.9; }
 
-        /* MODAL VE STİLLER */
+        /* MODAL STİLLERİ */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
         .modal-container { background: var(--card-bg); width: 92%; max-width: 800px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: modalAnim 0.3s ease-out; position: relative; max-height: 90vh; overflow-y: auto; color: var(--text-color); }
         
@@ -160,29 +163,26 @@
                 </div>
             </div>
 
-            <!-- WHATSAPP / SMS UYARI FORMU -->
+            <!-- EMAILJS ILE HOTMAIL'E BAGLI SMS / WHATSAPP UYARI FORMU -->
             <div class="side-card">
                 <h3>📲 Ücretsiz SMS / WhatsApp İkazı</h3>
                 <p style="font-size: 12px; margin-bottom: 10px; opacity: 0.8;">İlçenizde don, yüksek rüzgar veya hastalık riski oluştuğunda cebinize haber verelim.</p>
-                <input type="text" id="farmerName" placeholder="Adınız Soyadınız">
-                <input type="tel" id="farmerPhone" placeholder="Telefon Numaranız">
-                <select id="farmerDistrict">
-                    <option value="">İlçenizi Seçin</option>
-                    <option value="Gemlik">Gemlik</option>
-                    <option value="Mudanya">Mudanya</option>
-                    <option value="Gürsu">Gürsu</option>
-                    <option value="Karacabey">Karacabey</option>
-                    <option value="İznik">İznik</option>
-                    <!-- Diğer ilçeler dinamik doldurulacaktır -->
-                </select>
-                <button class="card-btn" onclick="subscribeAlerts()">Kayıt Ol</button>
+                <form id="subscribeForm" onsubmit="subscribeAlerts(event)">
+                    <input type="text" id="farmerName" placeholder="Adınız Soyadınız" required>
+                    <input type="tel" id="farmerPhone" placeholder="Telefon Numaranız (05XX...)" required>
+                    <select id="farmerDistrict" required>
+                        <option value="">İlçenizi Seçin</option>
+                        <!-- BURSA'NIN 17 İLÇESI OTOMATIK YÜKLENIR -->
+                    </select>
+                    <button type="submit" id="submitBtn" class="card-btn">Kayıt Ol ve Gönder</button>
+                </form>
             </div>
         </div>
 
         <!-- SAĞ İÇERİK ALANI -->
         <div class="content">
             <div class="content-header">
-                <h2>Bursa İnteraktif Risk Haritası & İlçeler (17 İlçe)</h2>
+                <h2>Bursa İnteraktif Risk Haritası & Tüm İlçeler (17 İlçe)</h2>
                 <span id="lastUpdateText" class="last-update-tag">Son Güncelleme: --:--</span>
             </div>
 
@@ -209,31 +209,26 @@
             </div>
 
             <div class="modal-body">
-                <!-- 1. SAATLİK GRAFİK TRENDİ -->
                 <div class="modal-section">
                     <h4>📊 24 Saatlik Sıcaklık ve Nem Trendi</h4>
                     <canvas id="hourlyChart" height="120"></canvas>
                 </div>
 
-                <!-- 2. BUGÜNÜN SAATLİK TAHMİNİ -->
                 <div class="modal-section">
                     <h4>🕒 Saatlik Detaylı Hava Tahmini</h4>
                     <div class="hourly-scroll" id="mHourlyContainer">Yükleniyor...</div>
                 </div>
 
-                <!-- 3. FENOLOJİK GELİŞİM VE REÇETE TAVSİYESİ -->
                 <div class="modal-section">
                     <h4>🌿 Fenolojik Gelişim & Reçete / Mücadele Önerisi</h4>
                     <div class="recipe-box" id="mRecipeBox">Yükleniyor...</div>
                 </div>
 
-                <!-- 4. RÜZGAR VE İLAÇLAMA UYARISI -->
                 <div class="modal-section">
                     <h4>💨 Zirai İlaçlama & Rüzgar Uyarısı</h4>
                     <div id="mWindWarning" class="wind-warning-box safe"></div>
                 </div>
 
-                <!-- 5. 4 GÜNLÜK TAHMİN -->
                 <div class="modal-section">
                     <h4>📅 Sonraki 4 Günün Hava Tahmini</h4>
                     <div class="forecast-grid" id="mDailyContainer">Yükleniyor...</div>
@@ -243,6 +238,12 @@
     </div>
 
     <script>
+        // EMAILJS AYARLARI
+        const EMAILJS_PUBLIC_KEY = "YOUR_PUBLIC_KEY";  // EmailJS -> Account / Settings -> Public Key
+        const EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID";  // EmailJS -> Email Services -> Service ID
+        const EMAILJS_TEMPLATE_ID = "template_57wqimj"; // Tanımladığınız Template ID
+
+        // BURSA'NIN 17 İLÇESİNİN EKSİKSİZ TAM LİSTESİ
         const districtsData = [
             { id: "gemlik", name: "Gemlik", lat: 40.4312, lon: 29.1558, products: "Gemlik Zeytini", pest: "Zeytin Sineği & Halkalı Leke", baseTemp: 10 },
             { id: "mudanya", name: "Mudanya", lat: 40.3752, lon: 28.8826, products: "Zeytin, Siyah İncir", pest: "Zeytin Pamuklu Biti", baseTemp: 10 },
@@ -267,7 +268,23 @@
         let mapMarkers = [];
         let chartInstance = null;
 
-        // TARİH & SAAT
+        // EMAILJS BAŞLATMA
+        (function() {
+            emailjs.init(EMAILJS_PUBLIC_KEY); 
+        })();
+
+        // İLÇE SEÇİM KUTUSUNA 17 İLÇENİN EKLENMESİ
+        function populateDistrictSelect() {
+            const selectEl = document.getElementById('farmerDistrict');
+            selectEl.innerHTML = '<option value="">İlçenizi Seçin</option>';
+            districtsData.forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d.name;
+                opt.innerText = d.name;
+                selectEl.appendChild(opt);
+            });
+        }
+
         function updateClock() {
             const now = new Date();
             document.getElementById('liveDate').innerText = now.toLocaleDateString('tr-TR', { day: '2-digit', month: 'long', year: 'numeric' });
@@ -276,12 +293,10 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // KOYU MOD
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
         }
 
-        // HARİTAYI İLKLENDİRME (LEAFLET.JS)
         function initMap() {
             map = L.map('mapContainer').setView([40.1885, 29.0610], 9);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -289,7 +304,6 @@
             }).addTo(map);
         }
 
-        // WMO KOD ÇÖZÜCÜ
         function parseWMO(code) {
             if ([0].includes(code)) return { condition: "Açık", rainMm: 0 };
             if ([1, 2, 3].includes(code)) return { condition: "Parçalı Bulutlu", rainMm: 0 };
@@ -300,7 +314,6 @@
             return { condition: "Bulutlu", rainMm: 0 };
         }
 
-        // RİSK HESABI & GECE DONU KONTROLÜ
         function calculateRisk(wind, rainMm, temp) {
             if (temp <= 0) return { risk: "danger", riskLabel: "DON RİSKİ ❄️" };
             if (wind >= 22 || rainMm >= 15) return { risk: "danger", riskLabel: "YÜKSEK RİSK ⚠️" };
@@ -308,7 +321,6 @@
             return { risk: "normal", riskLabel: "Normal" };
         }
 
-        // ÖNBELLEKLİ CANLI VERİ ÇEKME (15 Dk Cache)
         async function fetchLiveWeatherData(district) {
             const cacheKey = `bursa_weather_${district.id}`;
             const cached = localStorage.getItem(cacheKey);
@@ -332,8 +344,6 @@
                 const tempVal = Math.round(current.temperature);
                 
                 const riskInfo = calculateRisk(windSpeed, parsedWeather.rainMm, tempVal);
-
-                // GDD (Growing Degree Days - Birikimli Sıcaklık) Hesaplama
                 const gdd = Math.max(0, tempVal - district.baseTemp);
 
                 const result = {
@@ -361,7 +371,6 @@
             }
         }
 
-        // GENEL UYARILARI GÜNCELLE
         function updateGeneralAlerts(districts) {
             const alertsContainer = document.getElementById('generalAlertsContainer');
             alertsContainer.innerHTML = "";
@@ -374,37 +383,24 @@
 
             if (frostDistricts.length > 0) {
                 hasAlert = true;
-                alertsContainer.innerHTML += `
-                    <div class="alert-item frost">
-                        <strong>❄️ Don Uyarısı (${frostDistricts.join(', ')}):</strong> Sıcaklıklar 0°C ve altına düşmektedir. Çiçek/meyve don riskine karşı sisleme veya yağmurlama sulamayı aktif edin!
-                    </div>
-                `;
+                alertsContainer.innerHTML += `<div class="alert-item frost"><strong>❄️ Don Uyarısı (${frostDistricts.join(', ')}):</strong> Sıcaklıklar 0°C ve altına düşmektedir.</div>`;
             }
 
             if (rainDistricts.length > 0) {
                 hasAlert = true;
-                alertsContainer.innerHTML += `
-                    <div class="alert-item danger">
-                        <strong>🌧️ Yağış/Hastalık Uyarısı (${rainDistricts.join(', ')}):</strong> Mantari enfeksiyon riskine dikkat. Yağış öncesi ve sonrası ilaçlamayı planlayın.
-                    </div>
-                `;
+                alertsContainer.innerHTML += `<div class="alert-item danger"><strong>🌧️ Yağış/Hastalık Uyarısı (${rainDistricts.join(', ')}):</strong> Mantari enfeksiyon riskine dikkat.</div>`;
             }
 
             if (windDistricts.length > 0) {
                 hasAlert = true;
-                alertsContainer.innerHTML += `
-                    <div class="alert-item wind">
-                        <strong>💨 Rüzgar Uyarısı (${windDistricts.join(', ')}):</strong> Rüzgar hızı yüksek, ilaçlamada sürüklenme ve zayiat riski var.
-                    </div>
-                `;
+                alertsContainer.innerHTML += `<div class="alert-item wind"><strong>💨 Rüzgar Uyarısı (${windDistricts.join(', ')}):</strong> İlaçlamada sürüklenme riski yüksek.</div>`;
             }
 
             if (!hasAlert) {
-                alertsContainer.innerHTML = `<div class="alert-item safe"><strong>Tüm İlçeler:</strong> Şu an için kritik zirai meteorolojik risk bulunmamaktadır.</div>`;
+                alertsContainer.innerHTML = `<div class="alert-item safe"><strong>Tüm İlçeler:</strong> Şu an kritik zirai risk bulunmamaktadır.</div>`;
             }
         }
 
-        // KARTLARI VE HARİTAYI EKRANA ÇİZME
         async function renderDistrictCards() {
             const grid = document.getElementById('districtGrid');
             grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 20px;'>Canlı veriler yükleniyor...</p>";
@@ -419,7 +415,6 @@
                 const targetIdx = districtsData.findIndex(item => item.id === d.id);
                 if (targetIdx !== -1) districtsData[targetIdx] = d;
 
-                // Harita Markırı Ekle
                 const markerColor = d.risk === 'danger' ? 'red' : d.risk === 'warning' ? 'orange' : 'green';
                 const marker = L.circleMarker([d.lat, d.lon], {
                     color: markerColor,
@@ -430,7 +425,6 @@
                 
                 mapMarkers.push(marker);
 
-                // Kart HTML Doldur
                 grid.innerHTML += `
                     <div class="district-card" data-name="${d.name.toLowerCase()}" data-risk="${d.risk}">
                         <div class="card-header">
@@ -450,7 +444,6 @@
             document.getElementById('lastUpdateText').innerText = `Son Güncelleme: ${new Date().toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'})}`;
         }
 
-        // DETAY MODALINI AÇMA VE GRAFİK ÇİZİMİ
         function openDistrictModal(id) {
             const d = districtsData.find(item => item.id === id);
             if (!d) return;
@@ -458,19 +451,17 @@
             document.getElementById('mDistrict').innerText = `${d.name} Zirai & Fenolojik Analiz`;
             document.getElementById('mWeatherSummary').innerText = `Anlık: ${d.tempStr} | Nem: ${d.humidity} | Rüzgar: ${d.wind} km/s | Günlük GDD: ${d.gdd}`;
 
-            // Reçete & Mücadele Tavsiyesi
             const recipeBox = document.getElementById('mRecipeBox');
             recipeBox.innerHTML = `
                 <p><strong>Hedef Ürün:</strong> ${d.products}</p>
                 <p><strong>Takip Edilen Zararlı/Hastalık:</strong> ${d.pest}</p>
                 <p style="margin-top:6px;"><strong>Zirai Tavsiye:</strong> ${
                     d.risk === 'danger' 
-                    ? '⚠️ Yüksek risk tespit edildi. Kimyasal ilaçlamayı erteleyin veya organik koruyucu bakırlı bileşikler tercih edin.' 
-                    : '✅ İklim şartları koruyucu veya tedavi edici zirai mücadele için uygundur.'
+                    ? '⚠️ Yüksek risk tespit edildi. Kimyasal ilaçlamayı erteleyin veya organik koruyucu bileşikler tercih edin.' 
+                    : '✅ İklim şartları zirai mücadele için uygundur.'
                 }</p>
             `;
 
-            // Saatlik Grafik (Chart.js)
             const ctx = document.getElementById('hourlyChart').getContext('2d');
             if (chartInstance) chartInstance.destroy();
 
@@ -493,7 +484,6 @@
                 options: { responsive: true, plugins: { legend: { display: false } } }
             });
 
-            // Saatlik Kaydırma Kartları
             const hourlyContainer = document.getElementById('mHourlyContainer');
             hourlyContainer.innerHTML = "";
             for (let i = 0; i < 6; i++) {
@@ -508,7 +498,6 @@
                 `;
             }
 
-            // 4 Günlük Tahmin Grid
             const dailyContainer = document.getElementById('mDailyContainer');
             dailyContainer.innerHTML = "";
             const days = ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"];
@@ -527,11 +516,10 @@
                 `;
             }
 
-            // Rüzgar İkaz Kutusu
             const windBox = document.getElementById('mWindWarning');
             if (d.wind >= 18) {
                 windBox.className = "wind-warning-box unsafe";
-                windBox.innerHTML = `⚠️ <strong>İLAÇLAMA YAPMAYIN:</strong> Rüzgar hızı (${d.wind} km/s) yüksek. Sürüklenme ve yaprak yakma riski var.`;
+                windBox.innerHTML = `⚠️ <strong>İLAÇLAMA YAPMAYIN:</strong> Rüzgar hızı (${d.wind} km/s) yüksek. Sürüklenme riski var.`;
             } else {
                 windBox.className = "wind-warning-box safe";
                 windBox.innerHTML = `✅ <strong>İLAÇLAMA UYGUN:</strong> Rüzgar hızı (${d.wind} km/s) ideal seviyededir.`;
@@ -561,19 +549,43 @@
             }
         }
 
-        function subscribeAlerts() {
+        // BİLGİLERİ BURSATARIMAPP@HOTMAIL.COM ADRESİNE E-POSTA OLARAK GÖNDEREN FONKSİYON
+        function subscribeAlerts(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "Gönderiliyor...";
+            btn.disabled = true;
+
             const name = document.getElementById('farmerName').value;
             const phone = document.getElementById('farmerPhone').value;
-            if (name && phone) {
-                alert(`Teşekkürler ${name}! Erken uyarı sistemine kaydınız alınmıştır.`);
-                document.getElementById('farmerName').value = "";
-                document.getElementById('farmerPhone').value = "";
-            } else {
-                alert("Lütfen tüm alanları doldurunuz.");
-            }
+            const district = document.getElementById('farmerDistrict').value;
+
+            // EmailJS Parametreleri
+            const templateParams = {
+                to_email: 'bursatarimapp@hotmail.com',
+                farmer_name: name,
+                farmer_phone: phone,
+                farmer_district: district,
+                date: new Date().toLocaleString('tr-TR')
+            };
+
+            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+                .then(function(response) {
+                    alert(`Teşekkürler Sayın ${name}!\n\nKayıt bilgileriniz bursatarimapp@hotmail.com adresine iletilmiştir. ${district} ilçesi zirai ikaz bildirimleriniz tanımlanmıştır.`);
+                    document.getElementById('subscribeForm').reset();
+                }, function(error) {
+                    alert('Gönderim sırasında bir hata oluştu. Lütfen EMAILJS_PUBLIC_KEY ve EMAILJS_SERVICE_ID değerlerinizi kontrol edin.');
+                    console.error('EmailJS Hata:', error);
+                })
+                .finally(() => {
+                    btn.innerText = "Kayıt Ol ve Gönder";
+                    btn.disabled = false;
+                });
         }
 
         document.addEventListener("DOMContentLoaded", () => {
+            populateDistrictSelect();
             initMap();
             renderDistrictCards();
         });
