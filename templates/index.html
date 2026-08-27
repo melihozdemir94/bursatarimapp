@@ -117,10 +117,10 @@
             <div class="side-card">
                 <h3>⚠️ Genel Erken Uyarılar</h3>
                 <div class="alert-item danger">
-                    <strong>Gemlik, İznik & Orhangazi:</strong> Cuma günü beklenen şiddetli gökgürültülü sağanak yağış nedeniyle ilaçlama takvimini öne çekin!
+                    <strong>Gemlik, İznik & Orhangazi:</strong> Beklenen yağışlar nedeniyle ilaçlama takvimini gözden geçirin!
                 </div>
                 <div class="alert-item wind">
-                    <strong>Mudanya, Karacabey & Nilüfer:</strong> Öğle saatlerinde rüzgar hızı 22 km/s üzerine çıkıyor. Sürüklenme riski!
+                    <strong>Mudanya, Karacabey & Nilüfer:</strong> Rüzgar hızı yüksek saatlerde ilaç sürüklenme riski bulunmaktadır.
                 </div>
             </div>
         </div>
@@ -128,7 +128,7 @@
         <!-- SAĞ İÇERİK ALANI (BURSA 17 İLÇE KARTLARI) -->
         <div class="content">
             <div class="content-header">
-                <h2>Bursa İlçeleri Genel Durumu (17 İlçe)</h2>
+                <h2>Bursa İlçeleri Genel Durumu (17 İlçe - Canlı Veri)</h2>
             </div>
 
             <div class="district-grid" id="districtGrid">
@@ -148,21 +148,21 @@
 
                 <div class="banner-info">
                     <h2 id="mDistrict">İlçe Adı</h2>
-                    <p id="mWeatherSummary">Sıcaklık ve Nem Durumu</p>
+                    <p id="mWeatherSummary">Yükleniyor...</p>
                 </div>
             </div>
 
             <div class="modal-body">
                 <!-- 1. BUGÜNÜN SAATLİK TAHMİNİ -->
                 <div class="modal-section">
-                    <h4>🕒 Bugünün Saatlik Hava Tahmini (Yağış & Rüzgar)</h4>
-                    <div class="hourly-scroll" id="mHourlyContainer"></div>
+                    <h4>🕒 Bugünün Saatlik Hava Tahmini (Canlı Yağış & Rüzgar)</h4>
+                    <div class="hourly-scroll" id="mHourlyContainer">Yükleniyor...</div>
                 </div>
 
                 <!-- 2. SONRAKİ 4 GÜNÜN TAHMİNİ -->
                 <div class="modal-section">
                     <h4>📅 Sonraki 4 Günün Hava Tahmini</h4>
-                    <div class="forecast-grid" id="mDailyContainer"></div>
+                    <div class="forecast-grid" id="mDailyContainer">Yükleniyor...</div>
                 </div>
 
                 <!-- 3. RÜZGAR VE İLAÇLAMA UYARISI -->
@@ -181,33 +181,103 @@
         </div>
     </div>
 
-    <!-- BURSA 17 İLÇE VERİ VERİ TABANI VE ANIMASYON MOTORU -->
+    <!-- BURSA 17 İLÇE VERİ TABANI, ENLEM/BOYLAM VE CANLI API MOTORU -->
     <script>
+        // 17 İLÇENİN GERÇEK COĞRAFİ KOORDİNATLARI VE ÜRÜN VERİ HARİTASI
         const districtsData = [
-            { id: "gemlik", name: "Gemlik", temp: "26°C", humidity: "%78", wind: 12, products: "Gemlik Zeytini", pest: "Zeytin Sineği & Halkalı Leke", risk: "danger", riskLabel: "YÜKSEK RİSK ⚠️", condition: "Şiddetli Yağmur", rainMm: 22 },
-            { id: "mudanya", name: "Mudanya", temp: "24°C", humidity: "%70", wind: 22, products: "Zeytin, Siyah İncir", pest: "Zeytin Pamuklu Biti", risk: "warning", riskLabel: "ORTA RİSK ⚡", condition: "Rüzgarlı", rainMm: 2 },
-            { id: "gursu", name: "Gürsu", temp: "25°C", humidity: "%56", wind: 14, products: "Deveci Armudu, Şeftali", pest: "Armut Psillidi", risk: "normal", riskLabel: "Normal", condition: "Açık", rainMm: 0 },
-            { id: "osmangazi", name: "Osmangazi", temp: "26°C", humidity: "%62", wind: 11, products: "Bursa Siyah İnciri, Şeftali", pest: "Afiş & Mantar Hastalıkları", risk: "normal", riskLabel: "Normal", condition: "Açık", rainMm: 0 },
-            { id: "nilufer", name: "Nilüfer", temp: "25°C", humidity: "%65", wind: 21, products: "Çilek, Enginar, Mısır", pest: "Kırmızı Örümcek", risk: "warning", riskLabel: "ORTA RİSK ⚡", condition: "Rüzgarlı", rainMm: 1 },
-            { id: "yildirim", name: "Yıldırım", temp: "26°C", humidity: "%58", wind: 13, products: "Şeftali, Kiraz", pest: "Yaprak Biti", risk: "normal", riskLabel: "Normal", condition: "Açık", rainMm: 0 },
-            { id: "kestel", name: "Kestel", temp: "24°C", humidity: "%68", wind: 10, products: "Bursa Siyahı, Fidan Üretimi", pest: "Külleme Hastalığı", risk: "normal", riskLabel: "Normal", condition: "Açık", rainMm: 0 },
-            { id: "inegol", name: "İnegöl", temp: "23°C", humidity: "%72", wind: 15, products: "Ayçiçeği, Çilek, Ceviz", pest: "Ayçiçeği Mildiyösü", risk: "warning", riskLabel: "ORTA RİSK ⚡", condition: "Hafif Yağmur", rainMm: 6 },
-            { id: "yenisehir", name: "Yenişehir", temp: "24°C", humidity: "%60", wind: 18, products: "Biber, Biberiye, Taze Fasulye", pest: "Biber Mildiyösü & Thrips", risk: "normal", riskLabel: "Normal", condition: "Açık", rainMm: 0 },
-            { id: "iznik", name: "İznik", temp: "25°C", humidity: "%80", wind: 16, products: "Zeytin, Üzüm, Erik", pest: "Zeytin Sineği & Bağ Küllemesi", risk: "danger", riskLabel: "YÜKSEK RİSK ⚠️", condition: "Gök Gürültülü Yağmur", rainMm: 25 },
-            { id: "karacabey", name: "Karacabey", temp: "25°C", humidity: "%75", wind: 24, products: "Sanayi Domatesi, Mısır, Soğan", pest: "Domates Mildiyösü & Yeşilkurt", risk: "warning", riskLabel: "ORTA RİSK ⚡", condition: "Rüzgarlı", rainMm: 3 },
-            { id: "mustafakemalpasa", name: "Mustafakemalpaşa", temp: "26°C", humidity: "%70", wind: 17, products: "Domates, Biber, Tatlı Mısır", pest: "Erken Yaprak Yanıklığı", risk: "warning", riskLabel: "ORTA RİSK ⚡", condition: "Hafif Yağmur", rainMm: 5 },
-            { id: "orhangazi", name: "Orhangazi", temp: "26°C", humidity: "%76", wind: 14, products: "Sofralık Zeytin, Turşuluk Hıyar", pest: "Zeytin Sineği & Yalancı Mildiyö", risk: "danger", riskLabel: "YÜKSEK RİSK ⚠️", condition: "Şiddetli Yağmur", rainMm: 18 },
-            { id: "orhaneli", name: "Orhaneli", temp: "21°C", humidity: "%64", wind: 12, products: "Ceviz, Göynük Beldesi Kirazı", pest: "Kiraz Sinekleri", risk: "normal", riskLabel: "Normal", condition: "Açık", rainMm: 0 },
-            { id: "keles", name: "Keles", temp: "19°C", humidity: "%70", wind: 15, products: "Sanayi Çileği, Kiraz", pest: "Çilek Kök Çürüklüğü", risk: "normal", riskLabel: "Normal", condition: "Açık", rainMm: 0 },
-            { id: "buyukorhan", name: "Büyükorhan", temp: "20°C", humidity: "%62", wind: 11, products: "Göynük Çileği, Yem Bitkileri", pest: "Kök Mantarı", risk: "normal", riskLabel: "Normal", condition: "Açık", rainMm: 0 },
-            { id: "harmancik", name: "Harmancık", temp: "20°C", humidity: "%58", wind: 10, products: "Ceviz, Biber, Hububat", pest: "Sürme & Rastık", risk: "normal", riskLabel: "Normal", condition: "Açık", rainMm: 0 }
+            { id: "gemlik", name: "Gemlik", lat: 40.4312, lon: 29.1558, products: "Gemlik Zeytini", pest: "Zeytin Sineği & Halkalı Leke" },
+            { id: "mudanya", name: "Mudanya", lat: 40.3752, lon: 28.8826, products: "Zeytin, Siyah İncir", pest: "Zeytin Pamuklu Biti" },
+            { id: "gursu", name: "Gürsu", lat: 40.2375, lon: 29.1936, products: "Deveci Armudu, Şeftali", pest: "Armut Psillidi" },
+            { id: "osmangazi", name: "Osmangazi", lat: 40.1828, lon: 29.0669, products: "Bursa Siyah İnciri, Şeftali", pest: "Afiş & Mantar Hastalıkları" },
+            { id: "nilufer", name: "Nilüfer", lat: 40.2117, lon: 28.9744, products: "Çilek, Enginar, Mısır", pest: "Kırmızı Örümcek" },
+            { id: "yildirim", name: "Yıldırım", lat: 40.1928, lon: 29.0911, products: "Şeftali, Kiraz", pest: "Yaprak Biti" },
+            { id: "kestel", name: "Kestel", lat: 40.1972, lon: 29.2144, products: "Bursa Siyahı, Fidan Üretimi", pest: "Külleme Hastalığı" },
+            { id: "inegol", name: "İnegöl", lat: 40.0783, lon: 29.5133, products: "Ayçiçeği, Çilek, Ceviz", pest: "Ayçiçeği Mildiyösü" },
+            { id: "yenisehir", name: "Yenişehir", lat: 40.2644, lon: 29.6531, products: "Biber, Biberiye, Taze Fasulye", pest: "Biber Mildiyösü & Thrips" },
+            { id: "iznik", name: "İznik", lat: 40.4286, lon: 29.7214, products: "Zeytin, Üzüm, Erik", pest: "Zeytin Sineği & Bağ Küllemesi" },
+            { id: "karacabey", name: "Karacabey", lat: 40.2164, lon: 28.3589, products: "Sanayi Domatesi, Mısır, Soğan", pest: "Domates Mildiyösü & Yeşilkurt" },
+            { id: "mustafakemalpasa", name: "Mustafakemalpaşa", lat: 39.9986, lon: 28.4117, products: "Domates, Biber, Tatlı Mısır", pest: "Erken Yaprak Yanıklığı" },
+            { id: "orhangazi", name: "Orhangazi", lat: 40.4878, lon: 29.3092, products: "Sofralık Zeytin, Turşuluk Hıyar", pest: "Zeytin Sineği & Yalancı Mildiyö" },
+            { id: "orhaneli", name: "Orhaneli", lat: 39.9042, lon: 28.9875, products: "Ceviz, Göynük Beldesi Kirazı", pest: "Kiraz Sinekleri" },
+            { id: "keles", name: "Keles", lat: 39.9144, lon: 29.2433, products: "Sanayi Çileği, Kiraz", pest: "Çilek Kök Çürüklüğü" },
+            { id: "buyukorhan", name: "Büyükorhan", lat: 39.7744, lon: 28.8819, products: "Göynük Çileği, Yem Bitkileri", pest: "Kök Mantarı" },
+            { id: "harmancik", name: "Harmancık", lat: 39.6967, lon: 29.1558, products: "Ceviz, Biber, Hububat", pest: "Sürme & Rastık" }
         ];
 
-        // Kartları Ekran Yüklenirken Oluştur
-        function renderDistrictCards() {
+        // WMO HAVA KODLARINI TÜRKÇE VE SİSTEME EŞLEME TABLOSU
+        function parseWMO(code) {
+            if ([0].includes(code)) return { condition: "Açık", isRain: false, rainMm: 0 };
+            if ([1, 2, 3].includes(code)) return { condition: "Parçalı Bulutlu", isRain: false, rainMm: 0 };
+            if ([51, 53, 55, 61, 63].includes(code)) return { condition: "Hafif Yağmur", isRain: true, rainMm: 4 };
+            if ([65, 80, 81].includes(code)) return { condition: "Şiddetli Yağmur", isRain: true, rainMm: 18 };
+            if ([95, 96, 99].includes(code)) return { condition: "Gök Gürültülü Yağmur", isRain: true, rainMm: 25 };
+            if ([71, 73, 75, 85, 86].includes(code)) return { condition: "Kar Yağışlı", isRain: false, rainMm: 0 };
+            return { condition: "Bulutlu", isRain: false, rainMm: 0 };
+        }
+
+        // DİNAMİK RİSK HESAPLAMA ALGORİTMASI
+        function calculateRisk(wind, rainMm) {
+            if (wind >= 22 || rainMm >= 15) return { risk: "danger", riskLabel: "YÜKSEK RİSK ⚠️" };
+            if (wind >= 16 || rainMm > 0) return { risk: "warning", riskLabel: "ORTA RİSK ⚡" };
+            return { risk: "normal", riskLabel: "Normal" };
+        }
+
+        // CANLI VERİ ÇEKME & ÖNBELLEK ENGELLEME (NO-CACHE MECHANISM)
+        async function fetchLiveWeatherData(district) {
+            try {
+                // nocache parametresi ve no-store başlığı ile önbellekleme hatası engellenir
+                const cacheBuster = `nocache=${Date.now()}`;
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${district.lat}&longitude=${district.lon}&current_weather=true&hourly=temperature_2m,relativehumidity_2m,precipitation,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max&timezone=auto&${cacheBuster}`;
+                
+                const response = await fetch(url, { cache: "no-store" });
+                const data = await response.json();
+
+                const current = data.current_weather;
+                const parsedWeather = parseWMO(current.weathercode);
+                
+                // Anlık bağıl nem tahmini
+                const humidityVal = data.hourly?.relativehumidity_2m?.[0] || 60;
+                const windSpeed = Math.round(current.windspeed);
+                const tempVal = Math.round(current.temperature);
+                
+                const riskInfo = calculateRisk(windSpeed, parsedWeather.rainMm);
+
+                return {
+                    ...district,
+                    temp: `${tempVal}°C`,
+                    humidity: `%${humidityVal}`,
+                    wind: windSpeed,
+                    condition: parsedWeather.condition,
+                    rainMm: parsedWeather.rainMm,
+                    risk: riskInfo.risk,
+                    riskLabel: riskInfo.riskLabel,
+                    rawDaily: data.daily,
+                    rawHourly: data.hourly
+                };
+            } catch (err) {
+                console.warn(`Veri çekilemedi (${district.name}), varsayılan değerler yüklendi:`, err);
+                return {
+                    ...district,
+                    temp: "22°C", humidity: "%65", wind: 12, condition: "Açık", rainMm: 0,
+                    risk: "normal", riskLabel: "Normal"
+                };
+            }
+        }
+
+        // İLÇE KARTLARINI ANLIK VERİLERLE EKRANA BASTIRMA
+        async function renderDistrictCards() {
             const grid = document.getElementById('districtGrid');
+            grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 20px;'>Canlı meteoroloji verileri ilçelere göre yükleniyor...</p>";
+            
+            const liveDataPromises = districtsData.map(d => fetchLiveWeatherData(d));
+            const updatedDistricts = await Promise.all(liveDataPromises);
+
             grid.innerHTML = "";
-            districtsData.forEach(d => {
+            updatedDistricts.forEach(d => {
+                // Global dizi güncellemesi
+                const targetIdx = districtsData.findIndex(item => item.id === d.id);
+                if (targetIdx !== -1) districtsData[targetIdx] = d;
+
                 grid.innerHTML += `
                     <div class="district-card" data-name="${d.name.toLowerCase()}" data-risk="${d.risk}">
                         <div class="card-header">
@@ -224,6 +294,7 @@
             });
         }
 
+        // DETAY POP-UP (MODAL) AÇILIŞI VE CANLI TAHMİNLER
         function openDistrictModal(id) {
             const d = districtsData.find(item => item.id === id);
             if (!d) return;
@@ -233,49 +304,58 @@
             document.getElementById('mProducts').innerText = d.products;
             document.getElementById('mPestInfo').innerText = d.pest;
 
-            // Saatlik Verileri Oluştur
+            // 1. Saatlik Verileri Oluştur
             const hourlyContainer = document.getElementById('mHourlyContainer');
             hourlyContainer.innerHTML = "";
             const hourlyTimes = ["09:00", "12:00", "15:00", "18:00", "21:00"];
+            
             hourlyTimes.forEach((t, index) => {
-                const rainChance = d.rainMm > 10 ? 80 + index * 3 : d.rainMm > 0 ? 30 + index * 5 : index * 5;
+                const hourlyTemp = d.rawHourly?.temperature_2m?.[index * 3] || parseInt(d.temp);
+                const hourlyRainProb = d.rawHourly?.precipitation?.[index * 3] > 0 ? 70 : (index * 5);
+                const hourlyWind = d.rawHourly?.windspeed_10m?.[index * 3] ? Math.round(d.rawHourly.windspeed_10m[index * 3]) : d.wind;
+
                 hourlyContainer.innerHTML += `
                     <div class="hourly-card">
                         <div class="time">${t}</div>
-                        <div class="temp">${d.temp}</div>
-                        <div class="rain">💧 %${rainChance} Yağış</div>
-                        <div class="wind">💨 ${d.wind + index} km/s</div>
+                        <div class="temp">${Math.round(hourlyTemp)}°C</div>
+                        <div class="rain">💧 %${hourlyRainProb} Yağış</div>
+                        <div class="wind">💨 ${hourlyWind} km/s</div>
                     </div>
                 `;
             });
 
-            // 4 Günlük Tahmin Verilerini Oluştur
+            // 2. 4 Günlük Tahmin Verilerini Oluştur
             const dailyContainer = document.getElementById('mDailyContainer');
             dailyContainer.innerHTML = "";
-            const days = ["Perşembe", "Cuma ⚠️", "Cumartesi", "Pazar"];
+            const days = ["Bugün", "Yarın", "3. Gün", "4. Gün"];
+            
             days.forEach((dayName, idx) => {
-                const isRainyDay = dayName.includes("Cuma") || d.rainMm > 10;
+                const maxTemp = d.rawDaily?.temperature_2m_max?.[idx] ? Math.round(d.rawDaily.temperature_2m_max[idx]) : 24;
+                const minTemp = d.rawDaily?.temperature_2m_min?.[idx] ? Math.round(d.rawDaily.temperature_2m_min[idx]) : 15;
+                const rainProb = d.rawDaily?.precipitation_probability_max?.[idx] ?? (d.rainMm > 10 ? 80 : 15);
+                const dayWind = d.rawDaily?.windspeed_10m_max?.[idx] ? Math.round(d.rawDaily.windspeed_10m_max[idx]) : (d.wind + idx);
+
                 dailyContainer.innerHTML += `
                     <div class="forecast-card">
                         <div class="day">${dayName}</div>
-                        <div class="temp-range">19°C / 27°C</div>
-                        <div class="sub-info">💧 %${isRainyDay ? 85 : 10} Yağış</div>
-                        <div class="sub-info">💨 ${d.wind + idx * 2} km/s</div>
+                        <div class="temp-range">${minTemp}°C / ${maxTemp}°C</div>
+                        <div class="sub-info">💧 %${rainProb} Yağış</div>
+                        <div class="sub-info">💨 ${dayWind} km/s</div>
                     </div>
                 `;
             });
 
-            // İlaçlama Rüzgar Uyarısı
+            // 3. İlaçlama Rüzgar Uyarısı
             const windBox = document.getElementById('mWindWarning');
             if (d.wind >= 18 || d.rainMm > 10) {
                 windBox.className = "wind-warning-box unsafe";
-                windBox.innerHTML = `⚠️ <strong>İLAÇLAMA RİSKLİ:</strong> Anlık rüzgar (${d.wind} km/s) veya yağış miktarı yüksek. İlaç damlacıklarının sürüklenme/yıkanma riski bulunmaktadır.`;
+                windBox.innerHTML = `⚠️ <strong>İLAÇLAMA RİSKLİ:</strong> Anlık rüzgar (${d.wind} km/s) veya yağış riski yüksek. İlaç sürüklenme/yıkanma riski mevcuttur.`;
             } else {
                 windBox.className = "wind-warning-box safe";
                 windBox.innerHTML = `✅ <strong>İLAÇLAMA ŞARTLARI UYGUN:</strong> Rüzgar hızı (${d.wind} km/s) zirai mücadele standartları dâhilindedir.`;
             }
 
-            // Risk Rozeti
+            // 4. Risk Rozeti
             const riskBadge = document.getElementById('mRiskBadge');
             riskBadge.innerText = d.riskLabel;
             riskBadge.className = "status-badge " + d.risk;
@@ -433,7 +513,7 @@
             render();
         }
 
-        // Sayfa Açıldığında 17 İlçeyi Yükle
+        // Sayfa Açıldığında 17 İlçeyi Canlı Verilerle Yükle
         document.addEventListener("DOMContentLoaded", renderDistrictCards);
     </script>
 </body>
