@@ -26,6 +26,7 @@
         .alert-item { background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 10px 12px; border-radius: 4px; margin-bottom: 10px; font-size: 13px; }
         .alert-item.danger { background-color: #f8d7da; border-left-color: #dc3545; color: #721c24; }
         .alert-item.wind { background-color: #e3f2fd; border-left-color: #0288d1; color: #01579b; }
+        .alert-item.safe { background-color: #e8f5e9; border-left-color: #4caf50; color: #1b5e20; }
 
         .content { flex: 1; }
         .content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -128,11 +129,8 @@
 
             <div class="side-card">
                 <h3>⚠️ Genel Erken Uyarılar</h3>
-                <div class="alert-item danger">
-                    <strong>Gemlik, İznik & Orhangazi:</strong> Beklenen yağışlar nedeniyle ilaçlama takvimini gözden geçirin!
-                </div>
-                <div class="alert-item wind">
-                    <strong>Mudanya, Karacabey & Nilüfer:</strong> Rüzgar hızı yüksek saatlerde ilaç sürüklenme riski bulunmaktadır.
+                <div id="generalAlertsContainer">
+                    <p style="font-size: 13px; color: #666;">Meteorolojik veriler analiz ediliyor...</p>
                 </div>
             </div>
         </div>
@@ -247,6 +245,45 @@
             return { risk: "normal", riskLabel: "Normal" };
         }
 
+        // CANLI VERİDEN CANLI GENEL ERKEN UYARILARI ÜRETEN MOTOR
+        function updateGeneralAlerts(districts) {
+            const alertsContainer = document.getElementById('generalAlertsContainer');
+            alertsContainer.innerHTML = "";
+
+            // Yağış veya yüksek risk barındıran ilçeler
+            const rainDistricts = districts.filter(d => d.rainMm > 0 || d.risk === 'danger').map(d => d.name);
+            // İlaçlama sürüklenmesine yol açabilecek rüzgarlı ilçeler (>= 18 km/s)
+            const windDistricts = districts.filter(d => d.wind >= 18).map(d => d.name);
+
+            let hasAlert = false;
+
+            if (rainDistricts.length > 0) {
+                hasAlert = true;
+                alertsContainer.innerHTML += `
+                    <div class="alert-item danger">
+                        <strong>${rainDistricts.join(', ')}:</strong> Beklenen yağış/hastalık riski nedeniyle ilaçlama ve sulama takvimini gözden geçirin!
+                    </div>
+                `;
+            }
+
+            if (windDistricts.length > 0) {
+                hasAlert = true;
+                alertsContainer.innerHTML += `
+                    <div class="alert-item wind">
+                        <strong>${windDistricts.join(', ')}:</strong> Rüzgar hızı yüksek. Zirai ilaçlamada sürüklenme ve etki kaybı riski bulunmaktadır.
+                    </div>
+                `;
+            }
+
+            if (!hasAlert) {
+                alertsContainer.innerHTML = `
+                    <div class="alert-item safe">
+                        <strong>Tüm İlçeler:</strong> Şu an için kritik meteorolojik ve zirai risk bulunmamaktadır. Şartlar uygundur.
+                    </div>
+                `;
+            }
+        }
+
         // CANLI VERİ ÇEKME & ÖNBELLEK ENGELLEME
         async function fetchLiveWeatherData(district) {
             try {
@@ -287,7 +324,7 @@
             }
         }
 
-        // İLÇE KARTLARINI EKRANA BASTIRMA
+        // İLÇE KARTLARINI EKRANA BASTIRMA VE GENEL UYARILARI GÜNCELLEME
         async function renderDistrictCards() {
             const grid = document.getElementById('districtGrid');
             grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 20px;'>Canlı meteoroloji verileri ilçelere göre yükleniyor...</p>";
@@ -314,6 +351,9 @@
                     </div>
                 `;
             });
+
+            // Gelen canlı veriler ışığında Sol Yan Paneldeki Genel Uyarıları Güncelle
+            updateGeneralAlerts(updatedDistricts);
 
             // Son güncelleme zaman damgasını bas
             const now = new Date();
