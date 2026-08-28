@@ -582,7 +582,7 @@
             { month: "Temmuz", alert: "Zeytin Sineği tuzak kontrolü ve tuzlu/kurak stres takibi.", details: "İlaçlamaların akşam saatlerinde yapılması önerilir." },
             { month: "Ağustos", alert: "Zeytin Sineği ve Kırmızı Örümcek zararlısı tepe noktadadır!", details: "Sanayi domatesi ve meyve hasadı yoğunlaşır. Sulama aksatılmamalıdır." },
             { month: "Eylül", alert: "Siyah İncir ve Zeytin hasat öncesi son koruma dönemi.", details: "Sonbahar toprak işleme hazırlıkları başlar." },
-            { month: "Ekim", alert: "Hasat sonrası ağaçların güçlendirilmesi ve yaprak gübrelemesi.", details: "Zeytin alım merkezleri açılır, dökülen yapraklar temizlenir." },
+            { month: "Ekim", alert: "Hasat sonrası ağaçların güçlendirildi ve yaprak gübrelemesi.", details: "Zeytin alım merkezleri açılır, dökülen yapraklar temizlenir." },
             { month: "Kasım", alert: "Zeytin hasadı devam ediyor. Kışlık toprak işlemesi yapılır.", details: "Taban gübreleri toprağa karıştırılır." },
             { month: "Aralık", alert: "Don koruma ve toprak düzenleme dönemi.", details: "Alet ve ekipman bakımları gerçekleştirilir." }
         ];
@@ -708,20 +708,19 @@
 
                 const current = data.current_weather;
                 const parsedWeather = parseWMO(current.weathercode);
+                const tempVal = Math.round(current.temperature);
                 const humidityVal = data.hourly?.relativehumidity_2m?.[0] || 60;
                 const dewPointVal = data.hourly?.dewpoint_2m?.[0] !== undefined ? Math.round(data.hourly.dewpoint_2m[0]) : tempVal - 3;
                 const soilTempVal = data.hourly?.soil_temperature_0to10cm?.[0] !== undefined ? Math.round(data.hourly.soil_temperature_0to10cm[0]) : tempVal - 2;
                 
                 const windSpeed = Math.round(current.windspeed);
-                const tempVal = Math.round(current.temperature);
-                
                 const currentRain = data.hourly?.precipitation?.[0] !== undefined ? data.hourly.precipitation[0] : parsedWeather.rainMm;
                 
                 const riskInfo = calculateRisk(windSpeed, currentRain, tempVal);
 
-                // MADDE 16: AKÜMÜLATİF GDD HESABI (30 GÜNLÜK TAHMİNİ TOPLAM BİRİKİM)
+                // MADDE 16: AKÜMÜLATİF GDD HESABI
                 const singleGdd = Math.max(0, tempVal - district.baseTemp);
-                const accumulativeGdd = (singleGdd * 18 + 120).toFixed(0); // Tahmini sezon birikimi
+                const accumulativeGdd = (singleGdd * 18 + 120).toFixed(0);
 
                 const result = {
                     ...district,
@@ -873,7 +872,7 @@
             const soilTempEl = document.getElementById('mSoilTempBox');
             const sTemp = d.soilTemp || (d.temp - 2);
             if(sTemp >= 12) {
-                soilTempEl.innerHTML = `🌱 <strong>Ekim İdeal:</strong> Toprak sıcaklığı (${sTemp}°C), Mısır, Domates ve Ayçiçeği ekimi/dikimi için 12°C eşiğini aşmıştır.`;
+                soilTempEl.innerHTML = `🌱 <strong>Ekim İideal:</strong> Toprak sıcaklığı (${sTemp}°C), Mısır, Domates ve Ayçiçeği ekimi/dikimi için 12°C eşiğini aşmıştır.`;
             } else {
                 soilTempEl.innerHTML = `❄️ <strong>Toprak Soğuk (${sTemp}°C):</strong> Tohum çimlenmesi yavaşlayabilir. 12°C üzerine çıkması beklenmeli.`;
             }
