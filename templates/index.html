@@ -170,10 +170,6 @@
         .clock-hour-chip.bad { background-color: #c62828; }
         .clock-hour-chip.warning { background-color: #f57f17; }
 
-        /* GÖMÜLÜ HESAPLAYICI IFRAME STİLİ */
-        .iframe-container { width: 100%; height: 750px; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; background: #ffffff; }
-        .iframe-container iframe { width: 100%; height: 100%; border: none; }
-
         @media (max-width: 900px) {
             .layout { flex-direction: column; }
             .sidebar { width: 100%; }
@@ -181,7 +177,6 @@
             header { flex-direction: column; gap: 10px; text-align: center; }
             .header-right { width: 100%; justify-content: center; }
             .tab-content.active { flex-direction: column; }
-            .iframe-container { height: 550px; }
         }
     </style>
 </head>
@@ -207,7 +202,6 @@
     <!-- SEKME / TAB SEÇİM ALANI -->
     <div class="tab-nav">
         <button class="tab-btn active" onclick="switchTab('main-tab', this)">🗺️ Risk Haritası & İlçeler</button>
-        <button class="tab-btn" onclick="switchTab('destek-tab', this)">🇹🇷 Bakanlık Destek Hesaplayıcı</button>
         <button class="tab-btn" onclick="switchTab('calc-tab', this)">🧮 Zirai Hesaplayıcılar</button>
         <button class="tab-btn" onclick="switchTab('pest-tab', this)">🔬 Hastalık & Teşhis Rehberi</button>
         <button class="tab-btn" onclick="switchTab('market-tab', this)">📈 Bursa Hal & Ziraat Fiyatları</button>
@@ -286,22 +280,6 @@
 
                 <div class="district-grid" id="districtGrid">
                     <!-- KARTLAR JAVASCRIPT ILE DOLDURULACAK -->
-                </div>
-            </div>
-        </div>
-
-        <!-- SEKME (YENİ): TARIM VE ORMAN BAKANLIĞI DESTEK HESAPLAYICI -->
-        <div id="destek-tab" class="tab-content">
-            <div class="tab-panel-inner">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                    <div>
-                        <h2>🇹🇷 T.C. Tarım ve Orman Bakanlığı Tarımsal Destek Hesaplayıcı</h2>
-                        <p style="font-size: 13px; opacity: 0.8;">Bakanlığın resmi portalından güncel tarımsal destekleme ve hibe miktarınızı doğrudan hesaplayabilirsiniz.</p>
-                    </div>
-                    <a href="https://destekhesaplama.tarimorman.gov.tr/" target="_blank" class="card-btn" style="width:auto; margin:0; text-decoration:none;">🌐 Harici Sayfada Aç</a>
-                </div>
-                <div class="iframe-container">
-                    <iframe src="https://destekhesaplama.tarimorman.gov.tr/" title="Tarım ve Orman Bakanlığı Destek Hesaplayıcı"></iframe>
                 </div>
             </div>
         </div>
