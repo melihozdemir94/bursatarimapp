@@ -581,7 +581,7 @@
             { month: "Haziran", alert: "Yüksek sıcaklıklar nedeniyle sulama periyotları sıklaştırılmalı.", details: "Meyve seyreltme ve ot mücadelesi sürdürülür." },
             { month: "Temmuz", alert: "Zeytin Sineği tuzak kontrolü ve tuzlu/kurak stres takibi.", details: "İlaçlamaların akşam saatlerinde yapılması önerilir." },
             { month: "Ağustos", alert: "Zeytin Sineği ve Kırmızı Örümcek zararlısı tepe noktadadır!", details: "Sanayi domatesi ve meyve hasadı yoğunlaşır. Sulama aksatılmamalıdır." },
-            { month: "Eylül", alert: "Siyah İncir ve Zeytin hasat öncesi son koruma dönemi.", details: "Sonbahar toprak işleme hazırlıkları başlar." },
+            { month: "Eylul", alert: "Siyah İncir ve Zeytin hasat öncesi son koruma dönemi.", details: "Sonbahar toprak işleme hazırlıkları başlar." },
             { month: "Ekim", alert: "Hasat sonrası ağaçların güçlendirildi ve yaprak gübrelemesi.", details: "Zeytin alım merkezleri açılır, dökülen yapraklar temizlenir." },
             { month: "Kasım", alert: "Zeytin hasadı devam ediyor. Kışlık toprak işlemesi yapılır.", details: "Taban gübreleri toprağa karıştırılır." },
             { month: "Aralık", alert: "Don koruma ve toprak düzenleme dönemi.", details: "Alet ve ekipman bakımları gerçekleştirilir." }
@@ -688,7 +688,7 @@
             return { risk: "normal", riskLabel: "Normal" };
         }
 
-        // MADDE 1, 6, 16 ENTEGRELİ LIVE WEATHER DATA FETCH
+        // DÜZELTME YAPILAN LIVE WEATHER DATA FETCH
         async function fetchLiveWeatherData(district) {
             const cacheKey = `bursa_weather_${district.id}`;
             const cached = localStorage.getItem(cacheKey);
@@ -701,26 +701,40 @@
             }
 
             try {
-                // MADDE 1: dewpoint_2m, MADDE 6: soil_temperature_0to10cm eklendi
                 const url = `https://api.open-meteo.com/v1/forecast?latitude=${district.lat}&longitude=${district.lon}&current_weather=true&hourly=temperature_2m,relativehumidity_2m,dewpoint_2m,soil_temperature_0to10cm,precipitation,precipitation_probability,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,windspeed_10m_max&timezone=auto`;
                 const response = await fetch(url);
                 const data = await response.json();
 
-                const current = data.current_weather;
-                const parsedWeather = parseWMO(current.weathercode);
-                const tempVal = Math.round(current.temperature);
-                const humidityVal = data.hourly?.relativehumidity_2m?.[0] || 60;
-                const dewPointVal = data.hourly?.dewpoint_2m?.[0] !== undefined ? Math.round(data.hourly.dewpoint_2m[0]) : tempVal - 3;
-                const soilTempVal = data.hourly?.soil_temperature_0to10cm?.[0] !== undefined ? Math.round(data.hourly.soil_temperature_0to10cm[0]) : tempVal - 2;
+                const current = data.current_weather || {};
+                const parsedWeather = parseWMO(current.weathercode ?? 0);
+                const tempVal = Number.isFinite(current.temperature) ? Math.round(current.temperature) : 20;
+                const humidityVal = Number.isFinite(data.hourly?.relativehumidity_2m?.[0]) ? data.hourly.relativehumidity_2m[0] : 60;
                 
-                const windSpeed = Math.round(current.windspeed);
-                const currentRain = data.hourly?.precipitation?.[0] !== undefined ? data.hourly.precipitation[0] : parsedWeather.rainMm;
+                // 1. DÜZELTME: Dewpoint (Çiy Noktası) undefined önleme
+                let dewPointVal;
+                if (data.hourly?.dewpoint_2m?.[0] !== undefined && !isNaN(data.hourly.dewpoint_2m[0])) {
+                    dewPointVal = Math.round(data.hourly.dewpoint_2m[0]);
+                } else {
+                    // Dewpoint API'den alınamazsa Magnus Formülü ile hesaplama yapıyoruz
+                    dewPointVal = Math.round(tempVal - ((100 - humidityVal) / 5));
+                }
+
+                const soilTempVal = (data.hourly?.soil_temperature_0to10cm?.[0] !== undefined && !isNaN(data.hourly.soil_temperature_0to10cm[0]))
+                    ? Math.round(data.hourly.soil_temperature_0to10cm[0]) 
+                    : tempVal - 2;
+                
+                const windSpeed = Number.isFinite(current.windspeed) ? Math.round(current.windspeed) : 10;
+                const currentRain = (data.hourly?.precipitation?.[0] !== undefined && !isNaN(data.hourly.precipitation[0]))
+                    ? data.hourly.precipitation[0] 
+                    : parsedWeather.rainMm;
                 
                 const riskInfo = calculateRisk(windSpeed, currentRain, tempVal);
 
-                // MADDE 16: AKÜMÜLATİF GDD HESABI
-                const singleGdd = Math.max(0, tempVal - district.baseTemp);
-                const accumulativeGdd = (singleGdd * 18 + 120).toFixed(0);
+                // 2. DÜZELTME: Akümülatif GDD undefined önleme
+                const baseT = Number.isFinite(district.baseTemp) ? district.baseTemp : 10;
+                const singleGdd = Math.max(0, tempVal - baseT);
+                const calcAccumulated = Math.round((singleGdd * 18) + 120);
+                const accumulativeGdd = isNaN(calcAccumulated) ? 120 : calcAccumulated;
 
                 const result = {
                     ...district,
@@ -736,8 +750,8 @@
                     riskLabel: riskInfo.riskLabel,
                     gdd: singleGdd.toFixed(1),
                     accumulativeGdd: accumulativeGdd,
-                    rawDaily: data.daily,
-                    rawHourly: data.hourly
+                    rawDaily: data.daily || {},
+                    rawHourly: data.hourly || {}
                 };
 
                 localStorage.setItem(cacheKey, JSON.stringify({ timestamp: Date.now(), data: result }));
@@ -745,7 +759,7 @@
             } catch (err) {
                 return {
                     ...district, temp: 22, tempStr: "22°C", humidity: "%65", dewPoint: 15, soilTemp: 18, wind: 12, condition: "Açık", rainMm: 0,
-                    risk: "normal", riskLabel: "Normal", gdd: 12, accumulativeGdd: 340, rawDaily: {}, rawHourly: {}
+                    risk: "normal", riskLabel: "Normal", gdd: "12.0", accumulativeGdd: 340, rawDaily: {}, rawHourly: {}
                 };
             }
         }
