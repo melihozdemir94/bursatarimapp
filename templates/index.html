@@ -89,7 +89,10 @@
         .content-header h2 { font-size: 20px; }
         .last-update-tag { font-size: 12px; background: var(--border-color); padding: 4px 10px; border-radius: 12px; }
 
+        /* HARİTA BOYUTLANDIRMA VE RENDER DÜZELTMELERİ */
         #mapContainer { height: 380px; width: 100%; border-radius: 10px; margin-bottom: 25px; border: 1px solid var(--border-color); box-shadow: 0 2px 6px rgba(0,0,0,0.05); z-index: 1; }
+        .leaflet-container { width: 100%; height: 100%; border-radius: 10px; }
+        .leaflet-tile-container img { width: 256px !important; height: 256px !important; }
 
         .district-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
         
@@ -481,7 +484,7 @@
     </div>
 
     <script>
-        // EMAILJS İNİTİALİZE (Mail Gönderim Yetkisi)
+        // EMAILJS İNİTİALİZASYONU
         (function(){
             emailjs.init("YOUR_PUBLIC_KEY");
         })();
@@ -568,7 +571,7 @@
         }
         setInterval(updateDateTime, 1000);
 
-        // SEKME DEĞİŞTİRME MEKANİZMASI
+        // SEKME DEĞİŞTİRME MEKANİZMASI VE HARİTA YENİLEME
         function switchTab(tabId, btn) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -597,9 +600,12 @@
                     .bindPopup(`<b>${d.name}</b><br>Ürünler: ${d.crops.slice(0, 3).join(', ')}...<br><button onclick="openModal(${idx})" style="background:#1b5e20; color:white; border:none; padding:4px 8px; border-radius:4px; margin-top:5px; cursor:pointer;">Detay ve Hava Durumu</button>`);
                 markers.push({ name: d.name, marker: marker });
             });
+
+            // Haritanın render hatalarını önlemek için boyut tetiklemesi
+            setTimeout(() => { map.invalidateSize(); }, 300);
         }
 
-        // İLÇE KARTLARINI RENDER ETME VE OPEN-METEO APİ ENTEGRASYONU
+        // İLÇE KARTLARINI RENDER ETME VE OPEN-METEO API ENTEGRASYONU (DÜZELTİLDİ)
         async function renderDistrictCards() {
             const grid = document.getElementById('districtGrid');
             grid.innerHTML = "";
@@ -618,16 +624,17 @@
                 const d = sortedData[i];
                 const origIndex = districtsData.findIndex(item => item.name === d.name);
 
-                const url = `https://api.open-meteo.com/v1/forecast?latitude=${d.lat}&longitude=${d.lon}&current_weather=true&hourly=temperature_2m,relativehumidity_2m,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,windspeed_10m_max&timezone=Europe%2FTurbat`;
+                // Open-Meteo URL Parametreleri Güncellendi
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${d.lat}&longitude=${d.lon}&current_weather=true&hourly=temperature_2m,relative_humidity_2m,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,windspeed_10m_max&timezone=auto`;
 
                 let temp = "--", wind = "--", statusText = "Veri alınıyor...", badgeClass = "normal", badgeLabel = "Düşük Risk";
 
                 try {
                     const res = await fetch(url);
                     const data = await res.json();
-                    fetchedWeatherData[d.name] = data;
-
-                    if(data.current_weather) {
+                    
+                    if (data && data.current_weather) {
+                        fetchedWeatherData[d.name] = data;
                         temp = data.current_weather.temperature;
                         wind = data.current_weather.windspeed;
 
@@ -647,13 +654,17 @@
                             badgeClass = "normal";
                             badgeLabel = "Uygun Seviye";
                         }
+                    } else {
+                        statusText = "Veri Alınamadı";
                     }
                 } catch(e) {
-                    console.error("Hava durumu çekilemedi:", e);
+                    console.error(`${d.name} hava durumu çekilemedi:`, e);
+                    statusText = "Bağlantı Hatası";
                 }
 
                 const isFav = fav === d.name;
 
+                // Buton ifadesi "🔍 Detaylı Bilgi & Tahmin" olarak güncellendi
                 const cardHtml = `
                     <div class="district-card" data-name="${d.name}" data-risk="${badgeClass}">
                         <span class="favorite-star ${isFav ? 'active' : ''}" onclick="toggleFavorite('${d.name}')">★</span>
@@ -665,7 +676,7 @@
                         <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">${wind} km/s</span></div>
                         <div class="info-row"><span>Öne Çıkan Ürünler:</span><span class="val" style="font-size:11px;">${d.crops.slice(0, 3).join(', ')}</span></div>
                         <div class="info-row"><span>Durum:</span><span class="val">${statusText}</span></div>
-                        <button class="card-btn" onclick="openModal(${origIndex})">🔍 Detaylı Detay & Tahmin</button>
+                        <button class="card-btn" onclick="openModal(${origIndex})">🔍 Detaylı Bilgi & Tahmin</button>
                     </div>
                 `;
                 grid.innerHTML += cardHtml;
@@ -742,13 +753,18 @@
             document.getElementById('modalDistrictName').innerText = d.name + " Zirai Hava Durumu Raporu";
             document.getElementById('weatherModal').style.display = 'flex';
 
-            if(!data || !data.hourly) return;
+            if(!data || !data.hourly) {
+                document.getElementById('modalMainStatus').innerText = "Veri yüklenemedi veya bekleniyor.";
+                return;
+            }
+
+            document.getElementById('modalMainStatus').innerText = "Güncel Meteorolojik Veriler";
 
             const clockGrid = document.getElementById('modalClockGrid');
             clockGrid.innerHTML = "";
             for(let h = 6; h <= 20; h++) {
-                const wind = data.hourly.windspeed_10m[h] || 10;
-                const temp = data.hourly.temperature_2m[h] || 20;
+                const wind = (data.hourly.windspeed_10m && data.hourly.windspeed_10m[h] !== undefined) ? data.hourly.windspeed_10m[h] : 10;
+                const temp = (data.hourly.temperature_2m && data.hourly.temperature_2m[h] !== undefined) ? data.hourly.temperature_2m[h] : 20;
                 
                 let statusClass = "good";
                 if(wind > 18 || temp > 30) statusClass = "bad";
@@ -760,9 +776,9 @@
             const scrollBox = document.getElementById('modalHourlyScroll');
             scrollBox.innerHTML = "";
             for(let i = 0; i < 24; i += 2) {
-                const timeStr = data.hourly.time[i].split('T')[1];
-                const t = data.hourly.temperature_2m[i];
-                const w = data.hourly.windspeed_10m[i];
+                const timeStr = data.hourly.time && data.hourly.time[i] ? data.hourly.time[i].split('T')[1] : `${i}:00`;
+                const t = data.hourly.temperature_2m ? data.hourly.temperature_2m[i] : '--';
+                const w = data.hourly.windspeed_10m ? data.hourly.windspeed_10m[i] : '--';
                 scrollBox.innerHTML += `
                     <div class="hourly-card">
                         <div style="font-size:12px; font-weight:bold;">${timeStr}</div>
@@ -790,7 +806,7 @@
 
             const forecastGrid = document.getElementById('modalForecastGrid');
             forecastGrid.innerHTML = "";
-            if(data.daily) {
+            if(data.daily && data.daily.time) {
                 for(let j = 0; j < Math.min(data.daily.time.length, 4); j++) {
                     const dayName = data.daily.time[j];
                     const maxT = data.daily.temperature_2m_max[j];
@@ -808,8 +824,8 @@
             const ctx = document.getElementById('tempChart').getContext('2d');
             if(currentChart) currentChart.destroy();
 
-            const temps24 = data.hourly.temperature_2m.slice(0, 24);
-            const hours24 = data.hourly.time.slice(0, 24).map(t => t.split('T')[1]);
+            const temps24 = data.hourly.temperature_2m ? data.hourly.temperature_2m.slice(0, 24) : [];
+            const hours24 = data.hourly.time ? data.hourly.time.slice(0, 24).map(t => t.split('T')[1]) : [];
 
             currentChart = new Chart(ctx, {
                 type: 'line',
@@ -892,7 +908,7 @@
             const m2 = document.getElementById('mixItem2').value;
 
             if(m1 === 'bakir' && m2 === 'yag') {
-                document.getElementById('mixResult').innerHTML = `<span style="color:#d32f2f;">❌ UYUMSUZ: Bakırlı bileşikler ile yağ grubu ilaçlar kesinlikle karıştırılmamalıdır! Yakma yapar.</span>`;
+                document.getElementById('mixResult').innerHTML = `<span style="color:#d32f2f;">❌ UYUMSUZ: Bakırlı bileşikler ile yağ grubu ilaçlar kesinlikle karıştırılmamalıdır! Yakma meyleder.</span>`;
             } else {
                 document.getElementById('mixResult').innerHTML = `<span style="color:#2e7d32;">✅ UYGUN: Belirtilen iki etken madde düşük dozlarda tank karışımı yapılabilir.</span>`;
             }
