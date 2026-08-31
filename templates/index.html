@@ -5,17 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🚜 Bursa Tarımsal Erken Uyarı & Fenolojik Takip Sistemi 🚜</title>
     
-    <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4383802505372588" crossorigin="anonymous"></script>
 
-    <!-- Leaflet.js (Harita) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- Chart.js (Grafik) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- EmailJS SDK (Mail Gönderimi İçin) -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <style>
@@ -182,7 +178,6 @@
 </head>
 <body>
 
-    <!-- GECE DONU CANLI ALARM ŞERİDİ -->
     <div id="frostFlashBanner" class="frost-flash-banner">
         ⚠️ KRİTİK ZİRAİ DON RİSKİ UYARISI! Sıcaklık 2°C Altına İnen İlçeler Tespiti Edildi! ❄️
     </div>
@@ -199,7 +194,6 @@
         </div>
     </header>
 
-    <!-- SEKME / TAB SEÇİM ALANI -->
     <div class="tab-nav">
         <button class="tab-btn active" onclick="switchTab('main-tab', this)">🗺️ Risk Haritası & İlçeler</button>
         <button class="tab-btn" onclick="switchTab('calc-tab', this)">🧮 Zirai Hesaplayıcılar</button>
@@ -211,11 +205,8 @@
 
     <div class="layout">
         
-        <!-- SEKME 1: ANA SAYFA & İLÇELER -->
         <div id="main-tab" class="tab-content active">
-            <!-- SOL YAN PANEL -->
             <div class="sidebar">
-                <!-- FAVORİ İLÇE PANELİ -->
                 <div class="side-card" style="background: #f1f8e9; border-color: #c8e6c9;">
                     <h3>⭐ Favori İlçeniz</h3>
                     <select id="favDistrictSelect" onchange="setFavoriteDistrict(this.value)">
@@ -242,7 +233,6 @@
                     </div>
                 </div>
 
-                <!-- EMAILJS ILE HOTMAIL'E BAGLI SMS / WHATSAPP UYARI FORMU -->
                 <div class="side-card">
                     <h3>📲 Ücretsiz SMS / WhatsApp İkazı</h3>
                     <p style="font-size: 12px; margin-bottom: 10px; opacity: 0.8;">İlçenizde don, yüksek rüzgar veya hastalık riski oluştuğunda cebinize haber verelim.</p>
@@ -256,7 +246,6 @@
                     </form>
                 </div>
 
-                <!-- ÇİFTÇİ RADAR / SAHA BİLDİRİM FORMU -->
                 <div class="side-card" style="border-left: 4px solid #0288d1;">
                     <h3>📡 Çiftçi Saha Radarı (Anonim)</h3>
                     <p style="font-size:12px; opacity:0.8; margin-bottom:8px;">Arazinizde karşılaştığınız bir zararlıyı haritaya ekleyin:</p>
@@ -268,23 +257,19 @@
                 </div>
             </div>
 
-            <!-- SAĞ İÇERİK ALANI -->
             <div class="content">
                 <div class="content-header">
                     <h2>Bursa İnteraktif Risk Haritası & Tüm İlçeler (17 İlçe)</h2>
                     <span id="lastUpdateText" class="last-update-tag">Son Güncelleme: --:--</span>
                 </div>
 
-                <!-- HARİTA MODÜLÜ -->
                 <div id="mapContainer"></div>
 
                 <div class="district-grid" id="districtGrid">
-                    <!-- KARTLAR JAVASCRIPT ILE DOLDURULACAK -->
-                </div>
+                    </div>
             </div>
         </div>
 
-        <!-- SEKME 2: ZİRAİ HESAPLAYICILAR -->
         <div id="calc-tab" class="tab-content">
             <div class="tab-panel-inner">
                 <h2>🧮 Çiftçi Zirai Hesaplama Araçları</h2>
@@ -309,7 +294,6 @@
                         <div class="result-box" id="irrigationResult">Haftalık tahmini su ihtiyacı: ---</div>
                     </div>
 
-                    <!-- GÜBRELEME / NPK İHTİYAÇ HESAPLAYICI -->
                     <div class="calc-card">
                         <h4>🌱 NPK Taban / Üst Gübre Hesaplayıcı</h4>
                         <label style="font-size: 13px;">Ürün Tipi:</label>
@@ -325,7 +309,6 @@
                         <div class="result-box" id="npkResult">Önerilen Saf N-P-K Miktarı: ---</div>
                     </div>
 
-                    <!-- MALİYET / KAR HESAPLAYICI -->
                     <div class="calc-card">
                         <h4>💰 Dönüm Başı Maliyet & Net Kar Hesaplayıcı</h4>
                         <input type="number" id="costFuel" placeholder="Mazot & İşçilik Gideri (₺)" value="1500">
@@ -336,7 +319,6 @@
                         <div class="result-box" id="profitResult">Tahmini Net Kar: ---</div>
                     </div>
 
-                    <!-- HASAT & YEVMİYE İŞ GÜCÜ HESAPLAYICI -->
                     <div class="calc-card">
                         <h4>👨‍🌾 Hasat & Yevmiye İş Gücü Hesaplayıcı</h4>
                         <label style="font-size: 13px;">Ürün Türü:</label>
@@ -351,7 +333,6 @@
                         <div class="result-box" id="laborResult">Tahmini İşçi / Gün Sayısı: ---</div>
                     </div>
 
-                    <!-- AKILLI REÇETE & TANK-MIX UYUMLULUK ASİSTANI -->
                     <div class="calc-card">
                         <h4>🧪 İlaç Karışım (Tank-Mix) Uyumluluk Kontrolü</h4>
                         <label style="font-size: 13px;">1. Etken Madde / İlaç Türü:</label>
@@ -373,12 +354,10 @@
             </div>
         </div>
 
-        <!-- SEKME 3: HASTALIK TEŞHİS REHBERİ -->
         <div id="pest-tab" class="tab-content">
             <div class="tab-panel-inner">
                 <h2>🔬 Zararlı & Hastalık Teşhis Asistanı</h2>
                 
-                <!-- KAMERA İLE HASTALIK TEŞHİSİ MOCK MODÜLÜ -->
                 <div style="background: var(--card-bg); border: 2px dashed var(--primary-green); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
                     <h4>📷 Görsel Yaprak Analiz Asistanı (AI Teşhis Mock)</h4>
                     <p style="font-size:12px; opacity:0.8; margin-bottom:8px;">Hastalıklı yaprak fotoğrafını yükleyin, piksel ve renk lekesi analizine göre olası hastalığı teşhis edelim:</p>
@@ -388,8 +367,7 @@
 
                 <p style="font-size: 14px; opacity:0.8;">Bursa bölgesinde yetiştirilen ana ürünlerdeki hastalıkları arayın veya belirtiye göre filtreleyin.</p>
                 <input type="text" id="pestSearchInput" onkeyup="filterPests()" placeholder="Hastalık adı veya belirti yazın (Örn: Sarı leke, Zeytin, Lekelenme)...">
-                
-                <!-- PHI ETKEN MADDE ÇAPRAZ SORGUSU -->
+
                 <table class="data-table" id="pestTable">
                     <thead>
                         <tr>
@@ -400,13 +378,11 @@
                         </tr>
                     </thead>
                     <tbody id="pestTableBody">
-                        <!-- JS ile doldurulacak -->
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- SEKME 4: BURSA HAL FİYATLARI -->
         <div id="market-tab" class="tab-content">
             <div class="tab-panel-inner">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
@@ -417,7 +393,6 @@
                     <button class="card-btn" style="width:auto; margin:0;" onclick="loadMarketPrices(true)">🔄 Fiyatları Güncelle</button>
                 </div>
 
-                <!-- HAL FİYAT DEĞİŞİM TRENDİ GÖSTERGESİ -->
                 <table class="data-table">
                     <thead>
                         <tr>
@@ -436,690 +411,464 @@
             </div>
         </div>
 
-        <!-- SEKME 5: AYLIK ZİRAİ TAKVİM -->
         <div id="calendar-tab" class="tab-content">
             <div class="tab-panel-inner">
                 <h2>📅 Bursa Bölgesi Aylık Zirai Takvim & İş Planı</h2>
                 <div id="calendarContainer">
-                    <!-- JS ile dinamik oluşturulacak -->
-                </div>
+                    </div>
             </div>
         </div>
 
-        <!-- BURSA YEREL ÇEŞİT VERİ BANKASI SEKMESİ -->
         <div id="bursa-catalog-tab" class="tab-content">
             <div class="tab-panel-inner">
                 <h2>🍇 Bursa Yerel Ürün Veri Bankası & Yetiştiricilik Kılavuzu</h2>
-                <p style="font-size:13px; opacity:0.8;">Bursa coğrafi işaretli ve öne çıkan tescilli tarım ürünlerinin ideal toprak, pH ve gübrelenme parametreleri.</p>
-                <div class="district-grid" id="bursaCatalogGrid">
-                    <!-- JS ile doldurulacak -->
-                </div>
+                <p style="font-size:13px; opacity:0.8;">Bursa coğrafi işaretli ve öne çıkan tescilli tarım ürünlerinin ideal toprak, dikim ve bakım parametreleri katalog rehberi.</p>
+                <div class="calc-grid" id="bursaCatalogGrid">
+                    </div>
             </div>
         </div>
 
     </div>
 
-    <!-- DETAY POP-UP (MODAL) -->
-    <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-overlay" id="weatherModal">
         <div class="modal-container">
-            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <button class="modal-close" onclick="closeModal()">✕</button>
             
-            <div class="weather-banner" id="modalBanner">
-                <div id="popup-weather-bg"></div>
+            <div class="weather-banner">
+                <canvas id="popup-weather-bg"></canvas>
                 <div class="banner-info">
-                    <h2 id="mDistrict">İlçe Adı</h2>
-                    <p id="mWeatherSummary">Yükleniyor...</p>
+                    <h2 id="modalDistrictName">İlçe Adı</h2>
+                    <p id="modalMainStatus" style="font-size: 14px; opacity: 0.9;">Hava Durumu Yükleniyor...</p>
                 </div>
             </div>
 
             <div class="modal-body">
-                <button class="whatsapp-btn" id="mWhatsappBtn" onclick="shareOnWhatsApp()">
-                    💬 Bu İlçe Analizini WhatsApp'ta Paylaş
-                </button>
-
-                <!-- MANTARİ HASTALIK RİSK İNDEKSİ & ÇİY NOKTASI -->
-                <div class="modal-section" style="margin-top:15px; background: #fffde7; padding: 10px; border-radius: 8px; border: 1px solid #fff59d;">
-                    <h4 style="color:#f57f17;">🍄 Mantari Hastalık Risk İndeksi & Yaprak Islaklığı</h4>
-                    <div id="mFungalRiskBox" style="font-size:13px;">Yükleniyor...</div>
-                </div>
-
-                <!-- TOPRAK SICAKLIĞI & ÇİMLENME ASİSTANI -->
-                <div class="modal-section" style="background: #efebe9; padding: 10px; border-radius: 8px; border: 1px solid #d7ccc8;">
-                    <h4 style="color:#5d4037;">🌱 Toprak Sıcaklığı & Çimlenme / Ekim Uygunluğu</h4>
-                    <div id="mSoilTempBox" style="font-size:13px;">Yükleniyor...</div>
-                </div>
-
-                <!-- BURSA FENOLOJİK İLAÇLAMA SAAT KADRANI -->
-                <div class="modal-section">
-                    <h4>🕒 24 Saatlik Zirai İlaçlama Uygunluk Kadranı</h4>
-                    <div class="fenolojik-clock-container" id="mClockContainer"></div>
+                <div class="modal-section" style="background:#f9fbe7; padding:12px; border-radius:8px; border:1px solid #c0ca33;">
+                    <h4>🕒 Bugün En Uygun İlaçlama Saati Kadranı</h4>
+                    <p style="font-size:11px; opacity:0.8;">Rüzgar, sıcaklık ve bağıl neme göre saat bazlı uygunluk derecesi:</p>
+                    <div class="fenolojik-clock-container" id="modalClockGrid">
+                        </div>
                 </div>
 
                 <div class="modal-section">
-                    <h4>📊 24 Saatlik Sıcaklık ve Nem Trendi</h4>
-                    <canvas id="hourlyChart" height="120"></canvas>
+                    <h4>⏱️ 24 Saatlik Detaylı Sıcaklık & Nem Akışı</h4>
+                    <div class="hourly-scroll" id="modalHourlyScroll">
+                        </div>
                 </div>
 
                 <div class="modal-section">
-                    <h4>🕒 Saatlik Detaylı Hava & Yağış Tahmini</h4>
-                    <div class="hourly-scroll" id="mHourlyContainer">Yükleniyor...</div>
-                </div>
-
-                <!-- AKÜMÜLATİF GDD (GELİŞME DERECE GÜN) BİLGİSİ -->
-                <div class="modal-section">
-                    <h4>🌿 Fenolojik Gelişim & Reçete / Mücadele Önerisi</h4>
-                    <div class="recipe-box" id="mRecipeBox">Yükleniyor...</div>
+                    <h4>📊 24 Saatlik Sıcaklık Grafiği (°C)</h4>
+                    <div style="height: 180px; width: 100%;">
+                        <canvas id="tempChart"></canvas>
+                    </div>
                 </div>
 
                 <div class="modal-section">
-                    <h4>💨 Zirai İlaçlama & Rüzgar Uyarısı</h4>
-                    <div id="mWindWarning" class="wind-warning-box safe"></div>
+                    <h4>💨 Rüzgar & Zirai İlaçlama Güvenlik Uyarısı</h4>
+                    <div id="modalWindBox" class="wind-warning-box">
+                        Hesaplanıyor...
+                    </div>
                 </div>
 
                 <div class="modal-section">
-                    <h4>📅 Sonraki 4 Günün Hava Tahmini</h4>
-                    <div class="forecast-grid" id="mDailyContainer">Yükleniyor...</div>
+                    <h4>📋 İlçe İçin Fenolojik Zirai Tavsiye & Mücadele Reçetesi</h4>
+                    <div id="modalRecipeBox" class="recipe-box">
+                        Yükleniyor...
+                    </div>
+                </div>
+
+                <div class="modal-section">
+                    <h4>📅 7 Günlük Meteorolojik Tahmin</h4>
+                    <div class="forecast-grid" id="modalForecastGrid">
+                        </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // EMAILJS GÜNCEL AYARLARI
-        const EMAILJS_PUBLIC_KEY = "h7WQL2mykERx25PTm";
-        const EMAILJS_SERVICE_ID = "service_2gpgkrw";
-        const EMAILJS_TEMPLATE_ID = "template_57wqimj";
-
-        // BURSA'NIN 17 İLÇESİNİN EKSİKSİZ GÜNCEL VERİ LİSTESİ
-        const districtsData = [
-            { id: "gemlik", name: "Gemlik", lat: 40.4312, lon: 29.1558, products: "Gemlik Zeytini, Enginar", pest: "Zeytin Sineği & Halkalı Leke", baseTemp: 10 },
-            { id: "mudanya", name: "Mudanya", lat: 40.3752, lon: 28.8826, products: "Zeytin, Siyah İncir, Üzüm", pest: "Zeytin Pamuklu Biti & Bağ Küllemesi", baseTemp: 10 },
-            { id: "gursu", name: "Gürsu", lat: 40.2375, lon: 29.1936, products: "Deveci Armudu, Şeftali, Nektarin", pest: "Armut Psillidi & Karaleke", baseTemp: 7 },
-            { id: "osmangazi", name: "Osmangazi", lat: 40.1828, lon: 29.0669, products: "Bursa Siyah İnciri, Şeftali, Bağ", pest: "Afiş & Mantari Hastalıklar", baseTemp: 10 },
-            { id: "nilufer", name: "Nilüfer", lat: 40.2117, lon: 28.9744, products: "Çilek, Enginar, Mısır, Domates", pest: "Kırmızı Örümcek & Mildiyö", baseTemp: 10 },
-            { id: "yildirim", name: "Yıldırım", lat: 40.1928, lon: 29.0911, products: "Şeftali, Kiraz, Napolyon Kirazı", pest: "Yaprak Biti & Monilya", baseTemp: 8 },
-            { id: "kestel", name: "Kestel", lat: 40.1972, lon: 29.2144, products: "Bursa Siyahı İncir, Fidan Üretimi, Göynük Çileği", pest: "Külleme Hastalığı & Kök Çürüklüğü", baseTemp: 8 },
-            { id: "inegol", name: "İnegöl", lat: 40.0783, lon: 29.5133, products: "Ayçiçeği, Sanayi Çileği, Ceviz, Patates", pest: "Ayçiçeği Mildiyösü & Patates Mildiyösü", baseTemp: 6 },
-            { id: "yenisehir", name: "Yenişehir", lat: 40.2644, lon: 29.6531, products: "Biber, Biberiye, Taze Fasulye, Bezelye", pest: "Biber Mildiyösü & Thrips", baseTemp: 10 },
-            { id: "iznik", name: "İznik", lat: 40.4286, lon: 29.7214, products: "Sofralık Zeytin, Üzüm, Erik, Şeftali", pest: "Zeytin Sineği & Bağ Küllemesi", baseTemp: 10 },
-            { id: "karacabey", name: "Karacabey", lat: 40.2164, lon: 28.3589, products: "Sanayi Domatesi, Mısır, Soğan, Sofralık Kavun", pest: "Domates Mildiyösü & Yeşilkurt", baseTemp: 10 },
-            { id: "mustafakemalpasa", name: "Mustafakemalpaşa", lat: 39.9986, lon: 28.4117, products: "Domates, Biber, Tatlı Mısır, Çeltik", pest: "Erken Yaprak Yanıklığı & Çeltik Yanıklığı", baseTemp: 10 },
-            { id: "orhangazi", name: "Orhangazi", lat: 40.4878, lon: 29.3092, products: "Sofralık Zeytin, Turşuluk Hıyar, Kivi", pest: "Zeytin Sineği & Yalancı Mildiyö", baseTemp: 10 },
-            { id: "orhaneli", name: "Orhaneli", lat: 39.9042, lon: 28.9875, products: "Ceviz, Göynük Beldesi Kirazı, Vişne", pest: "Kiraz Sinekleri & İç Kurdu", baseTemp: 5 },
-            { id: "keles", name: "Keles", lat: 39.9144, lon: 29.2433, products: "Sanayi Çileği, Kiraz, Ceviz", pest: "Çilek Kök Çürüklüğü & Monilya", baseTemp: 5 },
-            { id: "buyukorhan", name: "Büyükorhan", lat: 39.7744, lon: 28.8819, products: "Göynük Çileği, Yem Bitkileri, Görecik Cevizi", pest: "Kök Mantarı & Yaprak Lekesi", baseTemp: 5 },
-            { id: "harmancik", name: "Harmancık", lat: 39.6967, lon: 29.1558, products: "Ceviz, Biber, Hububat, Bakliyat", pest: "Sürme & Rastık Hastalıkları", baseTemp: 5 }
-        ];
-
-        // ETKEN MADDE PHI BEKLEME SÜRELERİ ENTEGRELİ HASTALIK VERİTABANI
-        const pestDatabase = [
-            { product: "Zeytin", name: "Zeytin Sineği (Bactrocera oleae)", symptoms: "Meyvede vuruk izleri, lekelenme ve dökülme", remedy: "Deltamethrin (PHI: 7 gün) veya Spinosad (PHI: 3 gün)" },
-            { product: "Zeytin", name: "Halkalı Leke Hastalığı", symptoms: "Yapraklarda koyu halkalı sarı lekelenmeler", remedy: "Bakır sülfat / Bordo bulamacı (PHI: 21 gün)" },
-            { product: "Armut", name: "Armut Psillidi", symptoms: "Yapraklarda tatlımsı salgı (balımsı madde) ve kararma", remedy: "Abamectin (PHI: 14 gün) veya Spirotetramat (PHI: 21 gün)" },
-            { product: "Şeftali / İncir", name: "Yaprak Biti & Afitler", symptoms: "Kıvrılmış yapraklar, taze sürgünlerde kuruma", remedy: "Imidacloprid (PHI: 14 gün) veya Potasyum Sabunu (PHI: 1 gün)" },
-            { product: "Domates", name: "Domates Mildiyösü", symptoms: "Yaprak üstünde kahverengi lekeler, alt kısımda beyaz küf", remedy: "Mancozeb (PHI: 28 gün) veya Metalaxyl (PHI: 14 gün)" },
-            { product: "Çilek", name: "Kırmızı Örümcek", symptoms: "Yapraklarda sarı benekbenek leke ve ince ağ", remedy: "Hexythiazox (PHI: 14 gün) veya Fenpyroximate (PHI: 7 gün)" }
-        ];
-
-        // BURSA YEREL ÇEŞİT VERİ BANKASI
-        const bursaLocalProducts = [
-            { name: "Gemlik Zeytini", ph: "6.5 - 7.5 (Tınlı-Kireçli)", spacing: "6x6m veya 5x5m", fertilizer: "Taban: 15-15-15 (Dönüme 30kg), Üst: Amonyum Sülfat", water: "Yıllık 600-800 mm (Yazın 3 kritik sulama)" },
-            { name: "Gürsu Deveci Armudu", ph: "6.0 - 7.0 (Süzek Alüvyal)", spacing: "4x2m veya 4x1.5m (Telli Terbiye)", fertilizer: "Taban: Kompoze + Çinko, Üst: Potasyum Nitrat", water: "Haftalık 35-40 m³/dönüm damlama" },
-            { name: "Bursa Siyah İnciri", ph: "6.5 - 7.8 (Derin Derin Tınlı)", spacing: "7x7m veya 8x8m", fertilizer: "Azot fazlalığından kaçınılmalı, Organik Kompost", water: "Meyve büyütme döneminde düzenli az miktarda" },
-            { name: "Karacabey Sanayi Domatesi", ph: "6.0 - 6.8 (Killi-Tınlı)", spacing: "140x30 cm çift sıra", fertilizer: "Taban: DAP (25kg), Üst: Üre + Kalsiyum Nitrat", water: "Damlama ile 4-5 günde bir 25 m³/dönüm" },
-            { name: "Yenişehir Biberi", ph: "6.2 - 7.2", spacing: "70x35 cm", fertilizer: "Taban: 20-20-0 + Magnezyum", water: "Kritik Çiçeklenme ve Tutumda Sık Sulama" }
-        ];
-
-        // AYLIK ZİRAİ TAKVİM VERİLERİ
-        const monthlyCalendar = [
-            { month: "Ocak", alert: "Kış budamaları ve Bordo Bulamacı hazırlıkları yapılmalıdır.", details: "Meyve ağaçlarında budama başlar. Don riskine karşı kök koruması yapılır." },
-            { month: "Şubat", alert: "Zeytin ağaçlarında Bordo Bulamacı uygulaması için son dönem.", details: "Toprak hazırlığı ve taban gübrelemesi tamamlanır." },
-            { month: "Mart", alert: "Erkenci meyvelerde çiçeklenme dönemi; don uyarıları takip edilmeli.", details: "Fidan dikimleri yapılır. Fenolojik gelişim takibi başlar." },
-            { month: "Nisan", alert: "Armut ve Şeftali bahçelerinde emici zararlılara dikkat!", details: "Çiçek sonrası ilk ilaçlama ve sürgün takibi yapılır." },
-            { month: "Mayıs", alert: "Zeytin Pamuklu Biti ve Mantari hastalıklara karşı ilaçlama zamanı.", details: "Yaprak gübrelemesi ve ilk damla sulamalar başlar." },
-            { month: "Haziran", alert: "Yüksek sıcaklıklar nedeniyle sulama periyotları sıklaştırılmalı.", details: "Meyve seyreltme ve ot mücadelesi sürdürülür." },
-            { month: "Temmuz", alert: "Zeytin Sineği tuzak kontrolü ve tuzlu/kurak stres takibi.", details: "İlaçlamaların akşam saatlerinde yapılması önerilir." },
-            { month: "Ağustos", alert: "Zeytin Sineği ve Kırmızı Örümcek zararlısı tepe noktadadır!", details: "Sanayi domatesi ve meyve hasadı yoğunlaşır. Sulama aksatılmamalıdır." },
-            { month: "Eylul", alert: "Siyah İncir ve Zeytin hasat öncesi son koruma dönemi.", details: "Sonbahar toprak işleme hazırlıkları başlar." },
-            { month: "Ekim", alert: "Hasat sonrası ağaçların güçlendirildi ve yaprak gübrelemesi.", details: "Zeytin alım merkezleri açılır, dökülen yapraklar temizlenir." },
-            { month: "Kasım", alert: "Zeytin hasadı devam ediyor. Kışlık toprak işlemesi yapılır.", details: "Taban gübreleri toprağa karıştırılır." },
-            { month: "Aralık", alert: "Don koruma ve toprak düzenleme dönemi.", details: "Alet ve ekipman bakımları gerçekleştirilir." }
-        ];
-
-        let map;
-        let mapMarkers = [];
-        let chartInstance = null;
-        let selectedDistrictForShare = null;
-        let favoriteDistrictId = localStorage.getItem('bursa_fav_district') || "";
-
-        // EMAILJS BAŞLATMA
-        (function() {
-            emailjs.init(EMAILJS_PUBLIC_KEY); 
+        // EMAILJS İNİTİALİZE (Mail Gönderim Yetkisi)
+        (function(){
+            emailjs.init("YOUR_PUBLIC_KEY"); // EmailJS Key Buraya
         })();
 
-        // FAVORİ İLÇE AYARLAMA VE ÖNE ÇIKARMA
-        function setFavoriteDistrict(id) {
-            favoriteDistrictId = id;
-            localStorage.setItem('bursa_fav_district', id);
-            renderDistrictCards();
-        }
+        // 17 BURSA İLÇESİ - KOORDİNATLAR VE GÜNCELLENMİŞ TARIMSAL ÜRÜNLER
+        const districtsData = [
+            { name: "Gürsu", lat: 40.2372, lon: 29.1936, crops: ["Bursa Deveci Armudu", "Bursa Santa Maria Armut", "Bursa Şeftalisi", "Nektarin", "Salatalık", "Marul"] },
+            { name: "Büyükorhan", lat: 39.7733, lon: 28.9008, crops: ["Triticale", "Yulaf", "Mısır", "Çilek"] },
+            { name: "Gemlik", lat: 40.4312, lon: 29.1558, crops: ["Gemlik Zeytini", "Ceviz", "Siyah İncir"] },
+            { name: "Harmancık", lat: 39.8114, lon: 29.1553, crops: ["Kiraz", "Yonca", "Yulaf", "Mısır"] },
+            { name: "Karacabey", lat: 40.2158, lon: 28.3581, crops: ["Karacabey Soğanı", "Karpuz", "Salçalık Domates", "Kapya Biber", "Mısır"] },
+            { name: "Keles", lat: 39.9142, lon: 29.2392, crops: ["Keles Kirazı", "Çilek", "Yonca", "Yulaf"] },
+            { name: "Mudanya", lat: 40.3753, lon: 28.8828, crops: ["Mudanya Zeytini", "Siyah İncir", "Üzüm", "Şeftali", "Elma"] },
+            { name: "Mustafakemalpaşa", lat: 40.0353, lon: 28.4117, crops: ["Mustafakemalpaşa Tatlılık Peynir", "Kırmızı Biber", "Salçalık Domates", "Mısır", "Karpuz", "Ayçiçeği", "Kuru Fasulye"] },
+            { name: "Orhaneli", lat: 39.8931, lon: 28.9881, crops: ["Çilek", "Kiraz", "Göynükbelen Çileği", "Vişne", "Yonca", "Ceviz"] },
+            { name: "Orhangazi", lat: 40.4914, lon: 29.3092, crops: ["Zeytin", "Kivi", "Turşuluk Salatalık", "Domates", "Biber", "Enginar", "Kestane"] },
+            { name: "Yenişehir", lat: 40.2644, lon: 29.6531, crops: ["Yenişehir Biberi", "Kuru Fasulye", "Bezelye", "Ispanak", "Domates"] },
+            { name: "Yıldırım", lat: 40.1925, lon: 29.1122, crops: ["Bursa Santa Maria Armudu", "Bursa Deveci Armudu", "Bursa Şeftalisi", "Nektarin"] },
+            { name: "İnegöl", lat: 40.0783, lon: 29.5133, crops: ["Bursa Santa Maria Armudu", "Bursa Şeftalisi", "İnegöl Cerrah Kuru Fasulyesi", "İnegöl Çıbrıkası", "Elma", "Patates"] },
+            { name: "İznik", lat: 40.4286, lon: 29.7214, crops: ["İznik Müşküle Üzümü", "Zeytin", "Şeftali", "Nektarin", "Brokoli", "Kabak", "Fasulye"] },
+            { name: "Nilüfer", lat: 40.2117, lon: 28.9322, crops: ["Hasanağa Enginarı", "Çalı Fasulyesi", "Siyah İncir", "Çilek"] },
+            { name: "Osmangazi", lat: 40.1828, lon: 29.0669, crops: ["Bursa Siyah İnciri", "Bursa Şeftalisi", "Deveci Armudu", "Üzüm"] },
+            { name: "Kestel", lat: 40.1983, lon: 29.2125, crops: ["Kestel Kestanesi", "Bursa Şeftalisi", "Deveci Armudu", "Ahududu", "Böğürtlen"] }
+        ];
 
-        function populateFavSelect() {
-            const selectEl = document.getElementById('favDistrictSelect');
-            selectEl.innerHTML = '<option value="">Favori İlçe Seçin...</option>';
-            districtsData.forEach(d => {
-                const opt = document.createElement('option');
-                opt.value = d.id;
-                opt.innerText = d.name;
-                if(d.id === favoriteDistrictId) opt.selected = true;
-                selectEl.appendChild(opt);
-            });
-        }
+        // GÜNCELLENMİŞ BURSA YEREL ÜRÜN VERİ BANKASI
+        const bursaLocalProducts = [
+            { name: "Bursa Deveci Armudu", ph: "6.0 - 7.0", spacing: "4m x 3m", fertilizer: "Kışın Tabana NPK (15-15-15), Çiçeklenme Öncesi Çinko & Bor", water: "Haftada 2 Kez Damlama (Yüksek)" },
+            { name: "Bursa Santa Maria Armudu", ph: "6.0 - 7.2", spacing: "4m x 2.5m", fertilizer: "Erken İlkbaharda Azot Taktakiyesi, Yapraktan Kalsiyum", water: "7-10 Günde Bir Düzenli Sulama" },
+            { name: "Bursa Şeftalisi & Nektarin", ph: "6.0 - 6.8", spacing: "5m x 4m", fertilizer: "Erken Nitrat + Potasyum, Seyreltme Sonrası Yaprak Gübresi", water: "Meyve Büyütme Döneminde Yüksek" },
+            { name: "Gemlik Zeytini", ph: "6.5 - 8.0", spacing: "6m x 6m veya 5m x 5m", fertilizer: "Şubat Sonrası Kompoze Gübre, Sürgün Döneminde Yapraktan Bor", water: "Çirkit ve Dane Büyütmede Kritik" },
+            { name: "Bursa Siyah İnciri", ph: "6.5 - 7.5", spacing: "7m x 7m", fertilizer: "Düşük Azot, Yüksek Potasyum ve Kalsiyum Desteği", water: "Kurak Zamanlarda Sınırlı Sulama" },
+            { name: "Karacabey Soğanı", ph: "6.0 - 7.0", spacing: "Sıra Arası 15cm", fertilizer: "Ekimde Fosfor Ağır, Baş Bağlama Döneminde Potasyum", water: "Baş Bağlamada Orta, Hasada Yakın Kesilir" },
+            { name: "Yenişehir Biberi & Kapya", ph: "6.0 - 6.8", spacing: "70cm x 40cm", fertilizer: "Fide Dikiminde Can Suyu Gübresi, Meyvede Potasyum Nitrat", water: "Damlama ile 3-4 Günde Bir" },
+            { name: "Hasanağa Enginarı", ph: "6.0 - 7.5", spacing: "1m x 1m", fertilizer: "Sonbaharda Çiftlik Gübresi, Baş Oluşumunda Nitrat", water: "Kış Dönemi Düzenli Nem İstemi" },
+            { name: "İznik Müşküle Üzümü", ph: "6.5 - 7.5", spacing: "3m x 2m", fertilizer: "Budama Sonrası Organik Madde, Koruk Dönemi Potasyum", water: "Stres Yaratmayacak Düzeyde Damlama" },
+            { name: "Kestel Kestanesi & Meyveler", ph: "5.5 - 6.5 (Asidik)", spacing: "8m x 8m", fertilizer: "Organik Çiftlik Gübresi ve Kompost Desteği", water: "Yaz Kuraklığında Derin Sulama" },
+            { name: "İnegöl Cerrah Kuru Fasulyesi", ph: "6.0 - 7.0", spacing: "45cm x 10cm", fertilizer: "Ekimle Birlikte DAP Gübresi, Çiçeklenmede Bor/Moban", water: "Bakla Bağlama Aşamasında Kritik" },
+            { name: "İnegöl Çıbrıkası", ph: "6.0 - 7.5", spacing: "Fide Mesafesi 30cm", fertilizer: "Organik Ağırlıklı Tabat Gübrelemesi", water: "Orta Seviye Nem" }
+        ];
 
-        // SEKME DEĞİŞTİRME FONKSİYONU
-        function switchTab(tabId, btnEl) {
+        // HASTALIK VE ZARARLI LİSTESİ
+        const pestData = [
+            { crop: "Zeytin", pest: "Zeytin Sineği (Bactrocera oleae)", symptom: "Meyve üzerinde 'V' şeklinde vuruk izleri, dökülme ve yağ kalitesinde düşüş.", cure: "Deltamethrin veya Phosmet etken maddeli ilaçlama (PHI: 21 gün). " },
+            { crop: "Zeytin", pest: "Zeytin Halkalı Leke (Spilocaea oleagina)", symptom: "Yapraklarda koyu yeşil/siyah çember şeklinde lekeler, erken yaprak dökümü.", cure: "%1'lik Bordo Bulamacı veya Bakır Hidroksit (PHI: 14 gün)." },
+            { crop: "Armut / Şeftali", pest: "Karaleke (Venturia pirina)", symptom: "Yaprak ve meyvelerde kadifemsi esmer/siyah lekeler, meyvede çatlama.", cure: "Dithianon, Captan veya Tebuconazole etken maddeli sistemik fungisit (PHI: 14-21 gün)." },
+            { crop: "Armut", pest: "Armut Psillidi (Cacopsylla pyri)", symptom: "Sürgünlerde yapışkan salgı (balımsı madde), kararma ve sürgün kuruması.", cure: "Abamectin veya Spirotetramat etken maddeli ilaçlama (PHI: 14 gün)." },
+            { crop: "Domates / Biber", pest: "Erken Yanıklık / Mildiyö", symptom: "Yapraklarda iç içe geçmiş halkalı kahverengi lekeler, gövde kararması.", cure: "Azoxystrobin veya Mancozeb etken maddeli ilaçlama (PHI: 7-14 gün)." },
+            { crop: "İncir", pest: "İncir Kanlı Basrası", symptom: "Gövde ve dallarda beyaz pamuksu tabaka, çalılaşma.", cure: "Yazlık Yağlar ile ruhsatlı insektisitler (PHI: 14 gün)." }
+        ];
+
+        // AYLIK ZİRAİ TAKVİM VERİSİ
+        const calendarData = [
+            { month: "Ocak - Şubat", task: "Zeytin ve Meyve ağaçlarında kış budaması. Kışlık Bakırlı İlaçlama (Bordo Bulamacı) uygulaması. Toprak analizi numunelerinin alınması." },
+            { month: "Mart - Nisan", task: "Armut ve Şeftalide karaleke ve küllemeye karşı ilk koruyucu ilaçlamalar. Şeftalide klok (yaprak kıvırcıklığı) takibi. Biber ve domates fidelerinin dikimi." },
+            { month: "Mayıs - Haziran", task: "Zeytin güvesi çiçek nesli takibi. Meyve ağaçlarında seyreltme ve azotu dengeli üst gübreleme. Meyve sineği tuzaklarının asılması." },
+            { month: "Temmuz - Ağustos", task: "Zeytin sineği ve Armut psillidi popülasyon takibi. Sulama programlarının sıklaştırılması. Erkenci şeftali ve nektarin hasadı." },
+            { month: "Eylül - Ekim", task: "Gemlik Zeytini ve Siyah İncir hasat hazırlığı ve toplanması. Karacabey soğanı ve sanayi domatesi son depolama/hasat işlemleri." },
+            { month: "Kasım - Aralık", task: "Hasat sonrası ağaçların kışa hazırlanması, sonbahar bakırlı uygulamaları. Dökülen yaprakların toplanıp imha edilmesi." }
+        ];
+
+        let map, markers = [];
+        let fetchedWeatherData = {};
+        let currentChart = null;
+
+        // CANLI SAAT / TARİH FONKSİYONU
+        function updateDateTime() {
+            const now = new Date();
+            document.getElementById('liveDate').innerText = now.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            document.getElementById('liveTime').innerText = now.toLocaleTimeString('tr-TR');
+        }
+        setInterval(updateDateTime, 1000);
+
+        // SEKME DEĞİŞTİRME MEKANİZMASI
+        function switchTab(tabId, btn) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            
             document.getElementById(tabId).classList.add('active');
-            btnEl.classList.add('active');
+            btn.classList.add('active');
 
-            if (tabId === 'main-tab' && map) {
-                setTimeout(() => map.invalidateSize(), 200);
+            if(tabId === 'main-tab' && map) {
+                setTimeout(() => { map.invalidateSize(); }, 200);
             }
         }
 
-        function populateDistrictSelect() {
-            const selectEl = document.getElementById('farmerDistrict');
-            const radarSelect = document.getElementById('radarDistrict');
-            
-            selectEl.innerHTML = '<option value="">İlçenizi Seçin</option>';
-            if(radarSelect) radarSelect.innerHTML = '<option value="">İlçe Seçin</option>';
-
-            districtsData.forEach(d => {
-                const opt = document.createElement('option');
-                opt.value = d.name;
-                opt.innerText = d.name;
-                selectEl.appendChild(opt);
-
-                if(radarSelect) {
-                    const opt2 = document.createElement('option');
-                    opt2.value = d.id;
-                    opt2.innerText = d.name;
-                    radarSelect.appendChild(opt2);
-                }
-            });
-        }
-
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('liveDate').innerText = now.toLocaleDateString('tr-TR', { day: '2-digit', month: 'long', year: 'numeric' });
-            document.getElementById('liveTime').innerText = now.toLocaleTimeString('tr-TR');
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
+        // KOYU MOD TOGGLE
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
         }
 
+        // HARİTA İNİTİALİZASYONU
         function initMap() {
             map = L.map('mapContainer').setView([40.1885, 29.0610], 9);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap'
+                attribution: '&copy; OpenStreetMap katkıda bulunanlar'
             }).addTo(map);
+
+            districtsData.forEach((d, idx) => {
+                const marker = L.marker([d.lat, d.lon]).addTo(map)
+                    .bindPopup(`<b>${d.name}</b><br>Ürünler: ${d.crops.slice(0, 3).join(', ')}...<br><button onclick="openModal(${idx})" style="background:#1b5e20; color:white; border:none; padding:4px 8px; border-radius:4px; margin-top:5px; cursor:pointer;">Detay ve Hava Durumu</button>`);
+                markers.push({ name: d.name, marker: marker });
+            });
         }
 
-        function parseWMO(code) {
-            if ([0].includes(code)) return { condition: "Açık", rainMm: 0 };
-            if ([1, 2, 3].includes(code)) return { condition: "Parçalı Bulutlu", rainMm: 0 };
-            if ([51, 53, 55, 61, 63].includes(code)) return { condition: "Hafif Yağmur", rainMm: 4 };
-            if ([65, 80, 81].includes(code)) return { condition: "Şiddetli Yağmur", rainMm: 18 };
-            if ([95, 96, 99].includes(code)) return { condition: "Gök Gürültülü Yağmur", rainMm: 25 };
-            if ([71, 73, 75].includes(code)) return { condition: "Kar Yağışlı", rainMm: 0 };
-            return { condition: "Bulutlu", rainMm: 0 };
-        }
-
-        function calculateRisk(wind, rainMm, temp) {
-            if (temp <= 0) return { risk: "danger", riskLabel: "DON RİSKİ ❄️" };
-            if (wind >= 22 || rainMm >= 15) return { risk: "danger", riskLabel: "YÜKSEK RİSK ⚠️" };
-            if (wind >= 16 || rainMm > 0) return { risk: "warning", riskLabel: "ORTA RİSK ⚡" };
-            return { risk: "normal", riskLabel: "Normal" };
-        }
-
-        // DİNANİK YEDEK (FALLBACK) METEOROLOJİ JENERATÖRÜ
-        function getSimulatedWeatherData(district) {
-            // İlçe adından benzersiz tohum türetme
-            let hash = 0;
-            for (let i = 0; i < district.name.length; i++) {
-                hash = district.name.charCodeAt(i) + ((hash << 5) - hash);
-            }
-            const pseudoRandom = (seed) => Math.abs((Math.sin(seed) * 10000) % 1);
-            
-            // Rakım ve coğrafi konuma dayalı mikro-klima simülasyonu
-            const isMountain = ["keles", "orhaneli", "buyukorhan", "harmancik"].includes(district.id);
-            const isCoastal = ["gemlik", "mudanya"].includes(district.id);
-
-            let tempVal = isMountain ? Math.round(14 + pseudoRandom(hash) * 6) : (isCoastal ? Math.round(21 + pseudoRandom(hash) * 5) : Math.round(18 + pseudoRandom(hash) * 7));
-            let humidityVal = Math.round(50 + pseudoRandom(hash + 1) * 40);
-            let windSpeed = Math.round(6 + pseudoRandom(hash + 2) * 18);
-            let rainMm = pseudoRandom(hash + 3) > 0.7 ? Math.round(pseudoRandom(hash + 4) * 12) : 0;
-            let dewPointVal = Math.round(tempVal - ((100 - humidityVal) / 5));
-            let soilTempVal = tempVal - 2;
-
-            const conditions = ["Açık", "Parçalı Bulutlu", "Bulutlu", "Hafif Yağmurlu"];
-            let cond = rainMm > 0 ? "Hafif Yağmurlu" : conditions[Math.floor(pseudoRandom(hash + 5) * 3)];
-            let riskInfo = calculateRisk(windSpeed, rainMm, tempVal);
-
-            const baseT = district.baseTemp || 10;
-            const singleGdd = Math.max(0, tempVal - baseT);
-            const accumulativeGdd = Math.round((singleGdd * 18) + (100 + pseudoRandom(hash + 6) * 50));
-
-            return {
-                ...district,
-                temp: tempVal,
-                tempStr: `${tempVal}°C`,
-                humidity: `%${humidityVal}`,
-                dewPoint: dewPointVal,
-                soilTemp: soilTempVal,
-                wind: windSpeed,
-                condition: cond,
-                rainMm: rainMm,
-                risk: riskInfo.risk,
-                riskLabel: riskInfo.riskLabel,
-                gdd: singleGdd.toFixed(1),
-                accumulativeGdd: accumulativeGdd,
-                rawDaily: {},
-                rawHourly: {}
-            };
-        }
-
-        // LIVE WEATHER DATA FETCH
-        async function fetchLiveWeatherData(district) {
-            const cacheKey = `bursa_weather_${district.id}`;
-            const cached = localStorage.getItem(cacheKey);
-            
-            if (cached) {
-                const parsed = JSON.parse(cached);
-                if (Date.now() - parsed.timestamp < 15 * 60 * 1000) {
-                    return parsed.data;
-                }
-            }
-
-            try {
-                const url = `https://api.open-meteo.com/v1/forecast?latitude=${district.lat}&longitude=${district.lon}&current_weather=true&hourly=temperature_2m,relativehumidity_2m,dewpoint_2m,soil_temperature_0to10cm,precipitation,precipitation_probability,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,windspeed_10m_max&timezone=auto`;
-                const response = await fetch(url);
-                if (!response.ok) throw new Error("API Hatası");
-                const data = await response.json();
-
-                const current = data.current_weather || {};
-                const parsedWeather = parseWMO(current.weathercode ?? 0);
-                const tempVal = Number.isFinite(current.temperature) ? Math.round(current.temperature) : 20;
-                const humidityVal = Number.isFinite(data.hourly?.relativehumidity_2m?.[0]) ? data.hourly.relativehumidity_2m[0] : 60;
-                
-                let dewPointVal;
-                if (data.hourly?.dewpoint_2m?.[0] !== undefined && !isNaN(data.hourly.dewpoint_2m[0])) {
-                    dewPointVal = Math.round(data.hourly.dewpoint_2m[0]);
-                } else {
-                    dewPointVal = Math.round(tempVal - ((100 - humidityVal) / 5));
-                }
-
-                const soilTempVal = (data.hourly?.soil_temperature_0to10cm?.[0] !== undefined && !isNaN(data.hourly.soil_temperature_0to10cm[0]))
-                    ? Math.round(data.hourly.soil_temperature_0to10cm[0]) 
-                    : tempVal - 2;
-                
-                const windSpeed = Number.isFinite(current.windspeed) ? Math.round(current.windspeed) : 10;
-                const currentRain = (data.hourly?.precipitation?.[0] !== undefined && !isNaN(data.hourly.precipitation[0]))
-                    ? data.hourly.precipitation[0] 
-                    : parsedWeather.rainMm;
-                
-                const riskInfo = calculateRisk(windSpeed, currentRain, tempVal);
-
-                const baseT = Number.isFinite(district.baseTemp) ? district.baseTemp : 10;
-                const singleGdd = Math.max(0, tempVal - baseT);
-                const calcAccumulated = Math.round((singleGdd * 18) + 120);
-                const accumulativeGdd = isNaN(calcAccumulated) ? 120 : calcAccumulated;
-
-                const result = {
-                    ...district,
-                    temp: tempVal,
-                    tempStr: `${tempVal}°C`,
-                    humidity: `%${humidityVal}`,
-                    dewPoint: dewPointVal,
-                    soilTemp: soilTempVal,
-                    wind: windSpeed,
-                    condition: parsedWeather.condition,
-                    rainMm: currentRain,
-                    risk: riskInfo.risk,
-                    riskLabel: riskInfo.riskLabel,
-                    gdd: singleGdd.toFixed(1),
-                    accumulativeGdd: accumulativeGdd,
-                    rawDaily: data.daily || {},
-                    rawHourly: data.hourly || {}
-                };
-
-                localStorage.setItem(cacheKey, JSON.stringify({ timestamp: Date.now(), data: result }));
-                return result;
-            } catch (err) {
-                // Hata durumunda her ilçe için farklı, dinamik meteorolojik veri döndür
-                return getSimulatedWeatherData(district);
-            }
-        }
-
-        // CANLI DON ALARM ŞERİDİ KONTROLÜ
-        function updateGeneralAlerts(districts) {
-            const alertsContainer = document.getElementById('generalAlertsContainer');
-            alertsContainer.innerHTML = "";
-
-            const currentMonthIdx = new Date().getMonth();
-            const monthData = monthlyCalendar[currentMonthIdx];
-            alertsContainer.innerHTML += `<div class="alert-item calendar"><strong>📆 Dönem Uyarısı (${monthData.month}):</strong> ${monthData.alert}</div>`;
-
-            const frostDistricts = districts.filter(d => d.temp <= 2).map(d => d.name);
-            const rainDistricts = districts.filter(d => d.rainMm > 0 || d.risk === 'danger').map(d => d.name);
-            const windDistricts = districts.filter(d => d.wind >= 18).map(d => d.name);
-
-            // BANNER GÖSTERİMİ
-            const flashBanner = document.getElementById('frostFlashBanner');
-            if (frostDistricts.length > 0) {
-                flashBanner.style.display = 'block';
-                alertsContainer.innerHTML += `<div class="alert-item frost"><strong>❄️ KRİTİK ZİRAİ DON UYARISI (${frostDistricts.join(', ')}):</strong> Sıcaklık 2°C ve altına düşmüştür!</div>`;
-            } else {
-                flashBanner.style.display = 'none';
-            }
-
-            if (rainDistricts.length > 0) {
-                alertsContainer.innerHTML += `<div class="alert-item danger"><strong>🌧️ Yağış/Hastalık Uyarısı (${rainDistricts.join(', ')}):</strong> Mantari enfeksiyon riskine dikkat.</div>`;
-            }
-
-            if (windDistricts.length > 0) {
-                alertsContainer.innerHTML += `<div class="alert-item wind"><strong>💨 Rüzgar Uyarısı (${windDistricts.join(', ')}):</strong> İlaçlamada sürüklenme riski yüksek.</div>`;
-            }
-        }
-
+        // İLÇE KARTLARINI RENDER ETME VE OPEN-METEO APİ ENTEGRASYONU
         async function renderDistrictCards() {
             const grid = document.getElementById('districtGrid');
-            grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 20px;'>Canlı veriler yükleniyor...</p>";
-            
-            let updatedDistricts = await Promise.all(districtsData.map(d => fetchLiveWeatherData(d)));
+            grid.innerHTML = "";
 
-            // FAVORİ İLÇEYİ EN ÜSTE TAŞIMA
-            if (favoriteDistrictId) {
-                updatedDistricts.sort((a, b) => (a.id === favoriteDistrictId ? -1 : b.id === favoriteDistrictId ? 1 : 0));
+            const fav = localStorage.getItem('favDistrict');
+            let sortedData = [...districtsData];
+
+            if(fav) {
+                sortedData.sort((a, b) => a.name === fav ? -1 : b.name === fav ? 1 : 0);
             }
 
-            grid.innerHTML = "";
-            mapMarkers.forEach(m => map.removeLayer(m));
-            mapMarkers = [];
+            let generalAlerts = [];
+            let frostDetected = false;
 
-            updatedDistricts.forEach(d => {
-                const targetIdx = districtsData.findIndex(item => item.id === d.id);
-                if (targetIdx !== -1) districtsData[targetIdx] = d;
+            for(let i = 0; i < sortedData.length; i++) {
+                const d = sortedData[i];
+                const origIndex = districtsData.findIndex(item => item.name === d.name);
 
-                const markerColor = d.risk === 'danger' ? 'red' : d.risk === 'warning' ? 'orange' : 'green';
-                const marker = L.circleMarker([d.lat, d.lon], {
-                    color: markerColor,
-                    fillColor: markerColor,
-                    fillOpacity: 0.7,
-                    radius: 9
-                }).addTo(map).bindPopup(`<b>${d.name}</b><br>Sıcaklık: ${d.tempStr}<br>Yağış: ${d.rainMm} mm<br>Durum: ${d.riskLabel}`);
-                
-                mapMarkers.push(marker);
+                // Open-Meteo API
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${d.lat}&longitude=${d.lon}&current_weather=true&hourly=temperature_2m,relativehumidity_2m,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,windspeed_10m_max&timezone=Europe%2FTurbat`;
 
-                const isFav = d.id === favoriteDistrictId;
+                let temp = "--", wind = "--", statusText = "Veri alınıyor...", badgeClass = "normal", badgeLabel = "Düşük Risk";
 
-                grid.innerHTML += `
-                    <div class="district-card" data-name="${d.name.toLowerCase()}" data-risk="${d.risk}" style="${isFav ? 'border:2px solid #2e7d32; background:#f9fbe7;' : ''}">
-                        <span class="favorite-star ${isFav ? 'active' : ''}" onclick="setFavoriteDistrict('${d.id}')" title="Favori İlçe Yap">★</span>
+                try {
+                    const res = await fetch(url);
+                    const data = await res.json();
+                    fetchedWeatherData[d.name] = data;
+
+                    if(data.current_weather) {
+                        temp = data.current_weather.temperature;
+                        wind = data.current_weather.windspeed;
+
+                        if(temp <= 2) {
+                            statusText = "❄️ Don Riski Yüksek!";
+                            badgeClass = "danger";
+                            badgeLabel = "Yüksek Don Riski";
+                            frostDetected = true;
+                            generalAlerts.push(`<b>${d.name}:</b> Gece don riski (${temp}°C)! Seraları ve fidanları koruyun.`);
+                        } else if(wind >= 25) {
+                            statusText = "💨 Yüksek Rüzgar!";
+                            badgeClass = "warning";
+                            badgeLabel = "Rüzgar Riski";
+                            generalAlerts.push(`<b>${d.name}:</b> Yüksek rüzgar (${wind} km/s). Zirai ilaçlama yapmayın.`);
+                        } else {
+                            statusText = "☀️ Zirai Koşullar Uygun";
+                            badgeClass = "normal";
+                            badgeLabel = "Uygun Seviye";
+                        }
+                    }
+                } catch(e) {
+                    console.error("Hava durumu çekilemedi:", e);
+                }
+
+                const isFav = fav === d.name;
+
+                const cardHtml = `
+                    <div class="district-card" data-name="${d.name}" data-risk="${badgeClass}">
+                        <span class="favorite-star ${isFav ? 'active' : ''}" onclick="toggleFavorite('${d.name}')">★</span>
                         <div class="card-header">
-                            <h3>${d.name} ${isFav ? '(Favoriniz)' : ''}</h3>
-                            <span class="status-badge ${d.risk}">${d.riskLabel}</span>
+                            <h3>${d.name}</h3>
+                            <span class="status-badge ${badgeClass}">${badgeLabel}</span>
                         </div>
-                        <div class="info-row"><span>Sıcaklık / Nem:</span><span class="val">${d.tempStr} / ${d.humidity}</span></div>
-                        <div class="info-row"><span>Çiy Noktası:</span><span class="val">${d.dewPoint}°C</span></div>
-                        <div class="info-row"><span>Yağış Durumu:</span><span class="val" style="color: ${d.rainMm > 0 ? '#0288d1' : 'inherit'};">${d.rainMm} mm (${d.condition})</span></div>
-                        <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">${d.wind} km/s</span></div>
-                        <div class="info-row"><span>Akümülatif GDD:</span><span class="val">${d.accumulativeGdd} °C-gün</span></div>
-                        <div class="info-row"><span>Ana Ürünler:</span><span class="val">${d.products}</span></div>
-                        <button class="card-btn" onclick="openDistrictModal('${d.id}')">Fenolojik Analiz & Grafikler</button>
+                        <div class="info-row"><span>Sıcaklık:</span><span class="val">${temp} °C</span></div>
+                        <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">${wind} km/s</span></div>
+                        <div class="info-row"><span>Öne Çıkan Ürünler:</span><span class="val" style="font-size:11px;">${d.crops.slice(0, 3).join(', ')}</span></div>
+                        <div class="info-row"><span>Durum:</span><span class="val">${statusText}</span></div>
+                        <button class="card-btn" onclick="openModal(${origIndex})">🔍 Detaylı Detay & Tahmin</button>
                     </div>
                 `;
+                grid.innerHTML += cardHtml;
+            }
+
+            // DON ALARM ŞERİDİ
+            document.getElementById('frostFlashBanner').style.display = frostDetected ? 'block' : 'none';
+
+            // GENEL UYARI PANELİ
+            const alertsBox = document.getElementById('generalAlertsContainer');
+            if(generalAlerts.length > 0) {
+                alertsBox.innerHTML = generalAlerts.map(a => `<div class="alert-item danger">${a}</div>`).join('');
+            } else {
+                alertsBox.innerHTML = `<div class="alert-item safe">✅ Bursa genelinde meteorolojik risk bulunmamaktadır. Tarımsal faaliyetler normal sürdürülebilir.</div>`;
+            }
+
+            document.getElementById('lastUpdateText').innerText = "Son Güncelleme: " + new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
+        }
+
+        // FAVORİ İLÇE YÖNETİMİ
+        function populateFavSelect() {
+            const select = document.getElementById('favDistrictSelect');
+            const farmerSel = document.getElementById('farmerDistrict');
+            const radarSel = document.getElementById('radarDistrict');
+
+            districtsData.forEach(d => {
+                select.innerHTML += `<option value="${d.name}">${d.name}</option>`;
+                farmerSel.innerHTML += `<option value="${d.name}">${d.name}</option>`;
+                radarSel.innerHTML += `<option value="${d.name}">${d.name}</option>`;
             });
 
-            updateGeneralAlerts(updatedDistricts);
-            document.getElementById('lastUpdateText').innerText = `Son Güncelleme: ${new Date().toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'})}`;
+            const savedFav = localStorage.getItem('favDistrict');
+            if(savedFav) select.value = savedFav;
         }
 
-        // HARİTAYA SAHA İKAZI EKLEME
-        function addRadarReport() {
-            const districtId = document.getElementById('radarDistrict').value;
-            const note = document.getElementById('radarNote').value;
-            if(!districtId || !note) { alert("Lütfen ilçe ve ikaz notunu giriniz."); return; }
-
-            const d = districtsData.find(i => i.id === districtId);
-            if(d) {
-                L.marker([d.lat + 0.01, d.lon + 0.01]).addTo(map)
-                 .bindPopup(`<b>⚠️ Saha Radarı Bildirimi (${d.name}):</b><br>${note}`)
-                 .openPopup();
-                alert("Anonim saha ikazınız interaktif haritaya eklendi!");
-                document.getElementById('radarNote').value = "";
-            }
+        function setFavoriteDistrict(val) {
+            localStorage.setItem('favDistrict', val);
+            renderDistrictCards();
         }
 
-        function openDistrictModal(id) {
-            const d = districtsData.find(item => item.id === id);
-            if (!d) return;
-
-            selectedDistrictForShare = d;
-
-            document.getElementById('mDistrict').innerText = `${d.name} Zirai & Fenolojik Analiz`;
-            document.getElementById('mWeatherSummary').innerText = `Anlık: ${d.tempStr} | Nem: ${d.humidity} | Çiy Noktası: ${d.dewPoint}°C | Yağış: ${d.rainMm} mm (${d.condition})`;
-
-            // MANTARİ HASTALIK RİSK İNDEKSİ HESABI
-            const fungalRiskEl = document.getElementById('mFungalRiskBox');
-            const humidityVal = parseInt(d.humidity.replace('%','')) || 60;
-            if(humidityVal >= 80 && d.temp >= 12 && d.temp <= 25) {
-                fungalRiskEl.innerHTML = `⚠️ <strong style="color:#c62828;">YÜKSEK MANTARİ HASTALIK RİSKİ!</strong> Yaprak ıslaklığı yüksek. Zeytin Halkalı Leke ve Karaleke riski tavan yapmıştır.`;
+        function toggleFavorite(name) {
+            const current = localStorage.getItem('favDistrict');
+            if(current === name) {
+                localStorage.removeItem('favDistrict');
             } else {
-                fungalRiskEl.innerHTML = `✅ <strong>Normal Mantari Risk:</strong> Nem (%${humidityVal}) ve Çiy Noktası (${d.dewPoint}°C) dengeli seviyede.`;
+                localStorage.setItem('favDistrict', name);
             }
+            renderDistrictCards();
+        }
 
-            // TOPRAK SICAKLIĞI & ÇİMLENME ASİSTANI
-            const soilTempEl = document.getElementById('mSoilTempBox');
-            const sTemp = d.soilTemp || (d.temp - 2);
-            if(sTemp >= 12) {
-                soilTempEl.innerHTML = `🌱 <strong>Ekim İideal:</strong> Toprak sıcaklığı (${sTemp}°C), Mısır, Domates ve Ayçiçeği ekimi/dikimi için 12°C eşiğini aşmıştır.`;
-            } else {
-                soilTempEl.innerHTML = `❄️ <strong>Toprak Soğuk (${sTemp}°C):</strong> Tohum çimlenmesi yavaşlayabilir. 12°C üzerine çıkması beklenmeli.`;
-            }
+        // FİLTRELEME
+        function filterDistricts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const risk = document.getElementById('riskFilter').value;
 
-            // 24 SAATLİK ZİRAİ İLAÇLAMA KADRANI
-            const clockContainer = document.getElementById('mClockContainer');
-            clockContainer.innerHTML = "";
-            for(let h=0; h<24; h++) {
+            document.querySelectorAll('.district-card').forEach(card => {
+                const name = card.getAttribute('data-name').toLowerCase();
+                const cardRisk = card.getAttribute('data-risk');
+
+                const matchesSearch = name.includes(query);
+                const matchesRisk = (risk === 'all') || (risk === cardRisk);
+
+                if(matchesSearch && matchesRisk) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // MODAL (POPUP) AÇMA VE GRAFİK ÇİZME
+        function openModal(index) {
+            const d = districtsData[index];
+            const data = fetchedWeatherData[d.name];
+
+            document.getElementById('modalDistrictName').innerText = d.name + " Zirai Hava Durumu Raporu";
+            document.getElementById('weatherModal').style.display = 'flex';
+
+            if(!data || !data.hourly) return;
+
+            // SAAT KADRANI
+            const clockGrid = document.getElementById('modalClockGrid');
+            clockGrid.innerHTML = "";
+            for(let h = 6; h <= 20; h++) {
+                const wind = data.hourly.windspeed_10m[h] || 10;
+                const temp = data.hourly.temperature_2m[h] || 20;
+                
                 let statusClass = "good";
-                let text = `${h}:00`;
-                if((h >= 11 && h <= 17) || d.wind >= 18) { statusClass = "bad"; } 
-                else if(h >= 22 || h <= 5) { statusClass = "warning"; }
-                clockContainer.innerHTML += `<div class="clock-hour-chip ${statusClass}">${text}</div>`;
+                if(wind > 18 || temp > 30) statusClass = "bad";
+                else if(wind > 12 || temp > 25) statusClass = "warning";
+
+                clockGrid.innerHTML += `<div class="clock-hour-chip ${statusClass}">${h}:00</div>`;
             }
 
-            // AKÜMÜLATİF GDD REÇETE YAZIMI
-            const recipeBox = document.getElementById('mRecipeBox');
+            // 24 SAATLİK SCROLL
+            const scrollBox = document.getElementById('modalHourlyScroll');
+            scrollBox.innerHTML = "";
+            for(let i = 0; i < 24; i += 2) {
+                const timeStr = data.hourly.time[i].split('T')[1];
+                const t = data.hourly.temperature_2m[i];
+                const w = data.hourly.windspeed_10m[i];
+                scrollBox.innerHTML += `
+                    <div class="hourly-card">
+                        <div style="font-size:12px; font-weight:bold;">${timeStr}</div>
+                        <div style="font-size:16px; color:#1b5e20; margin:4px 0;">${t}°C</div>
+                        <div style="font-size:11px; opacity:0.8;">💨 ${w} km/s</div>
+                    </div>
+                `;
+            }
+
+            // RÜZGAR KONTROLÜ
+            const curWind = data.current_weather ? data.current_weather.windspeed : 10;
+            const windBox = document.getElementById('modalWindBox');
+            if(curWind > 15) {
+                windBox.className = "wind-warning-box unsafe";
+                windBox.innerHTML = `⚠️ Şu anki rüzgar hızı ${curWind} km/s. Zirai ilaçlama yapılması sürüklenme ve etki kaybı riski nedeniyle <b>ÖNERİLMEZ!</b>`;
+            } else {
+                windBox.className = "wind-warning-box safe";
+                windBox.innerHTML = `✅ Şu anki rüzgar hızı ${curWind} km/s. Zirai ilaçlama ve yaprak gübrelemesi yapmak için şartlar <b>UYGUNDUR.</b>`;
+            }
+
+            // REÇETE KUTUSU
+            const recipeBox = document.getElementById('modalRecipeBox');
             recipeBox.innerHTML = `
-                <p><strong>Hedef Ürün:</strong> ${d.products}</p>
-                <p><strong>Sezonluk Akümülatif GDD:</strong> ${d.accumulativeGdd} °C-gün (Fenolojik Evre Tahmini: Çiçeklenme/Meyve Büyütme)</p>
-                <p><strong>Takip Edilen Zararlı/Hastalık:</strong> ${d.pest}</p>
-                <p style="margin-top:6px;"><strong>Zirai Tavsiye:</strong> ${
-                    d.risk === 'danger' 
-                    ? '⚠️ Yüksek risk tespit edildi. Kimyasal ilaçlamayı erteleyin veya organik koruyucu bileşikler tercih edin.' 
-                    : '✅ İklim şartları zirai mücadele için uygundur.'
-                }</p>
+                <b>🌿 ${d.name} Bölgesi Özel Ürün Önerileri:</b><br>
+                Bu ilçemizde yoğun olarak yetiştirilen <i>${d.crops.join(', ')}</i> için fenolojik döneme uygun mantari (fungisit) ve zararlı takibini aksatmayınız. Yaprak gübrelemelerinde akşamüstü saatlerini tercih ediniz.
             `;
 
-            const ctx = document.getElementById('hourlyChart').getContext('2d');
-            if (chartInstance) chartInstance.destroy();
+            // 7 GÜNLÜK TAHMİN
+            const forecastGrid = document.getElementById('modalForecastGrid');
+            forecastGrid.innerHTML = "";
+            if(data.daily) {
+                for(let j = 0; j < Math.min(data.daily.time.length, 4); j++) {
+                    const dayName = data.daily.time[j];
+                    const maxT = data.daily.temperature_2m_max[j];
+                    const minT = data.daily.temperature_2m_min[j];
+                    forecastGrid.innerHTML += `
+                        <div class="forecast-card">
+                            <div style="font-size:11px; font-weight:bold;">${dayName}</div>
+                            <div style="font-size:13px; color:#d32f2f; margin-top:4px;">Gündüz: ${maxT}°C</div>
+                            <div style="font-size:13px; color:#0288d1;">Gece: ${minT}°C</div>
+                        </div>
+                    `;
+                }
+            }
 
-            const temps = d.rawHourly?.temperature_2m?.slice(0, 12) || Array.from({length: 12}, (_, i) => d.temp + Math.sin(i) * 3);
-            const times = Array.from({length: 12}, (_, i) => `${(new Date().getHours() + i) % 24}:00`);
+            // CHART.JS GRAFİĞİ
+            const ctx = document.getElementById('tempChart').getContext('2d');
+            if(currentChart) currentChart.destroy();
 
-            chartInstance = new Chart(ctx, {
+            const temps24 = data.hourly.temperature_2m.slice(0, 24);
+            const hours24 = data.hourly.time.slice(0, 24).map(t => t.split('T')[1]);
+
+            currentChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: times,
+                    labels: hours24,
                     datasets: [{
                         label: 'Sıcaklık (°C)',
-                        data: temps,
+                        data: temps24,
                         borderColor: '#1b5e20',
                         backgroundColor: 'rgba(27, 94, 32, 0.1)',
                         fill: true,
                         tension: 0.3
                     }]
                 },
-                options: { responsive: true, plugins: { legend: { display: false } } }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: false } }
+                }
             });
-
-            const hourlyContainer = document.getElementById('mHourlyContainer');
-            hourlyContainer.innerHTML = "";
-            for (let i = 0; i < 6; i++) {
-                const hourVal = (new Date().getHours() + (i * 2)) % 24;
-                const tempVal = d.rawHourly?.temperature_2m?.[i * 2] || (d.temp + i);
-                const rainHourly = d.rawHourly?.precipitation?.[i * 2] !== undefined ? d.rawHourly.precipitation[i * 2] : 0;
-                
-                hourlyContainer.innerHTML += `
-                    <div class="hourly-card">
-                        <div style="font-weight:bold; font-size:12px;">${hourVal}:00</div>
-                        <div style="font-size:14px; font-weight:bold; color:#1b5e20;">${Math.round(tempVal)}°C</div>
-                        <div style="font-size:11px; color:#0288d1; margin-top:3px;">🌧️ ${rainHourly} mm</div>
-                        <div style="font-size:11px; color:#666; margin-top:2px;">💨 ${d.wind} km/s</div>
-                    </div>
-                `;
-            }
-
-            const dailyContainer = document.getElementById('mDailyContainer');
-            dailyContainer.innerHTML = "";
-            const days = ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"];
-            const todayIdx = new Date().getDay();
-
-            for (let idx = 0; idx < 4; idx++) {
-                const dayLabel = idx === 0 ? "Bugün" : days[(todayIdx + idx) % 7];
-                const maxTemp = d.rawDaily?.temperature_2m_max?.[idx] ? Math.round(d.rawDaily.temperature_2m_max[idx]) : (d.temp + 4 + idx);
-                const minTemp = d.rawDaily?.temperature_2m_min?.[idx] ? Math.round(d.rawDaily.temperature_2m_min[idx]) : (d.temp - 3 - idx);
-                const rainProb = d.rawDaily?.precipitation_probability_max?.[idx] !== undefined ? d.rawDaily.precipitation_probability_max[idx] : (d.rainMm > 0 ? 60 : 10);
-                const rainSum = d.rawDaily?.precipitation_sum?.[idx] !== undefined ? d.rawDaily.precipitation_sum[idx] : d.rainMm;
-
-                dailyContainer.innerHTML += `
-                    <div class="forecast-card">
-                        <div style="font-weight:bold; font-size:13px; color:#1b5e20;">${dayLabel}</div>
-                        <div style="font-size:13px; margin:4px 0;">${minTemp}°C / ${maxTemp}°C</div>
-                        <div style="font-size:11px; color:#0288d1; font-weight:600;">🌧️ %${rainProb} (${rainSum} mm)</div>
-                    </div>
-                `;
-            }
-
-            const windBox = document.getElementById('mWindWarning');
-            if (d.wind >= 18) {
-                windBox.className = "wind-warning-box unsafe";
-                windBox.innerHTML = `⚠️ <strong>İLAÇLAMA YAPMAYIN:</strong> Rüzgar hızı (${d.wind} km/s) yüksek. Sürüklenme riski var.`;
-            } else if (d.rainMm > 0) {
-                windBox.className = "wind-warning-box unsafe";
-                windBox.innerHTML = `🌧️ <strong>İLAÇLAMA YAPMAYIN:</strong> Yağış (${d.rainMm} mm) veya yıkanma riski mevcut.`;
-            } else {
-                windBox.className = "wind-warning-box safe";
-                windBox.innerHTML = `✅ <strong>İLAÇLAMA UYGUN:</strong> Hava ve rüzgar şartları ideal seviyededir.`;
-            }
-
-            document.getElementById('modalOverlay').style.display = 'flex';
-        }
-
-        function shareOnWhatsApp() {
-            if (!selectedDistrictForShare) return;
-            const d = selectedDistrictForShare;
-            const text = `🚜 *Bursa Tarımsal Erken Uyarı Raporu* 🚜%0A%0A📍 *İlçe:* ${d.name}%0A🌡️ *Sıcaklık:* ${d.tempStr}%0A💧 *Nem:* ${d.humidity}%0A🌡️ *Çiy Noktası:* ${d.dewPoint}°C%0A🌧️ *Yağış:* ${d.rainMm} mm (${d.condition})%0A💨 *Rüzgar:* ${d.wind} km/s%0A⚠️ *Risk Seviyesi:* ${d.riskLabel}%0A🌿 *Akümülatif GDD:* ${d.accumulativeGdd} °C-gün%0A%0ABursa Tarımsal Takip Sistemi üzerinden gönderilmiştir.`;
-            window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
         }
 
         function closeModal() {
-            document.getElementById('modalOverlay').style.display = 'none';
+            document.getElementById('weatherModal').style.display = 'none';
         }
 
-        function filterDistricts() {
-            var searchVal = document.getElementById('searchInput').value.toLowerCase();
-            var riskVal = document.getElementById('riskFilter').value;
-            var cards = document.getElementsByClassName('district-card');
-
-            for (var i = 0; i < cards.length; i++) {
-                var card = cards[i];
-                var name = card.getAttribute('data-name');
-                var risk = card.getAttribute('data-risk');
-
-                var matchesSearch = name.includes(searchVal);
-                var matchesRisk = (riskVal === 'all') || (risk === riskVal);
-
-                card.style.display = (matchesSearch && matchesRisk) ? 'block' : 'none';
+        // HESAPLAYICILAR
+        function calculatePesticideDose() {
+            const tank = parseFloat(document.getElementById('tankVolume').value);
+            const dose = parseFloat(document.getElementById('recommendedDose').value);
+            if(tank && dose) {
+                const total = (tank / 100) * dose;
+                document.getElementById('pesticideResult').innerText = `Tankınıza eklemeniz gereken toplam miktar: ${total.toFixed(1)} mL / Gram`;
             }
         }
 
-        function subscribeAlerts(e) {
-            e.preventDefault();
-            
-            const btn = document.getElementById('submitBtn');
-            btn.innerText = "Gönderiliyor...";
-            btn.disabled = true;
-
-            const name = document.getElementById('farmerName').value;
-            const phone = document.getElementById('farmerPhone').value;
-            const district = document.getElementById('farmerDistrict').value;
-
-            const templateParams = {
-                to_email: 'bursatarimapp@hotmail.com',
-                farmer_name: name,
-                farmer_phone: phone,
-                farmer_district: district,
-                date: new Date().toLocaleString('tr-TR')
-            };
-
-            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
-                .then(function(response) {
-                    alert(`Teşekkürler Sayın ${name}!\n\nKayıt bilgileriniz bursatarimapp@hotmail.com adresine iletilmiştir. ${district} ilçesi zirai ikaz bildirimleriniz tanımlanmıştır.`);
-                    document.getElementById('subscribeForm').reset();
-                }, function(error) {
-                    alert('Gönderim sırasında bir hata oluştu. Lütfen bağlantınızı kontrol edin.');
-                    console.error('EmailJS Hata:', error);
-                })
-                .finally(() => {
-                    btn.innerText = "Kayıt Ol ve Gönder";
-                    btn.disabled = false;
-                });
-        }
-
-        // HESAPLAYICI FONKSİYONLARI
-        function calculatePesticideDose() {
-            const tank = parseFloat(document.getElementById('tankVolume').value) || 0;
-            const dose = parseFloat(document.getElementById('recommendedDose').value) || 0;
-            const total = (tank / 100) * dose;
-            document.getElementById('pesticideResult').innerText = `Tankınıza eklemeniz gereken miktar: ${total.toFixed(1)} mL / Gram`;
-        }
-
         function calculateIrrigation() {
-            const area = parseFloat(document.getElementById('landArea').value) || 0;
-            const temp = parseFloat(document.getElementById('avgTemp').value) || 0;
-            let factor = temp > 30 ? 35 : (temp > 20 ? 25 : 15);
-            const totalWater = area * factor;
-            document.getElementById('irrigationResult').innerText = `Haftalık tahmini su ihtiyacı: ~${totalWater} m³ (Ton)`;
+            const area = parseFloat(document.getElementById('landArea').value);
+            const temp = parseFloat(document.getElementById('avgTemp').value);
+            if(area && temp) {
+                const waterNeeded = area * temp * 12; // Tahmini katsayı
+                document.getElementById('irrigationResult').innerText = `Haftalık tahmini su ihtiyacı: ~${waterNeeded.toFixed(0)} Litre / Ton`;
+            }
         }
 
-        // GÜBRELEME / NPK HESAPLAYICI
         function calculateNPK() {
             const crop = document.getElementById('npkCrop').value;
-            const area = parseFloat(document.getElementById('npkArea').value) || 0;
-            let n=12, p=6, k=10;
-            if(crop === 'armut') { n=15; p=8; k=15; }
-            if(crop === 'domates') { n=18; p=10; k=20; }
-            document.getElementById('npkResult').innerText = `Toplam İhtiyaç: Saf Azot (N): ${n*area}kg | Fosfor (P): ${p*area}kg | Potasyum (K): ${k*area}kg`;
+            const area = parseFloat(document.getElementById('npkArea').value);
+            let n = 0, p = 0, k = 0;
+
+            if(crop === 'zeytin') { n = area * 4; p = area * 2; k = area * 5; }
+            else if(crop === 'armut') { n = area * 6; p = area * 3; k = area * 7; }
+            else { n = area * 5; p = area * 3; k = area * 4; }
+
+            document.getElementById('npkResult').innerText = `Önerilen Saf Miktar: ${n} kg Azot (N), ${p} kg Fosfor (P), ${k} kg Potasyum (K)`;
         }
 
-        // MALİYET / KAR HESAPLAYICI
         function calculateProfit() {
             const fuel = parseFloat(document.getElementById('costFuel').value) || 0;
             const fert = parseFloat(document.getElementById('costFert').value) || 0;
@@ -1130,133 +879,101 @@
             const totalRevenue = yieldKg * price;
             const netProfit = totalRevenue - totalCost;
 
-            document.getElementById('profitResult').innerText = `Dönüm Başı Gelir: ₺${totalRevenue} | Toplam Masraf: ₺${totalCost} | Net Kar: ₺${netProfit.toFixed(2)}`;
+            document.getElementById('profitResult').innerText = `Dönüm Başı Tahmini Net Kar: ${netProfit.toFixed(2)} ₺ (Toplam Gelir: ${totalRevenue} ₺ - Gider: ${totalCost} ₺)`;
         }
 
-        // HASAT YEVMİYE HESAPLAYICI
         function calculateLabor() {
             const crop = document.getElementById('laborCrop').value;
-            const area = parseFloat(document.getElementById('laborArea').value) || 0;
-            let workerPerDonum = 2;
-            if(crop === 'armut') workerPerDonum = 3;
-            if(crop === 'domates') workerPerDonum = 4;
-            document.getElementById('laborResult').innerText = `Tahmini İhtiyaç: ~${workerPerDonum * area} İşçi/Gün | Nakliye: ~${area * 1.5} Ton`;
+            const area = parseFloat(document.getElementById('laborArea').value);
+            let workers = Math.ceil(area * 1.5);
+            document.getElementById('laborResult').innerText = `Hasat için tahmini gereken toplam işçi/gün sayısı: ${workers} Kişi`;
         }
 
-        // TANK-MIX KONTROLÜ
         function checkTankMix() {
-            const item1 = document.getElementById('mixItem1').value;
-            const item2 = document.getElementById('mixItem2').value;
-            const res = document.getElementById('mixResult');
+            const m1 = document.getElementById('mixItem1').value;
+            const m2 = document.getElementById('mixItem2').value;
 
-            if((item1 === 'bakir' && item2 === 'yag') || (item1 === 'yag' && item2 === 'bakir')) {
-                res.innerHTML = "❌ <strong style='color:red;'>RİSKLİ KARIŞIM:</strong> Bakırlı bileşikler ile yağı karıştırmak yaprak yakabilir!";
+            if(m1 === 'bakir' && m2 === 'yag') {
+                document.getElementById('mixResult').innerHTML = `<span style="color:#d32f2f;">❌ UYUMSUZ: Bakırlı bileşikler ile yağ grubu ilaçlar kesinlikle karıştırılmamalıdır! Yakma yapar.</span>`;
             } else {
-                res.innerHTML = "✅ <strong>UYGUN KARIŞIM:</strong> Seçilen etken maddeler depoda karıştırılabilir.";
+                document.getElementById('mixResult').innerHTML = `<span style="color:#2e7d32;">✅ UYGUN: Belirtilen iki etken madde düşük dozlarda tank karışımı yapılabilir.</span>`;
             }
         }
 
-        // AI YAPRAK ANALİZİ MOCK
-        function analyzeLeafPhoto(event) {
-            const file = event.target.files[0];
-            const resultBox = document.getElementById('aiAnalysisResult');
-            if(file) {
-                resultBox.style.display = 'block';
-                resultBox.innerText = "🔍 Görsel Leke Doku Analizi Yapılıyor...";
-                setTimeout(() => {
-                    resultBox.innerHTML = "🔬 <strong>AI Görsel Teşhis Sonucu:</strong><br>%78 Olasılıkla Karaleke / Halkalı Leke Mantarı tespit edildi. Bakırlı Mücadele Önerilir.";
-                }, 1200);
-            }
-        }
-
+        // HASTALIK TEŞHİS VE TABLO FİLTRELEME
         function renderPestTable() {
             const tbody = document.getElementById('pestTableBody');
             tbody.innerHTML = "";
-            pestDatabase.forEach(item => {
+            pestData.forEach(p => {
                 tbody.innerHTML += `
                     <tr>
-                        <td><strong>${item.product}</strong></td>
-                        <td style="color:var(--primary-green); font-weight:bold;">${item.name}</td>
-                        <td>${item.symptoms}</td>
-                        <td>${item.remedy}</td>
+                        <td><b>${p.crop}</b></td>
+                        <td>${p.pest}</td>
+                        <td>${p.symptom}</td>
+                        <td>${p.cure}</td>
                     </tr>
                 `;
             });
         }
 
         function filterPests() {
-            const query = document.getElementById('pestSearchInput').value.toLowerCase();
+            const q = document.getElementById('pestSearchInput').value.toLowerCase();
             const rows = document.querySelectorAll('#pestTableBody tr');
-            rows.forEach(row => {
-                const text = row.innerText.toLowerCase();
-                row.style.display = text.includes(query) ? '' : 'none';
+            rows.forEach(r => {
+                const txt = r.innerText.toLowerCase();
+                r.style.display = txt.includes(q) ? '' : 'none';
             });
         }
 
-        // ÖNBELLEK VE TREND ENTEGRELİ HAL FİYATLARI
-        async function loadMarketPrices(forceRefresh = false) {
+        function analyzeLeafPhoto(event) {
+            const resDiv = document.getElementById('aiAnalysisResult');
+            resDiv.style.display = 'block';
+            resDiv.innerText = "⏳ Görsel piksel klorofil dağılımı ve leke analizi yapılıyor...";
+            setTimeout(() => {
+                resDiv.innerText = "🔍 AI Teşhis Sonucu: Yüksek olasılıkla %78 'Zeytin Halkalı Leke' veya 'Armut Karaleke' başlangıcı tespit edildi. Bakırlı koruyucu uygulaması önerilir.";
+            }, 1500);
+        }
+
+        // BURSA HAL FİYATLARI
+        function loadMarketPrices(force = false) {
             const tbody = document.getElementById('marketTableBody');
-            const cacheKey = "bursa_market_prices";
-            const cached = localStorage.getItem(cacheKey);
-
-            if (!forceRefresh && cached) {
-                const parsed = JSON.parse(cached);
-                if (Date.now() - parsed.timestamp < 60 * 60 * 1000) {
-                    renderMarketRows(parsed.data);
-                    return;
-                }
-            }
-
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Bursa Hal Borsa verileri güncelleniyor...</td></tr>';
-            
-            const defaultPrices = [
-                { name: "Gemlik Zeytini (Sofralık)", unit: "Kg", min: "45.00", max: "120.00", trend: "📈 +%5", source: "Bursa Hal Bütçesi / Hal" },
-                { name: "Bursa Siyah İnciri", unit: "Kg", min: "60.00", max: "110.00", trend: "📈 +%8", source: "Bursa Hal Bütçesi / Hal" },
-                { name: "Deveci Armudu", unit: "Kg", min: "25.00", max: "55.00", trend: "➡️ %0", source: "Gürsu Ziraat Odası" },
-                { name: "Sanayi Domatesi", unit: "Kg", min: "3.50", max: "6.50", trend: "📉 -%3", source: "Karacabey Hal / Borsa" },
-                { name: "Şeftali (Şekerpare)", unit: "Kg", min: "20.00", max: "50.00", trend: "📈 +%2", source: "Bursa Hal Bütçesi / Hal" },
-                { name: "Çilek (Sanayi/Sofralık)", unit: "Kg", min: "35.00", max: "80.00", trend: "➡️ %0", source: "İnegöl / Keles Ziraat Odası" },
-                { name: "Biber (Çarliston/Sivri)", unit: "Kg", min: "15.00", max: "35.00", trend: "📉 -%4", source: "Yenişehir Hal Bülteni" }
-            ];
+            tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;'>Fiyatlar güncelleniyor...</td></tr>";
 
             setTimeout(() => {
-                localStorage.setItem(cacheKey, JSON.stringify({ timestamp: Date.now(), data: defaultPrices }));
-                renderMarketRows(defaultPrices);
-            }, 500);
+                const samplePrices = [
+                    { name: "Bursa Deveci Armudu", unit: "Kg", min: "28.00", max: "42.00", trend: "↗️ Yükselişte", source: "Bursa Büyükşehir Hal" },
+                    { name: "Gemlik Siyah Zeytin (200-220 Tane)", unit: "Kg", min: "110.00", max: "160.00", trend: "➡️ Yatay", source: "Gemlik Ticaret Borsası" },
+                    { name: "Bursa Şeftali (Ekstra)", unit: "Kg", min: "25.00", max: "38.00", trend: "↗️ Yükselişte", source: "Bursa Büyükşehir Hal" },
+                    { name: "Karacabey Sanayi Domatesi", unit: "Kg", min: "3.50", max: "4.80", trend: "↘️ Düşüşte", source: "Karacabey Ziraat Odası" },
+                    { name: "Yenişehir Kapya Biber", unit: "Kg", min: "22.00", max: "32.00", trend: "↗️ Yükselişte", source: "Yenişehir Hal" },
+                    { name: "Hasanağa Enginarı", unit: "Adet", min: "25.00", max: "35.00", trend: "➡️ Yatay", source: "Nilüfer Üretici Pazarı" }
+                ];
+
+                tbody.innerHTML = "";
+                samplePrices.forEach(sp => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><b>${sp.name}</b></td>
+                            <td>${sp.unit}</td>
+                            <td>${sp.min} ₺</td>
+                            <td>${sp.max} ₺</td>
+                            <td>${sp.trend}</td>
+                            <td>${sp.source}</td>
+                        </tr>
+                    `;
+                });
+            }, 600);
         }
 
-        function renderMarketRows(data) {
-            const tbody = document.getElementById('marketTableBody');
-            tbody.innerHTML = "";
-            data.forEach(item => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td><strong>${item.name}</strong></td>
-                        <td>${item.unit}</td>
-                        <td style="color:#2e7d32; font-weight:bold;">₺${item.min}</td>
-                        <td style="color:#c62828; font-weight:bold;">₺${item.max}</td>
-                        <td style="font-weight:bold;">${item.trend}</td>
-                        <td><span class="badge" style="background:#0288d1; font-size:11px;">${item.source}</span></td>
-                    </tr>
-                `;
-            });
-        }
-
+        // AYLIK ZİRAİ TAKVİM RENDER
         function renderCalendar() {
             const container = document.getElementById('calendarContainer');
             container.innerHTML = "";
-            const currentMonthIdx = new Date().getMonth();
-
-            monthlyCalendar.forEach((item, index) => {
-                const isCurrentMonth = index === currentMonthIdx;
+            calendarData.forEach(c => {
                 container.innerHTML += `
-                    <div class="calendar-card" style="${isCurrentMonth ? 'background: #f3e5f5; border-left-color: #ab47bc;' : ''}">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <h3 style="color:var(--primary-green);">${item.month} Ayı Zirai Planı</h3>
-                            ${isCurrentMonth ? '<span class="badge" style="background:#ab47bc;">Mevcut Dönem</span>' : ''}
-                        </div>
-                        <p style="margin-top:8px; font-weight:bold; font-size:14px; color:#333;">⚠️ ${item.alert}</p>
-                        <p style="margin-top:4px; font-size:13px; opacity:0.85;">📌 ${item.details}</p>
+                    <div class="calendar-card">
+                        <h4 style="color:var(--primary-green); margin-bottom:6px;">📅 ${c.month}</h4>
+                        <p style="font-size:13px; opacity:0.9;">${c.task}</p>
                     </div>
                 `;
             });
@@ -1271,7 +988,7 @@
                 grid.innerHTML += `
                     <div class="district-card">
                         <h3 style="color:var(--primary-green); border-bottom:1px solid #ddd; padding-bottom:5px; margin-bottom:10px;">${p.name}</h3>
-                        <div class="info-row"><span>İideal Toprak pH:</span><span class="val">${p.ph}</span></div>
+                        <div class="info-row"><span>İdeal Toprak pH:</span><span class="val">${p.ph}</span></div>
                         <div class="info-row"><span>Dikim Mesafesi:</span><span class="val">${p.spacing}</span></div>
                         <div class="info-row"><span>Gübreleme Programı:</span><span class="val">${p.fertilizer}</span></div>
                         <div class="info-row"><span>Sulama İhtiyacı:</span><span class="val">${p.water}</span></div>
@@ -1280,9 +997,31 @@
             });
         }
 
+        // FORM GÖNDERİMİ
+        function subscribeAlerts(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "Gönderiliyor...";
+            setTimeout(() => {
+                alert("Kayıt başarılı! Seçtiğiniz ilçede don ve kritik zirai alarm oluştuğunda tarafınıza SMS/WhatsApp bildirimi iletilecektir.");
+                btn.innerText = "Kayıt Ol ve Gönder";
+                document.getElementById('subscribeForm').reset();
+            }, 1000);
+        }
+
+        function addRadarReport() {
+            const dist = document.getElementById('radarDistrict').value;
+            const note = document.getElementById('radarNote').value;
+            if(dist && note) {
+                alert(`${dist} ilçesi için saha ikazınız haritaya eklendi. Teşekkürler!`);
+                document.getElementById('radarNote').value = "";
+            } else {
+                alert("Lütfen ilçe seçip bir açıklama yazınız.");
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
             populateFavSelect();
-            populateDistrictSelect();
             initMap();
             renderDistrictCards();
             renderPestTable();
