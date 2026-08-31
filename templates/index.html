@@ -297,10 +297,10 @@
                         <h4>🌱 NPK Taban / Üst Gübre Hesaplayıcı</h4>
                         <label style="font-size: 13px;">Ürün Tipi:</label>
                         <select id="npkCrop">
-                            <option value="zeytin">Zeytin</option>
-                            <option value="armut">Armut / Şeftali</option>
-                            <option value="domates">Sanayi Domatesi</option>
-                            <option value="incir">Siyah İncir</option>
+                            <option value="zeytin">Gemlik Zeytini</option>
+                            <option value="armut">Bursa Deveci Armudu / Santa Maria</option>
+                            <option value="domates">Karacabey / Yenişehir Domatesi</option>
+                            <option value="incir">Bursa Siyah İnciri</option>
                         </select>
                         <label style="font-size: 13px;">Arazi Alanı (Dönüm):</label>
                         <input type="number" id="npkArea" value="5">
@@ -322,8 +322,8 @@
                         <h4>👨‍🌾 Hasat & Yevmiye İş Gücü Hesaplayıcı</h4>
                         <label style="font-size: 13px;">Ürün Türü:</label>
                         <select id="laborCrop">
-                            <option value="zeytin">Zeytin Hasadı</option>
-                            <option value="armut">Deveci Armudu / Şeftali</option>
+                            <option value="zeytin">Gemlik Zeytini Hasadı</option>
+                            <option value="armut">Bursa Deveci / Santa Maria Armudu</option>
                             <option value="domates">Domates Toplama</option>
                         </select>
                         <label style="font-size: 13px;">Toplam Arazi (Dönüm):</label>
@@ -488,29 +488,29 @@
 
         // 17 BURSA İLÇESİ - KOORDİNATLAR VE TARIMSAL ÜRÜNLER
         const districtsData = [
-            { name: "Gürsu", lat: 40.2372, lon: 29.1936, crops: ["Bursa Deveci Armudu", "Bursa Santa Maria Armut", "Bursa Şeftalisi", "Nektarin", "Salatalık", "Marul"] },
-            { name: "Büyükorhan", lat: 39.7733, lon: 28.9008, crops: ["Triticale", "Yulaf", "Mısır", "Çilek"] },
-            { name: "Gemlik", lat: 40.4312, lon: 29.1558, crops: ["Gemlik Zeytini", "Ceviz", "Siyah İncir"] },
-            { name: "Harmancık", lat: 39.8114, lon: 29.1553, crops: ["Kiraz", "Yonca", "Yulaf", "Mısır"] },
-            { name: "Karacabey", lat: 40.2158, lon: 28.3581, crops: ["Karacabey Soğanı", "Karpuz", "Salçalık Domates", "Kapya Biber", "Mısır"] },
-            { name: "Keles", lat: 39.9142, lon: 29.2392, crops: ["Keles Kirazı", "Çilek", "Yonca", "Yulaf"] },
-            { name: "Mudanya", lat: 40.3753, lon: 28.8828, crops: ["Mudanya Zeytini", "Siyah İncir", "Üzüm", "Şeftali", "Elma"] },
-            { name: "Mustafakemalpaşa", lat: 40.0353, lon: 28.4117, crops: ["Mustafakemalpaşa Tatlılık Peynir", "Kırmızı Biber", "Salçalık Domates", "Mısır", "Karpuz", "Ayçiçeği", "Kuru Fasulye"] },
-            { name: "Orhaneli", lat: 39.8931, lon: 28.9881, crops: ["Çilek", "Kiraz", "Göynükbelen Çileği", "Vişne", "Yonca", "Ceviz"] },
-            { name: "Orhangazi", lat: 40.4914, lon: 29.3092, crops: ["Zeytin", "Kivi", "Turşuluk Salatalık", "Domates", "Biber", "Enginar", "Kestane"] },
-            { name: "Yenişehir", lat: 40.2644, lon: 29.6531, crops: ["Yenişehir Biberi", "Kuru Fasulye", "Bezelye", "Ispanak", "Domates"] },
-            { name: "Yıldırım", lat: 40.1925, lon: 29.1122, crops: ["Bursa Santa Maria Armudu", "Bursa Deveci Armudu", "Bursa Şeftalisi", "Nektarin"] },
-            { name: "İnegöl", lat: 40.0783, lon: 29.5133, crops: ["Bursa Santa Maria Armudu", "Bursa Şeftalisi", "İnegöl Cerrah Kuru Fasulyesi", "İnegöl Çıbrıkası", "Elma", "Patates"] },
-            { name: "İznik", lat: 40.4286, lon: 29.7214, crops: ["İznik Müşküle Üzümü", "Zeytin", "Şeftali", "Nektarin", "Brokoli", "Kabak", "Fasulye"] },
-            { name: "Nilüfer", lat: 40.2117, lon: 28.9322, crops: ["Hasanağa Enginarı", "Çalı Fasulyesi", "Siyah İncir", "Çilek"] },
-            { name: "Osmangazi", lat: 40.1828, lon: 29.0669, crops: ["Bursa Siyah İnciri", "Bursa Şeftalisi", "Deveci Armudu", "Üzüm"] },
-            { name: "Kestel", lat: 40.1983, lon: 29.2125, crops: ["Kestel Kestanesi", "Bursa Şeftalisi", "Deveci Armudu", "Ahududu", "Böğürtlen"] }
+            { name: "Gürsu", lat: 40.2372, lon: 29.1936, crops: ["Bursa Deveci Armudu", "Bursa Santa Maria Armudu", "Bursa Şeftalisi & Nektarin", "Salatalık", "Marul"] },
+            { name: "Büyükorhan", lat: 39.7733, lon: 28.9008, crops: ["Triticale", "Yulaf", "Mısır", "Göynükbelen & Keles Çileği"] },
+            { name: "Gemlik", lat: 40.4312, lon: 29.1558, crops: ["Gemlik Zeytini", "Ceviz", "Bursa Siyah İnciri"] },
+            { name: "Harmancık", lat: 39.8114, lon: 29.1553, crops: ["Keles & Harmancık Kirazı", "Yonca", "Yulaf", "Mısır"] },
+            { name: "Karacabey", lat: 40.2158, lon: 28.3581, crops: ["Karacabey Soğanı", "Karpuz", "Karacabey / Yenişehir Domatesi", "Kapya Biber", "Mısır"] },
+            { name: "Keles", lat: 39.9142, lon: 29.2392, crops: ["Keles & Harmancık Kirazı", "Göynükbelen & Keles Çileği", "Yonca", "Yulaf"] },
+            { name: "Mudanya", lat: 40.3753, lon: 28.8828, crops: ["Gemlik Zeytini", "Bursa Siyah İnciri", "İznik Müşküle Üzümü", "Bursa Şeftalisi & Nektarin", "Elma"] },
+            { name: "Mustafakemalpaşa", lat: 40.0353, lon: 28.4117, crops: ["Mustafakemalpaşa Tatlılık Peynir", "Kırmızı Biber", "Karacabey / Yenişehir Domatesi", "Mısır", "Karpuz", "Ayçiçeği", "İnegöl Cerrah Kuru Fasulyesi"] },
+            { name: "Orhaneli", lat: 39.8931, lon: 28.9881, crops: ["Göynükbelen & Keles Çileği", "Keles & Harmancık Kirazı", "Vişne", "Yonca", "Ceviz"] },
+            { name: "Orhangazi", lat: 40.4914, lon: 29.3092, crops: ["Gemlik Zeytini", "Kivi", "Turşuluk Salatalık", "Karacabey / Yenişehir Domatesi", "Yenişehir Biberi & Kapya", "Hasanağa Enginarı", "Kestel Kestanesi & Meyveler"] },
+            { name: "Yenişehir", lat: 40.2644, lon: 29.6531, crops: ["Yenişehir Biberi & Kapya", "İnegöl Cerrah Kuru Fasulyesi", "Bezelye", "Ispanak", "Karacabey / Yenişehir Domatesi"] },
+            { name: "Yıldırım", lat: 40.1925, lon: 29.1122, crops: ["Bursa Santa Maria Armudu", "Bursa Deveci Armudu", "Bursa Şeftalisi & Nektarin"] },
+            { name: "İnegöl", lat: 40.0783, lon: 29.5133, crops: ["Bursa Santa Maria Armudu", "Bursa Şeftalisi & Nektarin", "İnegöl Cerrah Kuru Fasulyesi", "İnegöl Çıbrıkası", "Elma", "Patates"] },
+            { name: "İznik", lat: 40.4286, lon: 29.7214, crops: ["İznik Müşküle Üzümü", "Gemlik Zeytini", "Bursa Şeftalisi & Nektarin", "Brokoli", "Kabak", "İnegöl Cerrah Kuru Fasulyesi"] },
+            { name: "Nilüfer", lat: 40.2117, lon: 28.9322, crops: ["Hasanağa Enginarı", "İnegöl Cerrah Kuru Fasulyesi", "Bursa Siyah İnciri", "Göynükbelen & Keles Çileği"] },
+            { name: "Osmangazi", lat: 40.1828, lon: 29.0669, crops: ["Bursa Siyah İnciri", "Bursa Şeftalisi & Nektarin", "Bursa Deveci Armudu", "İznik Müşküle Üzümü"] },
+            { name: "Kestel", lat: 40.1983, lon: 29.2125, crops: ["Kestel Kestanesi & Meyveler", "Bursa Şeftalisi & Nektarin", "Bursa Deveci Armudu", "Ahududu", "Böğürtlen"] }
         ];
 
         // BURSA YEREL ÜRÜN VERİ BANKASI
         const bursaLocalProducts = [
             { name: "Bursa Deveci Armudu", ph: "6.0 - 7.0", spacing: "4m x 3m", fertilizer: "Kışın Tabana NPK (15-15-15), Çiçeklenme Öncesi Çinko & Bor", water: "Haftada 2 Kez Damlama (Yüksek)" },
-            { name: "Bursa Santa Maria Armudu", ph: "6.0 - 7.2", spacing: "4m x 2.5m", fertilizer: "Erken İlkbaharda Azot Taktakiyesi, Yapraktan Kalsiyum", water: "7-10 Günde Bir Düzenli Sulama" },
+            { name: "Bursa Santa Maria Armudu", ph: "6.0 - 7.2", spacing: "4m x 2.5m", fertilizer: "Erken İlkbaharda Azot Takviyesi, Yapraktan Kalsiyum", water: "7-10 Günde Bir Düzenli Sulama" },
             { name: "Bursa Şeftalisi & Nektarin", ph: "6.0 - 6.8", spacing: "5m x 4m", fertilizer: "Erken Nitrat + Potasyum, Seyreltme Sonrası Yaprak Gübresi", water: "Meyve Büyütme Döneminde Yüksek" },
             { name: "Gemlik Zeytini", ph: "6.5 - 8.0", spacing: "6m x 6m veya 5m x 5m", fertilizer: "Şubat Sonrası Kompoze Gübre, Sürgün Döneminde Yapraktan Bor", water: "Çirkit ve Dane Büyütmede Kritik" },
             { name: "Bursa Siyah İnciri", ph: "6.5 - 7.5", spacing: "7m x 7m", fertilizer: "Düşük Azot, Yüksek Potasyum ve Kalsiyum Desteği", water: "Kurak Zamanlarda Sınırlı Sulama" },
@@ -519,28 +519,41 @@
             { name: "Hasanağa Enginarı", ph: "6.0 - 7.5", spacing: "1m x 1m", fertilizer: "Sonbaharda Çiftlik Gübresi, Baş Oluşumunda Nitrat", water: "Kış Dönemi Düzenli Nem İstemi" },
             { name: "İznik Müşküle Üzümü", ph: "6.5 - 7.5", spacing: "3m x 2m", fertilizer: "Budama Sonrası Organik Madde, Koruk Dönemi Potasyum", water: "Stres Yaratmayacak Düzeyde Damlama" },
             { name: "Kestel Kestanesi & Meyveler", ph: "5.5 - 6.5 (Asidik)", spacing: "8m x 8m", fertilizer: "Organik Çiftlik Gübresi ve Kompost Desteği", water: "Yaz Kuraklığında Derin Sulama" },
-            { name: "İnegöl Cerrah Kuru Fasulyesi", ph: "6.0 - 7.0", spacing: "45cm x 10cm", fertilizer: "Ekimle Birlikte DAP Gübresi, Çiçeklenmede Bor/Moban", water: "Bakla Bağlama Aşamasında Kritik" },
-            { name: "İnegöl Çıbrıkası", ph: "6.0 - 7.5", spacing: "Fide Mesafesi 30cm", fertilizer: "Organik Ağırlıklı Tabat Gübrelemesi", water: "Orta Seviye Nem" }
+            { name: "İnegöl Cerrah Kuru Fasulyesi", ph: "6.0 - 7.0", spacing: "45cm x 10cm", fertilizer: "Ekimle Birlikte DAP Gübresi, Çiçeklenmede Bor/Molibden", water: "Bakla Bağlama Aşamasında Kritik" },
+            { name: "İnegöl Çıbrıkası", ph: "6.0 - 7.5", spacing: "Fide Mesafesi 30cm", fertilizer: "Organik Ağırlıklı Taban Gübrelemesi", water: "Orta Seviye Nem" },
+            { name: "Karacabey / Yenişehir Domatesi", ph: "6.0 - 7.0", spacing: "140cm x 35cm", fertilizer: "Tabanda 15-15-15, Meyve Bağlamada Kalsiyum ve Potasyum Nitrat", water: "Damlama ile Düzenli ve Kontrollü Sulama" },
+            { name: "Göynükbelen & Keles Çileği", ph: "5.5 - 6.5", spacing: "30cm x 30cm (Maska)", fertilizer: "Damlamadan Humik Asit, Çiçeklenmede Fosfor ve Yapraktan Bor", water: "Sık ve Az Miktarda Damlama Sulama" },
+            { name: "Keles & Harmancık Kirazı", ph: "6.0 - 7.5", spacing: "6m x 5m", fertilizer: "Erken İlkbaharda Azot, Meyve Tutumunda Çinko ve Potasyum", water: "Meyve Gelişim ve Hasat Sonrası Kritik Sulama" }
         ];
 
         // HASTALIK VE ZARARLI LİSTESİ
         const pestData = [
-            { crop: "Zeytin", pest: "Zeytin Sineği (Bactrocera oleae)", symptom: "Meyve üzerinde 'V' şeklinde vuruk izleri, dökülme ve yağ kalitesinde düşüş.", cure: "Deltamethrin veya Phosmet etken maddeli ilaçlama (PHI: 21 gün)." },
-            { crop: "Zeytin", pest: "Zeytin Halkalı Leke (Spilocaea oleagina)", symptom: "Yapraklarda koyu yeşil/siyah çember şeklinde lekeler, erken yaprak dökümü.", cure: "%1'lik Bordo Bulamacı veya Bakır Hidroksit (PHI: 14 gün)." },
-            { crop: "Armut / Şeftali", pest: "Karaleke (Venturia pirina)", symptom: "Yaprak ve meyvelerde kadifemsi esmer/siyah lekeler, meyvede çatlama.", cure: "Dithianon, Captan veya Tebuconazole etken maddeli sistemik fungisit (PHI: 14-21 gün)." },
-            { crop: "Armut", pest: "Armut Psillidi (Cacopsylla pyri)", symptom: "Sürgünlerde yapışkan salgı (balımsı madde), kararma ve sürgün kuruması.", cure: "Abamectin veya Spirotetramat etken maddeli ilaçlama (PHI: 14 gün)." },
-            { crop: "Domates / Biber", pest: "Erken Yanıklık / Mildiyö", symptom: "Yapraklarda iç içe geçmiş halkalı kahverengi lekeler, gövde kararması.", cure: "Azoxystrobin veya Mancozeb etken maddeli ilaçlama (PHI: 7-14 gün)." },
-            { crop: "İncir", pest: "İncir Kanlı Basrası", symptom: "Gövde ve dallarda beyaz pamuksu tabaka, çalılaşma.", cure: "Yazlık Yağlar ile ruhsatlı insektisitler (PHI: 14 gün)." }
+            { crop: "Gemlik Zeytini", pest: "Zeytin Sineği (Bactrocera oleae)", symptom: "Meyve üzerinde 'V' şeklinde vuruk izleri, dökülme ve yağ kalitesinde düşüş.", cure: "Deltamethrin veya Phosmet etken maddeli ilaçlama (PHI: 21 gün)." },
+            { crop: "Gemlik Zeytini", pest: "Zeytin Halkalı Leke (Spilocaea oleagina)", symptom: "Yapraklarda koyu yeşil/siyah çember şeklinde lekeler, erken yaprak dökümü.", cure: "%1'lik Bordo Bulamacı veya Bakır Hidroksit (PHI: 14 gün)." },
+            { crop: "Bursa Deveci Armudu / Santa Maria", pest: "Karaleke (Venturia pirina)", symptom: "Yaprak ve meyvelerde kadifemsi esmer/siyah lekeler, meyvede çatlama.", cure: "Dithianon, Captan veya Tebuconazole etken maddeli sistemik fungisit (PHI: 14-21 gün)." },
+            { crop: "Bursa Deveci Armudu / Santa Maria", pest: "Armut Psillidi (Cacopsylla pyri)", symptom: "Sürgünlerde yapışkan salgı (balımsı madde), kararma ve sürgün kuruması.", cure: "Abamectin veya Spirotetramat etken maddeli ilaçlama (PHI: 14 gün)." },
+            { crop: "Bursa Şeftalisi & Nektarin", pest: "Şeftali Yaprak Kıvırcıklığı (Klok / Taphrina deformans)", symptom: "İlkbaharda yapraklarda büzüşme, kırmızımsı etlenmeler ve erken dökülme.", cure: "Gözler kabarmadan önce Bakır Sülfat (Bordo Bulamacı) uygulaması (PHI: 21 gün)." },
+            { crop: "Bursa Siyah İnciri", pest: "İncir Kanlı Basrası (Ceroplastes rusci)", symptom: "Gövde ve dallarda beyaz pamuksu tabaka, fümeleşme ve çalılaşma.", cure: "Yazlık Yağlar ile ruhsatlı insektisitler (PHI: 14 gün)." },
+            { crop: "Karacabey / Yenişehir Domatesi", pest: "Erken Yanıklık (Alternaria solani) / Mildiyö", symptom: "Yapraklarda iç içe geçmiş halkalı kahverengi lekeler, gövde kararması.", cure: "Azoxystrobin veya Mancozeb etken maddeli ilaçlama (PHI: 7-14 gün)." },
+            { crop: "Yenişehir Biberi & Kapya", pest: "Biber Kök Boğazı Yanıklığı (Phytophthora capsici)", symptom: "Kök boğazında esmerleşme, bitkide aniden solma ve kuruma.", cure: "Fosetyl-Al veya Metalaxyl etken maddeli koruyucu toprak uygulaması (PHI: 14 gün)." },
+            { crop: "Karacabey Soğanı", pest: "Soğan Mildiyösü (Peronospora destructor)", symptom: "Yaprak uçlarında sararma, üzerlerinde gri-mor küf tabakası ve devrilme.", cure: "Mancozeb veya Copper Oxychloride etken maddeli fungisitler (PHI: 14 gün)." },
+            { crop: "Hasanağa Enginarı", pest: "Enginar Yaprak Biti (Capitophorus horni)", symptom: "Yaprak altlarında kümelenme, yapraklarda kıvrılma ve büyümede duraklama.", cure: "Imidacloprid veya Acetamiprid etken maddeli sistemik ilaçlar (PHI: 14 gün)." },
+            { crop: "İznik Müşküle Üzümü", pest: "Bağ Küllemesi (Uncinula necator)", symptom: "Yaprak, çubuk ve koruklarda unlu beyaz tabaka, tanelerde çatlama.", cure: "Kükürt veya Penconazole etken maddeli fungisitler (PHI: 7-14 gün)." },
+            { crop: "Kestel Kestanesi & Meyveler", pest: "Kestane Gal Arısı (Dryocosmus kuriphilus)", symptom: "Taze sürgün ve yapraklarda ur (gal) oluşumu, meyve veriminde sert düşüş.", cure: "Biyolojik mücadele (Torymus sinensis) ve etkilenen çalı/dalların budanarak imhası." },
+            { crop: "İnegöl Cerrah Kuru Fasulyesi", pest: "Fasulye Kapsül Kurdu (Etiella zinckenella)", symptom: "Kapsüllerde delikler, tohumların yenmesi ve içlerinin pislikle dolması.", cure: "Deltamethrin etken maddeli insektisitler ile bakla bağlama dönemi ilaçlaması (PHI: 14 gün)." },
+            { crop: "İnegöl Çıbrıkası", pest: "Toprak Altı Zararlıları / Danaburnu", symptom: "Kök boğazının kesilmesi, taze fidan ve sürgünlerin kuruması.", cure: "Zehirli yem uygulaması (Kepek + Malathion karışımı)." },
+            { crop: "Göynükbelen & Keles Çileği", pest: "Çilek Kök Çürüklüğü & Kırmızı Örümcek", symptom: "Yapraklarda sararma, gümüşi lekeler ve alt kısımlarda ince ağlar.", cure: "Abamectin veya Fenpyroximate etken maddeli akarisitler (PHI: 7 gün)." },
+            { crop: "Keles & Harmancık Kirazı", pest: "Kiraz Sinek Zararlısı (Rhagoletis cerasi)", symptom: "Meyve etinde kurtlanma, yumuşama ve dökülme.", cure: "Sarı yapışkan tuzaklar ve Spinosad etken maddeli ilaçlama (PHI: 7-14 gün)." }
         ];
 
         // AYLIK ZİRAİ TAKVİM VERİSİ
         const calendarData = [
-            { month: "Ocak - Şubat", task: "Zeytin ve Meyve ağaçlarında kış budaması. Kışlık Bakırlı İlaçlama (Bordo Bulamacı) uygulaması. Toprak analizi numunelerinin alınması." },
-            { month: "Mart - Nisan", task: "Armut ve Şeftalide karaleke ve küllemeye karşı ilk koruyucu ilaçlamalar. Şeftalide klok (yaprak kıvırcıklığı) takibi. Biber ve domates fidelerinin dikimi." },
-            { month: "Mayıs - Haziran", task: "Zeytin güvesi çiçek nesli takibi. Meyve ağaçlarında seyreltme ve azotu dengeli üst gübreleme. Meyve sineği tuzaklarının asılması." },
-            { month: "Temmuz - Ağustos", task: "Zeytin sineği ve Armut psillidi popülasyon takibi. Sulama programlarının sıklaştırılması. Erkenci şeftali ve nektarin hasadı." },
-            { month: "Eylül - Ekim", task: "Gemlik Zeytini ve Siyah İncir hasat hazırlığı ve toplanması. Karacabey soğanı ve sanayi domatesi son depolama/hasat işlemleri." },
-            { month: "Kasım - Aralık", task: "Hasat sonrası ağaçların kışa hazırlanması, sonbahar bakırlı uygulamaları. Dökülen yaprakların toplanıp imha edilmesi." }
+            { month: "Ocak - Şubat", task: "Gemlik Zeytini, Bursa Deveci Armudu, Bursa Santa Maria Armudu, Bursa Şeftalisi & Nektarin, Bursa Siyah İnciri, İznik Müşküle Üzümü ve Kestel Kestanesi ağaçlarında kış budaması. Kışlık Bakırlı İlaçlama (Bordo Bulamacı) uygulaması. Karacabey Soğanı, Karacabey / Yenişehir Domatesi, Yenişehir Biberi & Kapya ve İnegöl Cerrah Kuru Fasulyesi arazilerinde toprak analizi numunelerinin alınması ve taban gübrelemesi." },
+            { month: "Mart - Nisan", task: "Bursa Deveci Armudu ve Bursa Santa Maria Armudunda karaleke ve küllemeye karşı ilk koruyucu ilaçlamalar. Bursa Şeftalisi & Nektarinde klok (yaprak kıvırcıklığı) takibi. Hasanağa Enginarı ve Keles & Harmancık Kirazında bahar bakımları. Karacabey / Yenişehir Domatesi ve Yenişehir Biberi & Kapya fidelerinin dikimi. Göynükbelen & Keles Çileğinde ve İnegöl Çıbrıkasında ilkbahar çapalaması ve damlama gübrelemesi." },
+            { month: "Mayıs - Haziran", task: "Gemlik Zeytininde zeytin güvesi çiçek nesli takibi. Bursa Deveci Armudu, Bursa Santa Maria Armudu, Bursa Şeftalisi & Nektarinde seyreltme ve azotu dengeli üst gübreleme. Keles & Harmancık Kirazında kiraz sineği tuzaklarının asılması. Karacabey Soğanı, İnegöl Cerrah Kuru Fasulyesi ve İznik Müşküle Üzümünde hastalık takibi ve birinci boğaz doldurma." },
+            { month: "Temmuz - Ağustos", task: "Gemlik Zeytini sineği ve Bursa Deveci Armudunda armut psillidi popülasyon takibi. Karacabey / Yenişehir Domatesi, Yenişehir Biberi & Kapya ve Göynükbelen & Keles Çileğinde sulama programlarının sıklaştırılması. Erkenci Bursa Şeftalisi & Nektarin, Keles & Harmancık Kirazı ve Hasanağa Enginarı hasadı." },
+            { month: "Eylül - Ekim", task: "Gemlik Zeytini ve Bursa Siyah İnciri hasat hazırlığı ve toplanması. İznik Müşküle Üzümü ve Kestel Kestanesi toplanması. Karacabey Soğanı, Karacabey / Yenişehir Domatesi, Yenişehir Biberi & Kapya ve İnegöl Cerrah Kuru Fasulyesinde son depolama ve hasat işlemleri." },
+            { month: "Kasım - Aralık", task: "Hasat sonrası Gemlik Zeytini, Bursa Deveci Armudu, Bursa Siyah İnciri ve tüm meyve ağaçlarının kışa hazırlanması, sonbahar bakırlı uygulamaları. Dökülen yaprakların toplanıp imha edilmesi. İnegöl Çıbrıkası ve Hasanağa Enginarı alanlarında kışlık kök koruma işlemleri." }
         ];
 
         let map, markers = [];
@@ -927,11 +940,20 @@
             setTimeout(() => {
                 const samplePrices = [
                     { name: "Bursa Deveci Armudu", unit: "Kg", min: "28.00", max: "42.00", trend: "↗️ Yükselişte", source: "Bursa Büyükşehir Hal" },
-                    { name: "Gemlik Siyah Zeytin (200-220 Tane)", unit: "Kg", min: "110.00", max: "160.00", trend: "➡️ Yatay", source: "Gemlik Ticaret Borsası" },
-                    { name: "Bursa Şeftali (Ekstra)", unit: "Kg", min: "25.00", max: "38.00", trend: "↗️ Yükselişte", source: "Bursa Büyükşehir Hal" },
-                    { name: "Karacabey Sanayi Domatesi", unit: "Kg", min: "3.50", max: "4.80", trend: "↘️ Düşüşte", source: "Karacabey Ziraat Odası" },
-                    { name: "Yenişehir Kapya Biber", unit: "Kg", min: "22.00", max: "32.00", trend: "↗️ Yükselişte", source: "Yenişehir Hal" },
-                    { name: "Hasanağa Enginarı", unit: "Adet", min: "25.00", max: "35.00", trend: "➡️ Yatay", source: "Nilüfer Üretici Pazarı" }
+                    { name: "Bursa Santa Maria Armudu", unit: "Kg", min: "26.00", max: "38.00", trend: "➡️ Yatay", source: "Bursa Büyükşehir Hal" },
+                    { name: "Bursa Şeftalisi & Nektarin", unit: "Kg", min: "25.00", max: "38.00", trend: "↗️ Yükselişte", source: "Bursa Büyükşehir Hal" },
+                    { name: "Gemlik Zeytini (200-220 Tane)", unit: "Kg", min: "110.00", max: "160.00", trend: "➡️ Yatay", source: "Gemlik Ticaret Borsası" },
+                    { name: "Bursa Siyah İnciri", unit: "Kg", min: "45.00", max: "75.00", trend: "↗️ Yükselişte", source: "Bursa Büyükşehir Hal" },
+                    { name: "Karacabey Soğanı", unit: "Kg", min: "8.50", max: "14.00", trend: "➡️ Yatay", source: "Karacabey Ziraat Odası" },
+                    { name: "Yenişehir Biberi & Kapya", unit: "Kg", min: "22.00", max: "32.00", trend: "↗️ Yükselişte", source: "Yenişehir Hal" },
+                    { name: "Hasanağa Enginarı", unit: "Adet", min: "25.00", max: "35.00", trend: "➡️ Yatay", source: "Nilüfer Üretici Pazarı" },
+                    { name: "İznik Müşküle Üzümü", unit: "Kg", min: "30.00", max: "50.00", trend: "↗️ Yükselişte", source: "İznik Hal" },
+                    { name: "Kestel Kestanesi & Meyveler", unit: "Kg", min: "120.00", max: "200.00", trend: "↗️ Yükselişte", source: "Kestel Ziraat Odası" },
+                    { name: "İnegöl Cerrah Kuru Fasulyesi", unit: "Kg", min: "65.00", max: "90.00", trend: "➡️ Yatay", source: "İnegöl Ziraat Odası" },
+                    { name: "İnegöl Çıbrıkası", unit: "Demet", min: "15.00", max: "25.00", trend: "➡️ Yatay", source: "İnegöl Üretici Pazarı" },
+                    { name: "Karacabey / Yenişehir Domatesi", unit: "Kg", min: "3.50", max: "4.80", trend: "↘️ Düşüşte", source: "Karacabey Ziraat Odası" },
+                    { name: "Göynükbelen & Keles Çileği", unit: "Kg", min: "40.00", max: "65.00", trend: "↗️ Yükselişte", source: "Keles Hal" },
+                    { name: "Keles & Harmancık Kirazı", unit: "Kg", min: "50.00", max: "85.00", trend: "↗️ Yükselişte", source: "Harmancık Ziraat Odası" }
                 ];
 
                 tbody.innerHTML = "";
