@@ -94,6 +94,24 @@
         .leaflet-container { width: 100%; height: 100%; border-radius: 10px; }
         .leaflet-tile-container img { width: 256px !important; height: 256px !important; }
 
+        /* ÖZEL HARİTA PİN STİLLERİ */
+        .custom-map-pin {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px !important;
+            height: 28px !important;
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            font-size: 13px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            border: 2px solid white;
+        }
+        .custom-map-pin.green { background-color: #2e7d32; }
+        .custom-map-pin.yellow { background-color: #f57f17; }
+        .custom-map-pin.red { background-color: #c62828; }
+
         .district-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
         
         .district-card { background: var(--card-bg); border-radius: 10px; padding: 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: transform 0.2s, box-shadow 0.2s; position: relative; }
@@ -555,13 +573,30 @@
             { month: "Mart - Nisan", task: "Bursa Deveci Armudu ve Bursa Santa Maria Armudunda karaleke ve küllemeye karşı ilk koruyucu ilaçlamalar. Bursa Şeftalisi & Nektarinde klok (yaprak kıvırcıklığı) takibi. Hasanağa Enginarı ve Keles & Harmancık Kirazında bahar bakımları. Karacabey / Yenişehir Domatesi ve Yenişehir Biberi & Kapya fidelerinin dikimi. Göynükbelen & Keles Çileğinde ve İnegöl Çıbrıkasında ilkbahar çapalaması ve damlama gübrelemesi." },
             { month: "Mayıs - Haziran", task: "Gemlik Zeytininde zeytin güvesi çiçek nesli takibi. Bursa Deveci Armudu, Bursa Santa Maria Armudu, Bursa Şeftalisi & Nektarinde seyreltme ve azotu dengeli üst gübreleme. Keles & Harmancık Kirazında kiraz sineği tuzaklarının asılması. Karacabey Soğanı, İnegöl Cerrah Kuru Fasulyesi ve İznik Müşküle Üzümünde hastalık takibi ve birinci boğaz doldurma." },
             { month: "Temmuz - Ağustos", task: "Gemlik Zeytini sineği ve Bursa Deveci Armudunda armut psillidi popülasyon takibi. Karacabey / Yenişehir Domatesi, Yenişehir Biberi & Kapya ve Göynükbelen & Keles Çileğinde sulama programlarının sıklaştırılması. Erkenci Bursa Şeftalisi & Nektarin, Keles & Harmancık Kirazı ve Hasanağa Enginarı hasadı." },
-            { month: "Eylül - Ekim", task: "Gemlik Zeytini ve Bursa Siyah İnciri hasat hazırlığı ve toplanması. İznik Müşküle Üzümü ve Kestel Kestanesi toplanması. Karacabey Soğanı, Karacabey / Yenişehir Domatesi, Yenişehir Biberi & Kapya ve İnegöl Cerrah Kuru Fasulyesinde son depolama ve hasat işlemleri." },
+            { month: "Eylul - Ekim", task: "Gemlik Zeytini ve Bursa Siyah İnciri hasat hazırlığı ve toplanması. İznik Müşküle Üzümü ve Kestel Kestanesi toplanması. Karacabey Soğanı, Karacabey / Yenişehir Domatesi, Yenişehir Biberi & Kapya ve İnegöl Cerrah Kuru Fasulyesinde son depolama ve hasat işlemleri." },
             { month: "Kasım - Aralık", task: "Hasat sonrası Gemlik Zeytini, Bursa Deveci Armudu, Bursa Siyah İnciri ve tüm meyve ağaçlarının kışa hazırlanması, sonbahar bakırlı uygulamaları. Dökülen yaprakların toplanıp imha edilmesi. İnegöl Çıbrıkası ve Hasanağa Enginarı alanlarında kışlık kök koruma işlemleri." }
         ];
 
-        let map, markers = [];
+        let map, districtMarkersMap = {};
         let fetchedWeatherData = {};
         let currentChart = null;
+
+        // GÜNCEL AYIN ZARARLI RİSKLERİNİ BULMA HESAPLAYICISI
+        function getCurrentMonthPests() {
+            const currentMonth = new Date().getMonth(); // 0: Ocak, 7: Ağustos ...
+            if (currentMonth >= 4 && currentMonth <= 8) { // Mayıs - Eylül
+                return [
+                    { name: "Zeytin Sineği (Bactrocera oleae)", crops: ["Gemlik", "Mudanya", "Orhangazi", "İznik"] },
+                    { name: "Armut Psillidi & Karaleke", crops: ["Gürsu", "Yıldırım", "İnegöl", "Osmangazi", "Kestel"] },
+                    { name: "Domates Mildiyösü / Erken Yanıklık", crops: ["Karacabey", "Yenişehir", "Mustafakemalpaşa"] }
+                ];
+            } else {
+                return [
+                    { name: "Zeytin Halkalı Leke", crops: ["Gemlik", "Mudanya", "Orhangazi"] },
+                    { name: "Kışlık Mantari Hastalıklar & Kök Çürüklüğü", crops: ["Karacabey", "Yenişehir", "Gürsu"] }
+                ];
+            }
+        }
 
         // CANLI SAAT / TARİH FONKSİYONU
         function updateDateTime() {
@@ -596,9 +631,18 @@
             }).addTo(map);
 
             districtsData.forEach((d, idx) => {
-                const marker = L.marker([d.lat, d.lon]).addTo(map)
-                    .bindPopup(`<b>${d.name}</b><br>Ürünler: ${d.crops.slice(0, 3).join(', ')}...<br><button onclick="openModal(${idx})" style="background:#1b5e20; color:white; border:none; padding:4px 8px; border-radius:4px; margin-top:5px; cursor:pointer;">Detay ve Hava Durumu</button>`);
-                markers.push({ name: d.name, marker: marker });
+                // Başlangıçta varsayılan yeşil pin yerleştir (Veriler geldikçe güncellenir)
+                const defaultIcon = L.divIcon({
+                    className: 'custom-map-pin green',
+                    html: '•',
+                    iconSize: [28, 28],
+                    iconAnchor: [14, 14]
+                });
+
+                const marker = L.marker([d.lat, d.lon], { icon: defaultIcon }).addTo(map)
+                    .bindPopup(`<b>${d.name}</b><br>Yükleniyor...`);
+                
+                districtMarkersMap[d.name] = marker;
             });
 
             setTimeout(() => { map.invalidateSize(); }, 300);
@@ -618,15 +662,22 @@
 
             let generalAlerts = [];
             let frostDetected = false;
+            const currentMonthPests = getCurrentMonthPests();
+
+            // Güncel Dönem Zararlı Uyarısını Genel Uyarıya Ekle
+            const monthNames = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+            const activeMonthName = monthNames[new Date().getMonth()];
+            generalAlerts.push(`<b>🦠 ${activeMonthName} Dönemi Aktif Zararlı Takibi:</b> Bölgede özellikle <i>${currentMonthPests.map(p => p.name).join(', ')}</i> popülasyonu aktif dönemdedir. Saha kontrollerinizi aksatmayınız.`);
 
             for(let i = 0; i < sortedData.length; i++) {
                 const d = sortedData[i];
                 const origIndex = districtsData.findIndex(item => item.name === d.name);
 
-                // Open-Meteo URL Parametrelerine Nem ve Rüzgar Dahil Edildi
-                const url = `https://api.open-meteo.com/v1/forecast?latitude=${d.lat}&longitude=${d.lon}&current_weather=true&hourly=temperature_2m,relative_humidity_2m,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,windspeed_10m_max&timezone=auto`;
+                // Open-Meteo URL Parametrelerine Yağış (rain) Dahil Edildi
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${d.lat}&longitude=${d.lon}&current_weather=true&hourly=temperature_2m,relative_humidity_2m,windspeed_10m,rain&daily=temperature_2m_max,temperature_2m_min,windspeed_10m_max,rain_sum&timezone=auto`;
 
-                let temp = "--", wind = "--", humidity = "--", statusText = "Veri alınıyor...", badgeClass = "normal", badgeLabel = "Düşük Risk";
+                let temp = "--", wind = "--", humidity = "--", rain = 0;
+                let statusText = "Veri alınıyor...", badgeClass = "normal", badgeLabel = "Düşük Risk", pinColorClass = "green";
 
                 try {
                     const res = await fetch(url);
@@ -637,28 +688,84 @@
                         temp = data.current_weather.temperature;
                         wind = data.current_weather.windspeed;
                         
-                        // Güncel saat verisinden nem oranını yakalayalım
                         const currentHourIndex = new Date().getHours();
-                        if (data.hourly && data.hourly.relative_humidity_2m) {
-                            humidity = data.hourly.relative_humidity_2m[currentHourIndex] !== undefined ? data.hourly.relative_humidity_2m[currentHourIndex] : "--";
+                        if (data.hourly) {
+                            if (data.hourly.relative_humidity_2m) {
+                                humidity = data.hourly.relative_humidity_2m[currentHourIndex] !== undefined ? data.hourly.relative_humidity_2m[currentHourIndex] : "--";
+                            }
+                            if (data.hourly.rain) {
+                                rain = data.hourly.rain[currentHourIndex] || 0;
+                            }
                         }
 
+                        // Bu ilçeye ait aktif zararlı var mı?
+                        const districtPests = currentMonthPests.filter(p => p.crops.includes(d.name)).map(p => p.name);
+                        let pestAlertText = districtPests.length > 0 ? ` (Aktif Risk: ${districtPests[0]})` : "";
+
+                        // RİSK SEVİYESİ HESAPLAMA
                         if(temp <= 2) {
                             statusText = "❄️ Don Riski Yüksek!";
                             badgeClass = "danger";
                             badgeLabel = "Yüksek Don Riski";
+                            pinColorClass = "red";
                             frostDetected = true;
-                            generalAlerts.push(`<b>${d.name}:</b> Gece don riski (${temp}°C)! Seraları ve fidanları koruyun.`);
+                            generalAlerts.push(`<b>🚨 ${d.name}:</b> Gece don riski (${temp}°C)! Seraları ve fidanları koruyun.`);
                         } else if(wind >= 25) {
-                            statusText = "💨 Yüksek Rüzgar!";
+                            statusText = "💨 Şiddetli Rüzgar!";
+                            badgeClass = "danger";
+                            badgeLabel = "Şiddetli Rüzgar";
+                            pinColorClass = "red";
+                            generalAlerts.push(`<b>💨 ${d.name}:</b> Yüksek rüzgar (${wind} km/s). Zirai ilaçlama yapmayın, seraları sabitleyin.`);
+                        } else if(rain > 0.5) {
+                            statusText = "🌧️ Yağış / Sağanak Var";
                             badgeClass = "warning";
-                            badgeLabel = "Rüzgar Riski";
-                            generalAlerts.push(`<b>${d.name}:</b> Yüksek rüzgar (${wind} km/s). Zirai ilaçlama yapmayın.`);
+                            badgeLabel = "Yağış Uyarısı";
+                            pinColorClass = "yellow";
+                            generalAlerts.push(`<b>🌧️ ${d.name}:</b> Yağış var (${rain} mm). İlaçlama yapılması yıkanma sebebiyle etkisizdir.`);
+                        } else if(wind >= 12 && wind < 25) {
+                            statusText = "⚠️ Orta Rüzgar" + pestAlertText;
+                            badgeClass = "warning";
+                            badgeLabel = "Hassas İlaçlama";
+                            pinColorClass = "yellow";
+                            generalAlerts.push(`<b>⚠️ ${d.name}:</b> İlaçlama için sınır rüzgar hızı (${wind} km/s). İlaç sürüklenme riskine dikkat.`);
                         } else {
-                            statusText = "☀️ Zirai Koşullar Uygun";
+                            statusText = "☀️ Tarımsal Şartlar Uygun" + pestAlertText;
                             badgeClass = "normal";
                             badgeLabel = "Uygun Seviye";
+                            pinColorClass = "green";
                         }
+
+                        // HARİTA PİNİNİ VE POPUP/TOOLTIP BİLGİSİNİ DİNAMİK GÜNCELLE
+                        if(districtMarkersMap[d.name]) {
+                            const marker = districtMarkersMap[d.name];
+                            
+                            const newIcon = L.divIcon({
+                                className: `custom-map-pin ${pinColorClass}`,
+                                html: temp !== '--' ? `${Math.round(temp)}°` : '•',
+                                iconSize: [28, 28],
+                                iconAnchor: [14, 14]
+                            });
+                            marker.setIcon(newIcon);
+
+                            // Pop-up İçeriği
+                            const popupHtml = `
+                                <div style="font-family:sans-serif; min-width:180px;">
+                                    <h4 style="margin:0 0 4px 0; color:#1b5e20;">${d.name}</h4>
+                                    <b>Sıcaklık:</b> ${temp} °C<br>
+                                    <b>Rüzgar:</b> ${wind} km/s<br>
+                                    <b>Nem:</b> %${humidity}<br>
+                                    <b>Durum:</b> ${statusText}<br>
+                                    ${districtPests.length > 0 ? `<div style="margin-top:4px; font-size:11px; color:#c62828;"><b>⚠️ Dönem Zararlısı:</b> ${districtPests.join(', ')}</div>` : ''}
+                                    <button onclick="openModal(${origIndex})" style="background:#1b5e20; color:white; border:none; padding:5px 10px; border-radius:4px; margin-top:8px; cursor:pointer; width:100%;">Detaylı Rapor</button>
+                                </div>
+                            `;
+                            marker.bindPopup(popupHtml);
+
+                            // Üzerine Gelince (Tooltip) Görünecek İkaz
+                            const tooltipContent = `<b>${d.name}</b>: ${temp}°C, ${wind} km/s rüzgar. ${statusText}`;
+                            marker.bindTooltip(tooltipContent, { direction: 'top', offset: [0, -10] });
+                        }
+
                     } else {
                         statusText = "Veri Alınamadı";
                     }
@@ -691,7 +798,13 @@
 
             const alertsBox = document.getElementById('generalAlertsContainer');
             if(generalAlerts.length > 0) {
-                alertsBox.innerHTML = generalAlerts.map(a => `<div class="alert-item danger">${a}</div>`).join('');
+                alertsBox.innerHTML = generalAlerts.map(a => {
+                    let typeClass = "safe";
+                    if(a.includes("🚨") || a.includes("Don")) typeClass = "danger";
+                    else if(a.includes("💨") || a.includes("🌧️") || a.includes("⚠️")) typeClass = "wind";
+                    else if(a.includes("🦠")) typeClass = "calendar";
+                    return `<div class="alert-item ${typeClass}">${a}</div>`;
+                }).join('');
             } else {
                 alertsBox.innerHTML = `<div class="alert-item safe">✅ Bursa genelinde meteorolojik risk bulunmamaktadır. Tarımsal faaliyetler normal sürdürülebilir.</div>`;
             }
