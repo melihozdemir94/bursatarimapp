@@ -9,9 +9,7 @@
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <style>
@@ -77,8 +75,6 @@
         
         .alert-item { background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 10px 12px; border-radius: 4px; margin-bottom: 10px; font-size: 13px; color: #856404; }
         .alert-item.danger { background-color: #f8d7da; border-left-color: #dc3545; color: #721c24; }
-        .alert-item.wind { background-color: #e3f2fd; border-left-color: #0288d1; color: #01579b; }
-        .alert-item.frost { background-color: #e0f7fa; border-left-color: #00bcd4; color: #006064; }
         .alert-item.safe { background-color: #e8f5e9; border-left-color: #4caf50; color: #1b5e20; }
 
         .content { flex: 1; }
@@ -86,10 +82,9 @@
         .content-header h2 { font-size: 20px; }
         .last-update-tag { font-size: 12px; background: var(--border-color); padding: 4px 10px; border-radius: 12px; }
 
-        #mapContainer { height: 380px; width: 100%; border-radius: 10px; margin-bottom: 25px; border: 1px solid var(--border-color); box-shadow: 0 2px 6px rgba(0,0,0,0.05); z-index: 1; }
+        #mapContainer { height: 400px; width: 100%; border-radius: 10px; margin-bottom: 25px; border: 1px solid var(--border-color); box-shadow: 0 2px 6px rgba(0,0,0,0.05); z-index: 1; }
 
         .district-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
-        
         .district-card { background: var(--card-bg); border-radius: 10px; padding: 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: transform 0.2s, box-shadow 0.2s; position: relative; }
         .district-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         
@@ -104,28 +99,21 @@
         .info-row { display: flex; justify-content: space-between; font-size: 13px; opacity: 0.85; margin-bottom: 6px; }
         .info-row span.val { font-weight: bold; opacity: 1; }
 
-        .card-btn { display: block; width: 100%; text-align: center; padding: 10px; margin-top: 12px; background-color: var(--primary-green); color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; text-decoration: none; font-size: 13px; transition: background 0.2s; }
+        .card-btn { display: block; width: 100%; text-align: center; padding: 10px; margin-top: 12px; background-color: var(--primary-green); color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; }
         .card-btn:hover { opacity: 0.9; }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
         .modal-container { background: var(--card-bg); width: 92%; max-width: 850px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: modalAnim 0.3s ease-out; position: relative; max-height: 90vh; overflow-y: auto; color: var(--text-color); }
-        
-        @keyframes modalAnim {
-            from { transform: translateY(-30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
+        @keyframes modalAnim { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .modal-close { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.8); border: none; font-size: 20px; font-weight: bold; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; z-index: 10; color: #333; }
 
-        .weather-banner { position: relative; height: 140px; padding: 20px; color: white; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; background: linear-gradient(to bottom, #1b5e20, #388e3c); }
-
+        .weather-banner { position: relative; height: 120px; padding: 20px; color: white; display: flex; flex-direction: column; justify-content: flex-end; background: linear-gradient(to bottom, #1b5e20, #388e3c); }
         .modal-body { padding: 20px; }
         .modal-section { margin-bottom: 20px; }
         .modal-section h4 { font-size: 15px; color: var(--primary-green); margin-bottom: 10px; border-bottom: 2px solid #e8f5e9; padding-bottom: 4px; }
 
         .hourly-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; }
         .hourly-card { background: rgba(0,0,0,0.03); border: 1px solid var(--border-color); border-radius: 8px; min-width: 105px; padding: 10px; text-align: center; flex-shrink: 0; }
-        
         .forecast-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
         .forecast-card { background: rgba(0,0,0,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; text-align: center; }
 
@@ -139,6 +127,17 @@
         .clock-hour-chip.good { background-color: #2e7d32; }
         .clock-hour-chip.bad { background-color: #c62828; }
         .clock-hour-chip.warning { background-color: #f57f17; }
+
+        /* Custom Leaflet Tooltip Styling */
+        .custom-map-tooltip {
+            background: #ffffff;
+            border: 1px solid #cccccc;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        .custom-map-tooltip strong { color: #1b5e20; font-size: 13px; }
 
         @media (max-width: 900px) {
             .layout { flex-direction: column; }
@@ -187,9 +186,9 @@
                     <input type="text" id="searchInput" onkeyup="filterDistricts()" placeholder="İlçe adı yazın...">
                     <select id="riskFilter" onchange="filterDistricts()">
                         <option value="all">Tüm Risk Seviyeleri</option>
-                        <option value="danger">Yüksek Riskli İlçeler</option>
-                        <option value="warning">Orta Riskli İlçeler</option>
-                        <option value="normal">Normal / Düşük Riskli</option>
+                        <option value="danger">Yüksek Riskli (Kırmızı)</option>
+                        <option value="warning">Orta Riskli (Sarı)</option>
+                        <option value="normal">Düşük Riskli (Yeşil)</option>
                     </select>
                 </div>
 
@@ -274,7 +273,24 @@
             { name: "Kestel", lat: 40.1983, lon: 29.2125 }
         ];
 
-        let map, fetchedWeatherData = {}, currentChart = null;
+        let map, fetchedWeatherData = {}, mapMarkers = {}, currentChart = null;
+
+        // Dinamik Pin Rengi (SVG Icon Oluşturucu)
+        function createCustomIcon(color) {
+            const svgIcon = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="28" height="42">
+                    <path fill="${color}" stroke="#FFFFFF" stroke-width="1.5" d="M12 0C5.373 0 0 5.373 0 12c0 9 12 24 12 24s12-15 12-24c0-6.627-5.373-12-12-12z"/>
+                    <circle cx="12" cy="12" r="5" fill="#FFFFFF"/>
+                </svg>`;
+            return L.divIcon({
+                className: "custom-pin",
+                html: svgIcon,
+                iconSize: [28, 42],
+                iconAnchor: [14, 42],
+                popupAnchor: [0, -40],
+                tooltipAnchor: [14, -20]
+            });
+        }
 
         function updateDateTime() {
             const now = new Date();
@@ -297,9 +313,18 @@
             map = L.map('mapContainer').setView([40.1885, 29.0610], 9);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: 'OpenStreetMap' }).addTo(map);
 
+            // Başlangıçta marker'ları geçici yeşil icon ile ekleyelim
             districtsData.forEach((d, idx) => {
-                L.marker([d.lat, d.lon]).addTo(map)
-                    .bindPopup(`<b>${d.name}</b><br><button onclick="openModal(${idx})" style="background:#1b5e20; color:white; border:none; padding:4px 8px; border-radius:4px; margin-top:5px; cursor:pointer;">İlçe Zirai Detayı</button>`);
+                const marker = L.marker([d.lat, d.lon], { icon: createCustomIcon('#2e7d32') }).addTo(map);
+                
+                // Varsayılan Hover Tooltip
+                marker.bindTooltip(`<b>${d.name}</b><br>Veri yükleniyor...`, {
+                    className: 'custom-map-tooltip',
+                    direction: 'top'
+                });
+
+                marker.on('click', () => openModal(idx));
+                mapMarkers[d.name] = marker;
             });
         }
 
@@ -310,11 +335,11 @@
 
             for(let i = 0; i < districtsData.length; i++) {
                 const d = districtsData[i];
-                // API Parametrelerine nem (relativehumidity_2m) ve yağış (precipitation) eklendi
                 const url = `https://api.open-meteo.com/v1/forecast?latitude=${d.lat}&longitude=${d.lon}&current_weather=true&hourly=temperature_2m,relativehumidity_2m,precipitation,windspeed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=Europe%2FIstanbul`;
 
                 let temp = "--", wind = "--", humidity = "--", precip = "--";
                 let badgeClass = "normal", badgeLabel = "Uygun Seviye", statusText = "☀️ Zirai Koşullar İdeal";
+                let pinColor = "#2e7d32"; // Yeşil
 
                 try {
                     const res = await fetch(url);
@@ -325,32 +350,49 @@
                         temp = data.current_weather.temperature;
                         wind = data.current_weather.windspeed;
                         
-                        // O anki saatin nem ve yağış verisi
                         const currentHourIndex = new Date().getHours();
                         humidity = data.hourly.relativehumidity_2m[currentHourIndex] || "--";
                         precip = data.hourly.precipitation[currentHourIndex] || 0;
 
-                        // Zirai Risk Değerlendirme Mantığı
+                        // Zirai Risk Algoritması & Pin Renk Belirleme
                         if(temp <= 2) {
                             statusText = "❄️ Don Riski Yüksek!";
                             badgeClass = "danger"; badgeLabel = "Don Alarmı";
+                            pinColor = "#d32f2f"; // Kırmızı
                             frostDetected = true;
                             generalAlerts.push(`<b>${d.name}:</b> Sıcaklık ${temp}°C'ye düştü, don riski var!`);
                         } else if(wind >= 25) {
                             statusText = "💨 Şiddetli Rüzgar!";
                             badgeClass = "danger"; badgeLabel = "İlaçlama İptal";
-                            generalAlerts.push(`<b>${d.name}:</b> Rüzgar ${wind} km/s. İlaç sürüklenme riski yüksek.`);
+                            pinColor = "#d32f2f"; // Kırmızı
+                            generalAlerts.push(`<b>${d.name}:</b> Rüzgar ${wind} km/s. İlaç sürüklenme riski var.`);
                         } else if(humidity > 80 && temp > 15) {
                             statusText = "🍄 Mantari Hastalık Riski!";
                             badgeClass = "warning"; badgeLabel = "Yüksek Nem";
+                            pinColor = "#f57f17"; // Sarı
                             generalAlerts.push(`<b>${d.name}:</b> Nem %${humidity}. Mantari hastalık riski yüksek!`);
                         } else if(precip > 0.5) {
                             statusText = "🌧️ Yağış Mevcut";
                             badgeClass = "warning"; badgeLabel = "Yağış Uyarısı";
+                            pinColor = "#f57f17"; // Sarı
                         }
                     }
                 } catch(e) { console.error("Veri çekilemedi:", e); }
 
+                // Harita üzerindeki marker rengini ve Hover (Tooltip) metnini güncelleme
+                if(mapMarkers[d.name]) {
+                    mapMarkers[d.name].setIcon(createCustomIcon(pinColor));
+                    const tooltipContent = `
+                        <strong>${d.name}</strong><br>
+                        🌡️ Sıcaklık: ${temp} °C<br>
+                        💨 Rüzgar: ${wind} km/s<br>
+                        💧 Nem: %${humidity}<br>
+                        ⚠️ Durum: <b>${statusText}</b>
+                    `;
+                    mapMarkers[d.name].setTooltipContent(tooltipContent);
+                }
+
+                // İlçe Kartı Render İşlemi
                 grid.innerHTML += `
                     <div class="district-card" data-name="${d.name}" data-risk="${badgeClass}">
                         <div class="card-header">
@@ -398,44 +440,39 @@
             const curHumidity = data.hourly.relativehumidity_2m[curHour] || 50;
             const curPrecip = data.hourly.precipitation[curHour] || 0;
 
-            // Rüzgar, Nem ve Yağışa Göre Zirai Önlem Metni Oluşturma
             const adviseBox = document.getElementById('modalAdviseBox');
             let adviceHTML = "";
             let adviceClass = "safe";
 
-            // 1. Rüzgar Bazlı Değerlendirme
             if(curWind <= 10) {
                 adviceHTML += `<b>💨 Rüzgar (${curWind} km/s):</b> İlaçlama ve gübreleme için ideal hava koşulu.<br>`;
             } else if(curWind <= 20) {
-                adviceHTML += `<b>💨 Rüzgar (${curWind} km/s):</b> Orta derece rüzgar. İlaçlamada sürüklenme (drift) olabilir. Yelleye dikkat edin.<br>`;
+                adviceHTML += `<b>💨 Rüzgar (${curWind} km/s):</b> Orta derece rüzgar. İlaçlamada sürüklenme (drift) olabilir.<br>`;
                 adviceClass = "warning";
             } else {
-                adviceHTML += `<b>💨 Rüzgar (${curWind} km/s):</b> KRİTİK RÜZGAR! İlaçlama yapılması tavsiye edilmez. İlaç hedef bitkiye ulaşmaz ve çevreye yayılır.<br>`;
+                adviceHTML += `<b>💨 Rüzgar (${curWind} km/s):</b> KRİTİK RÜZGAR! İlaçlama yapılması tavsiye edilmez.<br>`;
                 adviceClass = "danger";
             }
 
-            // 2. Nem Bazlı Değerlendirme
             if(curHumidity > 80) {
-                adviceHTML += `<b>💧 Nem (%${curHumidity}):</b> Yüksek nem seviyesi! Külleme, karaleke ve mildiyö gibi fungal (mantari) hastalık riski yüksektir. Koruyucu fungisit uygulaması değerlendirilmelidir.<br>`;
+                adviceHTML += `<b>💧 Nem (%${curHumidity}):</b> Yüksek nem! Fungal (mantari) hastalık riski yüksektir.<br>`;
                 if(adviceClass !== "danger") adviceClass = "warning";
             } else if(curHumidity < 40) {
-                adviceHTML += `<b>💧 Nem (%${curHumidity}):</b> Düşük nem. Atılan ilacın yaprakta hızlı kuruması nedeniyle emilim azalabilir. Sabah veya akşam saatlerini tercih ediniz.<br>`;
+                adviceHTML += `<b>💧 Nem (%${curHumidity}):</b> Düşük nem. Yaprak emilimi azalabilir.<br>`;
             } else {
-                adviceHTML += `<b>💧 Nem (%${curHumidity}):</b> Nem seviyesi bitki stresi ve ilaç emilimi açısından elverişli.<br>`;
+                adviceHTML += `<b>💧 Nem (%${curHumidity}):</b> Nem seviyesi bitki stresi ve ilaç emilimi için elverişli.<br>`;
             }
 
-            // 3. Yağış Bazlı Değerlendirme
             if(curPrecip > 0) {
-                adviceHTML += `<b>🌧️ Yağış (${curPrecip} mm):</b> Saha yağışlı. Yapılacak ilaçlama yıkanacaktır. Toprak işleme için çamur riski mevcuttur.`;
+                adviceHTML += `<b>🌧️ Yağış (${curPrecip} mm):</b> Yağışlı hava. İlaçlama yıkanır, toprak işleme için çamur riski var.`;
                 adviceClass = "danger";
             } else {
-                adviceHTML += `<b>🌧️ Yağış:</b> Yağış beklenmiyor. Tarlaya giriş ve sürüm için elverişli.`;
+                adviceHTML += `<b>🌧️ Yağış:</b> Yağış beklenmiyor. Tarlaya giriş elverişli.`;
             }
 
             adviseBox.className = "advice-box " + adviceClass;
             adviseBox.innerHTML = adviceHTML;
 
-            // İlaçlama Saati Kadranı (Rüzgar & Sıcaklık Kombinasyonu)
             const clockGrid = document.getElementById('modalClockGrid');
             clockGrid.innerHTML = "";
             for(let h = 6; h <= 20; h++) {
@@ -444,15 +481,12 @@
                 const precip = data.hourly.precipitation[h] || 0;
 
                 let statusClass = "good";
-                if(wind > 20 || temp > 30 || precip > 0) {
-                    statusClass = "bad";
-                } else if(wind > 12 || temp > 26) {
-                    statusClass = "warning";
-                }
+                if(wind > 20 || temp > 30 || precip > 0) statusClass = "bad";
+                else if(wind > 12 || temp > 26) statusClass = "warning";
+
                 clockGrid.innerHTML += `<div class="clock-hour-chip ${statusClass}">${h}:00</div>`;
             }
 
-            // Saatlik Scroll Kartları
             const scrollBox = document.getElementById('modalHourlyScroll');
             scrollBox.innerHTML = "";
             for(let i = 0; i < 24; i += 2) {
@@ -468,7 +502,6 @@
                 `;
             }
 
-            // Tahmin Kartları
             const forecastGrid = document.getElementById('modalForecastGrid');
             forecastGrid.innerHTML = "";
             if(data.daily) {
@@ -483,7 +516,6 @@
                 }
             }
 
-            // Çift Eksenli Grafik (Sıcaklık ve Nem)
             const ctx = document.getElementById('tempChart').getContext('2d');
             if(currentChart) currentChart.destroy();
             currentChart = new Chart(ctx, {
@@ -491,26 +523,12 @@
                 data: {
                     labels: data.hourly.time.slice(0, 24).map(t => t.split('T')[1]),
                     datasets: [
-                        {
-                            label: 'Sıcaklık (°C)',
-                            data: data.hourly.temperature_2m.slice(0, 24),
-                            borderColor: '#1b5e20',
-                            backgroundColor: 'rgba(27, 94, 32, 0.1)',
-                            yAxisID: 'y',
-                            fill: true
-                        },
-                        {
-                            label: 'Nem (%)',
-                            data: data.hourly.relativehumidity_2m.slice(0, 24),
-                            borderColor: '#0288d1',
-                            borderDash: [5, 5],
-                            yAxisID: 'y1',
-                            fill: false
-                        }
+                        { label: 'Sıcaklık (°C)', data: data.hourly.temperature_2m.slice(0, 24), borderColor: '#1b5e20', backgroundColor: 'rgba(27, 94, 32, 0.1)', yAxisID: 'y', fill: true },
+                        { label: 'Nem (%)', data: data.hourly.relativehumidity_2m.slice(0, 24), borderColor: '#0288d1', borderDash: [5, 5], yAxisID: 'y1', fill: false }
                     ]
                 },
-                options: { 
-                    responsive: true, 
+                options: {
+                    responsive: true,
                     maintainAspectRatio: false,
                     scales: {
                         y: { type: 'linear', position: 'left', title: { display: true, text: 'Sıcaklık (°C)' } },
