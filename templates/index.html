@@ -454,7 +454,7 @@
                 </div>
 
                 <div class="modal-section">
-                    <h4>⏱️ 24 Saatlik Detaylı Sıcaklık & Nem Akışı</h4>
+                    <h4>⏱️ 24 Saatlik Detaylı Sıcaklık, Nem ve Rüzgar Akışı</h4>
                     <div class="hourly-scroll" id="modalHourlyScroll"></div>
                 </div>
 
@@ -601,11 +601,10 @@
                 markers.push({ name: d.name, marker: marker });
             });
 
-            // Haritanın render hatalarını önlemek için boyut tetiklemesi
             setTimeout(() => { map.invalidateSize(); }, 300);
         }
 
-        // İLÇE KARTLARINI RENDER ETME VE OPEN-METEO API ENTEGRASYONU (DÜZELTİLDİ)
+        // İLÇE KARTLARINI RENDER ETME VE OPEN-METEO API ENTEGRASYONU (RÜZGAR, NEM, YAĞIŞ DAHİL)
         async function renderDistrictCards() {
             const grid = document.getElementById('districtGrid');
             grid.innerHTML = "";
@@ -624,10 +623,10 @@
                 const d = sortedData[i];
                 const origIndex = districtsData.findIndex(item => item.name === d.name);
 
-                // Open-Meteo URL Parametreleri Güncellendi
+                // Open-Meteo URL Parametrelerine Nem ve Rüzgar Dahil Edildi
                 const url = `https://api.open-meteo.com/v1/forecast?latitude=${d.lat}&longitude=${d.lon}&current_weather=true&hourly=temperature_2m,relative_humidity_2m,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,windspeed_10m_max&timezone=auto`;
 
-                let temp = "--", wind = "--", statusText = "Veri alınıyor...", badgeClass = "normal", badgeLabel = "Düşük Risk";
+                let temp = "--", wind = "--", humidity = "--", statusText = "Veri alınıyor...", badgeClass = "normal", badgeLabel = "Düşük Risk";
 
                 try {
                     const res = await fetch(url);
@@ -637,6 +636,12 @@
                         fetchedWeatherData[d.name] = data;
                         temp = data.current_weather.temperature;
                         wind = data.current_weather.windspeed;
+                        
+                        // Güncel saat verisinden nem oranını yakalayalım
+                        const currentHourIndex = new Date().getHours();
+                        if (data.hourly && data.hourly.relative_humidity_2m) {
+                            humidity = data.hourly.relative_humidity_2m[currentHourIndex] !== undefined ? data.hourly.relative_humidity_2m[currentHourIndex] : "--";
+                        }
 
                         if(temp <= 2) {
                             statusText = "❄️ Don Riski Yüksek!";
@@ -664,7 +669,6 @@
 
                 const isFav = fav === d.name;
 
-                // Buton ifadesi "🔍 Detaylı Bilgi & Tahmin" olarak güncellendi
                 const cardHtml = `
                     <div class="district-card" data-name="${d.name}" data-risk="${badgeClass}">
                         <span class="favorite-star ${isFav ? 'active' : ''}" onclick="toggleFavorite('${d.name}')">★</span>
@@ -674,6 +678,7 @@
                         </div>
                         <div class="info-row"><span>Sıcaklık:</span><span class="val">${temp} °C</span></div>
                         <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">${wind} km/s</span></div>
+                        <div class="info-row"><span>Bağıl Nem:</span><span class="val">${humidity}%</span></div>
                         <div class="info-row"><span>Öne Çıkan Ürünler:</span><span class="val" style="font-size:11px;">${d.crops.slice(0, 3).join(', ')}</span></div>
                         <div class="info-row"><span>Durum:</span><span class="val">${statusText}</span></div>
                         <button class="card-btn" onclick="openModal(${origIndex})">🔍 Detaylı Bilgi & Tahmin</button>
@@ -779,11 +784,13 @@
                 const timeStr = data.hourly.time && data.hourly.time[i] ? data.hourly.time[i].split('T')[1] : `${i}:00`;
                 const t = data.hourly.temperature_2m ? data.hourly.temperature_2m[i] : '--';
                 const w = data.hourly.windspeed_10m ? data.hourly.windspeed_10m[i] : '--';
+                const h = data.hourly.relative_humidity_2m ? data.hourly.relative_humidity_2m[i] : '--';
                 scrollBox.innerHTML += `
                     <div class="hourly-card">
                         <div style="font-size:12px; font-weight:bold;">${timeStr}</div>
-                        <div style="font-size:16px; color:#1b5e20; margin:4px 0;">${t}°C</div>
+                        <div style="font-size:15px; color:#1b5e20; margin:3px 0;">${t}°C</div>
                         <div style="font-size:11px; opacity:0.8;">💨 ${w} km/s</div>
+                        <div style="font-size:11px; opacity:0.8;">💧 %${h}</div>
                     </div>
                 `;
             }
