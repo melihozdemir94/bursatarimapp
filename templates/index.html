@@ -456,7 +456,7 @@
         <div class="modal-container">
             <button class="modal-close" onclick="closeModal()">✕</button>
             
-            <div class="weather-banner">
+            <div class="weather-banner" id="modalBannerHeader">
                 <canvas id="popup-weather-bg"></canvas>
                 <div class="banner-info">
                     <h2 id="modalDistrictName">İlçe Adı</h2>
@@ -573,7 +573,7 @@
             { month: "Mart - Nisan", task: "Bursa Deveci Armudu ve Bursa Santa Maria Armudunda karaleke ve küllemeye karşı ilk koruyucu ilaçlamalar. Bursa Şeftalisi & Nektarinde klok (yaprak kıvırcıklığı) takibi. Hasanağa Enginarı ve Keles & Harmancık Kirazında bahar bakımları. Karacabey / Yenişehir Domatesi ve Yenişehir Biberi & Kapya fidelerinin dikimi. Göynükbelen & Keles Çileğinde ve İnegöl Çıbrıkasında ilkbahar çapalaması ve damlama gübrelemesi." },
             { month: "Mayıs - Haziran", task: "Gemlik Zeytininde zeytin güvesi çiçek nesli takibi. Bursa Deveci Armudu, Bursa Santa Maria Armudu, Bursa Şeftalisi & Nektarinde seyreltme ve azotu dengeli üst gübreleme. Keles & Harmancık Kirazında kiraz sineği tuzaklarının asılması. Karacabey Soğanı, İnegöl Cerrah Kuru Fasulyesi ve İznik Müşküle Üzümünde hastalık takibi ve birinci boğaz doldurma." },
             { month: "Temmuz - Ağustos", task: "Gemlik Zeytini sineği ve Bursa Deveci Armudunda armut psillidi popülasyon takibi. Karacabey / Yenişehir Domatesi, Yenişehir Biberi & Kapya ve Göynükbelen & Keles Çileğinde sulama programlarının sıklaştırılması. Erkenci Bursa Şeftalisi & Nektarin, Keles & Harmancık Kirazı ve Hasanağa Enginarı hasadı." },
-            { month: "Eylul - Ekim", task: "Gemlik Zeytini ve Bursa Siyah İnciri hasat hazırlığı ve toplanması. İznik Müşküle Üzümü ve Kestel Kestanesi toplanması. Karacabey Soğanı, Karacabey / Yenişehir Domatesi, Yenişehir Biberi & Kapya ve İnegöl Cerrah Kuru Fasulyesinde son depolama ve hasat işlemleri." },
+            { month: "Eylül - Ekim", task: "Gemlik Zeytini ve Bursa Siyah İnciri hasat hazırlığı ve toplanması. İznik Müşküle Üzümü ve Kestel Kestanesi toplanması. Karacabey Soğanı, Karacabey / Yenişehir Domatesi, Yenişehir Biberi & Kapya ve İnegöl Cerrah Kuru Fasulyesinde son depolama ve hasat işlemleri." },
             { month: "Kasım - Aralık", task: "Hasat sonrası Gemlik Zeytini, Bursa Deveci Armudu, Bursa Siyah İnciri ve tüm meyve ağaçlarının kışa hazırlanması, sonbahar bakırlı uygulamaları. Dökülen yaprakların toplanıp imha edilmesi. İnegöl Çıbrıkası ve Hasanağa Enginarı alanlarında kışlık kök koruma işlemleri." }
         ];
 
@@ -583,8 +583,8 @@
 
         // GÜNCEL AYIN ZARARLI RİSKLERİNİ BULMA HESAPLAYICISI
         function getCurrentMonthPests() {
-            const currentMonth = new Date().getMonth(); // 0: Ocak, 7: Ağustos ...
-            if (currentMonth >= 4 && currentMonth <= 8) { // Mayıs - Eylül
+            const currentMonth = new Date().getMonth();
+            if (currentMonth >= 4 && currentMonth <= 8) {
                 return [
                     { name: "Zeytin Sineği (Bactrocera oleae)", crops: ["Gemlik", "Mudanya", "Orhangazi", "İznik"] },
                     { name: "Armut Psillidi & Karaleke", crops: ["Gürsu", "Yıldırım", "İnegöl", "Osmangazi", "Kestel"] },
@@ -596,6 +596,80 @@
                     { name: "Kışlık Mantari Hastalıklar & Kök Çürüklüğü", crops: ["Karacabey", "Yenişehir", "Gürsu"] }
                 ];
             }
+        }
+
+        // DİNAMİK HAVA DURUMU ARKA PLAN ANİMASYONU (CANVAS)
+        let animationFrameId = null;
+        function updateWeatherAnimation(weatherCode, isDay) {
+            const canvas = document.getElementById('popup-weather-bg');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            if(animationFrameId) cancelAnimationFrame(animationFrameId);
+
+            canvas.width = canvas.parentElement.offsetWidth || 800;
+            canvas.height = canvas.parentElement.offsetHeight || 160;
+
+            const particles = [];
+            let particleType = 'none';
+
+            // Open-Meteo Kodlarına Göre Yağış/Kar/Güneş
+            if (weatherCode >= 71 && weatherCode <= 77) {
+                particleType = 'snow';
+            } else if ((weatherCode >= 51 && weatherCode <= 67) || (weatherCode >= 80 && weatherCode <= 82)) {
+                particleType = 'rain';
+            }
+
+            if (particleType === 'rain') {
+                for(let i = 0; i < 40; i++) {
+                    particles.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        speed: 4 + Math.random() * 4,
+                        length: 8 + Math.random() * 6
+                    });
+                }
+            } else if (particleType === 'snow') {
+                for(let i = 0; i < 30; i++) {
+                    particles.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        speed: 1 + Math.random() * 2,
+                        radius: 2 + Math.random() * 3
+                    });
+                }
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                if (particleType === 'rain') {
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+                    ctx.lineWidth = 1.5;
+                    particles.forEach(p => {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p.x - 1, p.y + p.length);
+                        ctx.stroke();
+                        p.y += p.speed;
+                        if(p.y > canvas.height) p.y = -10;
+                    });
+                } else if (particleType === 'snow') {
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                    particles.forEach(p => {
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fill();
+                        p.y += p.speed;
+                        p.x += Math.sin(p.y * 0.05) * 0.5;
+                        if(p.y > canvas.height) p.y = -10;
+                    });
+                }
+
+                animationFrameId = requestAnimationFrame(draw);
+            }
+
+            if(particleType !== 'none') draw();
         }
 
         // CANLI SAAT / TARİH FONKSİYONU
@@ -631,7 +705,6 @@
             }).addTo(map);
 
             districtsData.forEach((d, idx) => {
-                // Başlangıçta varsayılan yeşil pin yerleştir (Veriler geldikçe güncellenir)
                 const defaultIcon = L.divIcon({
                     className: 'custom-map-pin green',
                     html: '•',
@@ -648,7 +721,7 @@
             setTimeout(() => { map.invalidateSize(); }, 300);
         }
 
-        // İLÇE KARTLARINI RENDER ETME VE OPEN-METEO API ENTEGRASYONU (RÜZGAR, NEM, YAĞIŞ DAHİL)
+        // İLÇE KARTLARINI RENDER ETME VE OPEN-METEO API ENTEGRASYONU
         async function renderDistrictCards() {
             const grid = document.getElementById('districtGrid');
             grid.innerHTML = "";
@@ -664,7 +737,6 @@
             let frostDetected = false;
             const currentMonthPests = getCurrentMonthPests();
 
-            // Güncel Dönem Zararlı Uyarısını Genel Uyarıya Ekle
             const monthNames = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
             const activeMonthName = monthNames[new Date().getMonth()];
             generalAlerts.push(`<b>🦠 ${activeMonthName} Dönemi Aktif Zararlı Takibi:</b> Bölgede özellikle <i>${currentMonthPests.map(p => p.name).join(', ')}</i> popülasyonu aktif dönemdedir. Saha kontrollerinizi aksatmayınız.`);
@@ -673,7 +745,6 @@
                 const d = sortedData[i];
                 const origIndex = districtsData.findIndex(item => item.name === d.name);
 
-                // Open-Meteo URL Parametrelerine Yağış (rain) Dahil Edildi
                 const url = `https://api.open-meteo.com/v1/forecast?latitude=${d.lat}&longitude=${d.lon}&current_weather=true&hourly=temperature_2m,relative_humidity_2m,windspeed_10m,rain&daily=temperature_2m_max,temperature_2m_min,windspeed_10m_max,rain_sum&timezone=auto`;
 
                 let temp = "--", wind = "--", humidity = "--", rain = 0;
@@ -698,7 +769,6 @@
                             }
                         }
 
-                        // Bu ilçeye ait aktif zararlı var mı?
                         const districtPests = currentMonthPests.filter(p => p.crops.includes(d.name)).map(p => p.name);
                         let pestAlertText = districtPests.length > 0 ? ` (Aktif Risk: ${districtPests[0]})` : "";
 
@@ -747,7 +817,6 @@
                             });
                             marker.setIcon(newIcon);
 
-                            // Pop-up İçeriği
                             const popupHtml = `
                                 <div style="font-family:sans-serif; min-width:180px;">
                                     <h4 style="margin:0 0 4px 0; color:#1b5e20;">${d.name}</h4>
@@ -761,7 +830,6 @@
                             `;
                             marker.bindPopup(popupHtml);
 
-                            // Üzerine Gelince (Tooltip) Görünecek İkaz
                             const tooltipContent = `<b>${d.name}</b>: ${temp}°C, ${wind} km/s rüzgar. ${statusText}`;
                             marker.bindTooltip(tooltipContent, { direction: 'top', offset: [0, -10] });
                         }
@@ -878,6 +946,11 @@
 
             document.getElementById('modalMainStatus').innerText = "Güncel Meteorolojik Veriler";
 
+            // Hava durumuna göre dinamik canvas arka plan animasyonu çalıştırma
+            if(data.current_weather) {
+                updateWeatherAnimation(data.current_weather.weathercode, data.current_weather.is_day);
+            }
+
             const clockGrid = document.getElementById('modalClockGrid');
             clockGrid.innerHTML = "";
             for(let h = 6; h <= 20; h++) {
@@ -970,6 +1043,7 @@
 
         function closeModal() {
             document.getElementById('weatherModal').style.display = 'none';
+            if(animationFrameId) cancelAnimationFrame(animationFrameId);
         }
 
         // HESAPLAYICILAR
