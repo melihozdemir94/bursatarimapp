@@ -52,8 +52,34 @@
             to { background-color: #8b0000; opacity: 0.85; }
         }
 
-        header { background-color: var(--primary-green); color: white; padding: 18px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-        header h1 { font-size: 22px; font-weight: 600; }
+        /* HEADER & LOGO ALANI STİLLERİ */
+        header { 
+            background-color: var(--primary-green); 
+            color: white; 
+            padding: 14px 25px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15); 
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .site-logo {
+            height: 48px;
+            width: auto;
+            object-fit: contain;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header h1 { font-size: 20px; font-weight: 600; }
         .header-right { display: flex; align-items: center; gap: 12px; }
         .datetime-box { text-align: right; font-size: 13px; background: rgba(0, 0, 0, 0.2); padding: 5px 12px; border-radius: 6px; }
         .datetime-box .time { font-weight: bold; font-size: 14px; color: #a5d6a7; }
@@ -201,16 +227,13 @@
             .layout { flex-direction: column; }
             .sidebar { width: 100%; }
             .forecast-grid { grid-template-columns: repeat(2, 1fr); }
-            header { flex-direction: column; gap: 10px; text-align: center; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            .header-left { flex-direction: column; }
             .header-right { width: 100%; justify-content: center; }
             .tab-content.active { flex-direction: column; }
         }
 
-        /* =========================================================
-           EN TEGRELİ UYARI BİLDİRİMİ YANIP SÖNME EFEKTLERİ (YENİ)
-           ========================================================= */
-
-        /* 1. Sol Yan Menüdeki Riskli Uyarı Kartlarının Yanıp Sönmesi */
+        /* UYARI BİLDİRİMİ YANIP SÖNME EFEKTLERİ */
         .alert-item.danger {
             animation: alertDangerPulse 1.4s infinite alternate ease-in-out;
         }
@@ -219,7 +242,6 @@
             animation: alertWarningPulse 1.8s infinite alternate ease-in-out;
         }
 
-        /* 2. İlçe Kartı Üzerindeki Uyarı Rozetlerinin Parlaması */
         .status-badge.danger {
             animation: badgeFlashDanger 0.9s infinite alternate;
         }
@@ -228,37 +250,19 @@
             animation: badgeFlashWarning 1.4s infinite alternate;
         }
 
-        /* 3. Yüksek Riskli İlçe Kartlarının Çerçevesinde Yanıp Sönen Parlama */
         .district-card[data-risk="danger"] {
             border: 2px solid #dc3545 !important;
             animation: cardBorderFlash 1.5s infinite alternate;
         }
 
-        /* --- KEYFRAME ANIMATIONS --- */
         @keyframes alertDangerPulse {
-            0% {
-                background-color: #f8d7da;
-                border-left-color: #dc3545;
-                box-shadow: 0 0 3px rgba(220, 53, 69, 0.2);
-            }
-            100% {
-                background-color: #f5c6cb;
-                border-left-color: #bd2130;
-                box-shadow: 0 0 12px rgba(220, 53, 69, 0.55);
-            }
+            0% { background-color: #f8d7da; border-left-color: #dc3545; box-shadow: 0 0 3px rgba(220, 53, 69, 0.2); }
+            100% { background-color: #f5c6cb; border-left-color: #bd2130; box-shadow: 0 0 12px rgba(220, 53, 69, 0.55); }
         }
 
         @keyframes alertWarningPulse {
-            0% {
-                background-color: #fff3cd;
-                border-left-color: #ffc107;
-                box-shadow: 0 0 3px rgba(255, 193, 7, 0.2);
-            }
-            100% {
-                background-color: #ffe8a1;
-                border-left-color: #d39e00;
-                box-shadow: 0 0 10px rgba(255, 193, 7, 0.45);
-            }
+            0% { background-color: #fff3cd; border-left-color: #ffc107; box-shadow: 0 0 3px rgba(255, 193, 7, 0.2); }
+            100% { background-color: #ffe8a1; border-left-color: #d39e00; box-shadow: 0 0 10px rgba(255, 193, 7, 0.45); }
         }
 
         @keyframes badgeFlashDanger {
@@ -284,7 +288,11 @@
     </div>
 
     <header>
-        <h1>🚜 Bursa Tarımsal Erken Uyarı & Fenolojik Takip Sistemi 🚜</h1>
+        <div class="header-left">
+            <!-- LOGO SOL ÜST KÖŞEYE EKLENDİ -->
+            <img src="logo.jpg" alt="Bursa Tarım App Logo" class="site-logo">
+            <h1>🚜 Bursa Tarımsal Erken Uyarı & Fenolojik Takip Sistemi 🚜</h1>
+        </div>
         <div class="header-right">
             <button class="btn-toggle-mode" onclick="toggleDarkMode()">🌙 Koyu Mod</button>
             <div class="datetime-box">
@@ -701,7 +709,6 @@
             const particles = [];
             let particleType = 'none';
 
-            // Open-Meteo Kodlarına Göre Yağış/Kar/Güneş
             if (weatherCode >= 71 && weatherCode <= 77) {
                 particleType = 'snow';
             } else if ((weatherCode >= 51 && weatherCode <= 67) || (weatherCode >= 80 && weatherCode <= 82)) {
@@ -825,7 +832,7 @@
             let frostDetected = false;
             const currentMonthPests = getCurrentMonthPests();
 
-            const monthNames = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+            const monthNames = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylul", "Ekim", "Kasım", "Aralık"];
             const activeMonthName = monthNames[new Date().getMonth()];
             generalAlerts.push(`<b>🦠 ${activeMonthName} Dönemi Aktif Zararlı Takibi:</b> Bölgede özellikle <i>${currentMonthPests.map(p => p.name).join(', ')}</i> popülasyonu aktif dönemdedir. Saha kontrollerinizi aksatmayınız.`);
 
@@ -860,7 +867,6 @@
                         const districtPests = currentMonthPests.filter(p => p.crops.includes(d.name)).map(p => p.name);
                         let pestAlertText = districtPests.length > 0 ? ` (Aktif Risk: ${districtPests[0]})` : "";
 
-                        // RİSK SEVİYESİ HESAPLAMA
                         if(temp <= 2) {
                             statusText = "❄️ Don Riski Yüksek!";
                             badgeClass = "danger";
@@ -893,7 +899,6 @@
                             pinColorClass = "green";
                         }
 
-                        // HARİTA PİNİNİ VE POPUP/TOOLTIP BİLGİSİNİ DİNAMİK GÜNCELLE
                         if(districtMarkersMap[d.name]) {
                             const marker = districtMarkersMap[d.name];
                             
@@ -1038,7 +1043,6 @@
 
             document.getElementById('modalMainStatus').innerText = "Güncel Meteorolojik Veriler";
 
-            // Hava durumuna göre dinamik canvas arka plan animasyonu çalıştırma
             if(data.current_weather) {
                 updateWeatherAnimation(data.current_weather.weathercode, data.current_weather.is_day);
             }
