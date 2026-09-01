@@ -567,14 +567,20 @@
             { crop: "Keles & Harmancık Kirazı", pest: "Kiraz Sinek Zararlısı (Rhagoletis cerasi)", symptom: "Meyve etinde kurtlanma, yumuşama ve dökülme.", cure: "Sarı yapışkan tuzaklar ve Spinosad etken maddeli ilaçlama (PHI: 7-14 gün)." }
         ];
 
-        // AYLIK ZİRAİ TAKVİM VERİSİ
+        // AYLIK ZİRAİ TAKVİM VERİSİ (12 AYA BÖLÜNMÜŞ)
         const calendarData = [
-            { month: "Ocak - Şubat", task: "Gemlik Zeytini, Bursa Deveci Armudu, Bursa Santa Maria Armudu, Bursa Şeftalisi & Nektarin, Bursa Siyah İnciri, İznik Müşküle Üzümü ve Kestel Kestanesi ağaçlarında kış budaması. Kışlık Bakırlı İlaçlama (Bordo Bulamacı) uygulaması. Karacabey Soğanı, Karacabey / Yenişehir Domatesi, Yenişehir Biberi & Kapya ve İnegöl Cerrah Kuru Fasulyesi arazilerinde toprak analizi numunelerinin alınması ve taban gübrelemesi." },
-            { month: "Mart - Nisan", task: "Bursa Deveci Armudu ve Bursa Santa Maria Armudunda karaleke ve küllemeye karşı ilk koruyucu ilaçlamalar. Bursa Şeftalisi & Nektarinde klok (yaprak kıvırcıklığı) takibi. Hasanağa Enginarı ve Keles & Harmancık Kirazında bahar bakımları. Karacabey / Yenişehir Domatesi ve Yenişehir Biberi & Kapya fidelerinin dikimi. Göynükbelen & Keles Çileğinde ve İnegöl Çıbrıkasında ilkbahar çapalaması ve damlama gübrelemesi." },
-            { month: "Mayıs - Haziran", task: "Gemlik Zeytininde zeytin güvesi çiçek nesli takibi. Bursa Deveci Armudu, Bursa Santa Maria Armudu, Bursa Şeftalisi & Nektarinde seyreltme ve azotu dengeli üst gübreleme. Keles & Harmancık Kirazında kiraz sineği tuzaklarının asılması. Karacabey Soğanı, İnegöl Cerrah Kuru Fasulyesi ve İznik Müşküle Üzümünde hastalık takibi ve birinci boğaz doldurma." },
-            { month: "Temmuz - Ağustos", task: "Gemlik Zeytini sineği ve Bursa Deveci Armudunda armut psillidi popülasyon takibi. Karacabey / Yenişehir Domatesi, Yenişehir Biberi & Kapya ve Göynükbelen & Keles Çileğinde sulama programlarının sıklaştırılması. Erkenci Bursa Şeftalisi & Nektarin, Keles & Harmancık Kirazı ve Hasanağa Enginarı hasadı." },
-            { month: "Eylül - Ekim", task: "Gemlik Zeytini ve Bursa Siyah İnciri hasat hazırlığı ve toplanması. İznik Müşküle Üzümü ve Kestel Kestanesi toplanması. Karacabey Soğanı, Karacabey / Yenişehir Domatesi, Yenişehir Biberi & Kapya ve İnegöl Cerrah Kuru Fasulyesinde son depolama ve hasat işlemleri." },
-            { month: "Kasım - Aralık", task: "Hasat sonrası Gemlik Zeytini, Bursa Deveci Armudu, Bursa Siyah İnciri ve tüm meyve ağaçlarının kışa hazırlanması, sonbahar bakırlı uygulamaları. Dökülen yaprakların toplanıp imha edilmesi. İnegöl Çıbrıkası ve Hasanağa Enginarı alanlarında kışlık kök koruma işlemleri." }
+            { month: "Ocak", task: "Meyve ağaçlarında kış budamasına başlanması. Zeytin, armut, şeftali ve kestane alanlarında kışlık bakırlı ilaçlama (Bordo Bulamacı) uygulaması. Toprak analizi numunelerinin alınması ve taban gübrelemesi planlaması." },
+            { month: "Şubat", task: "Kış budamasının tamamlanması. Zeytin bahçelerinde taban gübrelemesi. Armut ve şeftalide göz kabarma öncesi gövde ilaçlamaları. Seralarda fide yetiştiricilik harçlarının hazırlanması." },
+            { month: "Mart", task: "Armut ve elmada karaleke ve küllemeye karşı ilk koruyucu uygulamalar. Şeftali ve nektarinde Klok (yaprak kıvırcıklığı) takibi ve mücadelesi. Hasanağa Enginarında ilkbahar dip çapa ve azot takviyesi." },
+            { month: "Nisan", task: "Karacabey / Yenişehir domates ve biber fidelerinin tarlaya dikimi. Çilekte ilkbahar çapalaması ve damlama gübrelemesi. Kiraz ve armut bahçelerinde çiçeklenme dönemi takibi ve fenolojik koruma." },
+            { month: "Mayıs", task: "Gemlik Zeytininde zeytin güvesi çiçek nesli takibi ve tuzak kontrolü. Armut ve şeftalide seyreltme işlemleri. Karacabey Soğanı ve kuru fasulye alanlarında birinci boğaz doldurma ve ot mücadelesi." },
+            { month: "Haziran", task: "Keles & Harmancık Kirazında kiraz sineği tuzaklarının asılması ve ilçe bazlı hasat başlangıcı. Zeytin sineği popülasyon izleme tuzaklarının yerleştirilmesi. Sebze alanlarında damlama sulamanın yoğunlaşması." },
+            { month: "Temmuz", task: "Zeytin sineği ve armut psillidi popülasyon takibi ve mücadele. Erkenci şeftali ve nektarin çeşitlerinde hasat. Domates, biber ve çilekte sulama ve potasyumlu üst gübreleme programları." },
+            { month: "Ağustos", task: "Bursa Deveci ve Santa Maria armudu ile Bursa Şeftalisi ana hasat dönemi. Zeytin sineği yaz nesli takibi. İncir bahçelerinde file ve tuzak kontrolleri. Sebzelerde gece-gündüz sıcaklık farkı mantar kontrolleri." },
+            { month: "Eylül", task: "Bursa Siyah İnciri ve İznik Müşküle Üzümü hasadı. Karacabey Soğanı ve domates alanlarında son söküm ve pazarlama. Kestel Kestanesi dip temizliği ve harvesting hazırlığı." },
+            { month: "Ekim", task: "Gemlik Zeytini yeşil ve siyah dane hasat başlangıcı. Kestane toplanması. İnegöl Cerrah Kuru Fasulyesi harman ve depolama işlemleri. Hasadı biten tarlalarda sonbahar derin sürümü." },
+            { month: "Kasım", task: "Gemlik Zeytininde yoğun yağlık ve sofralık hasat dönemi. Hasadı biten bahçelerde sonbahar bakırlı uygulamaları. Dökülen yaprakların toplanıp imha edilerek mantari aşının kırılması." },
+            { month: "Aralık", task: "Zeytin hasadının tamamlanması ve dip temizliği. Meyve ağaçlarında kışa hazırlık ve kök boğazı doldurma işlemleri. Gece donlarına karşı seralarda ısıtma ve örtü tedbirlerinin alınması." }
         ];
 
         let map, districtMarkersMap = {};
