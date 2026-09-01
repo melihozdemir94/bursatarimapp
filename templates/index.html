@@ -114,7 +114,19 @@
 
         .district-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
         
-        .district-card { background: var(--card-bg); border-radius: 10px; padding: 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: transform 0.2s, box-shadow 0.2s; position: relative; }
+        /* KARTLARI EŞİT YÜKSEKLİKTE HİZALAMAK İÇİN FLEXBOX DÜZENİ */
+        .district-card { 
+            background: var(--card-bg); 
+            border-radius: 10px; 
+            padding: 18px; 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05); 
+            border: 1px solid var(--border-color); 
+            transition: transform 0.2s, box-shadow 0.2s; 
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
         .district-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .favorite-star { position: absolute; top: 15px; right: 15px; cursor: pointer; font-size: 18px; color: #ccc; }
         .favorite-star.active { color: #fbc02d; }
@@ -771,7 +783,7 @@
                                 humidity = data.hourly.relative_humidity_2m[currentHourIndex] !== undefined ? data.hourly.relative_humidity_2m[currentHourIndex] : "--";
                             }
                             if (data.hourly.rain) {
-                                rain = data.hourly.rain[currentHourIndex] || 0;
+                                rain = data.hourly.rain[currentHourIndex] !== undefined ? data.hourly.rain[currentHourIndex] : 0;
                             }
                         }
 
@@ -829,6 +841,7 @@
                                     <b>Sıcaklık:</b> ${temp} °C<br>
                                     <b>Rüzgar:</b> ${wind} km/s<br>
                                     <b>Nem:</b> %${humidity}<br>
+                                    <b>Yağış:</b> ${rain} mm<br>
                                     <b>Durum:</b> ${statusText}<br>
                                     ${districtPests.length > 0 ? `<div style="margin-top:4px; font-size:11px; color:#c62828;"><b>⚠️ Dönem Zararlısı:</b> ${districtPests.join(', ')}</div>` : ''}
                                     <button onclick="openModal(${origIndex})" style="background:#1b5e20; color:white; border:none; padding:5px 10px; border-radius:4px; margin-top:8px; cursor:pointer; width:100%;">Detaylı Rapor</button>
@@ -853,15 +866,18 @@
                 const cardHtml = `
                     <div class="district-card" data-name="${d.name}" data-risk="${badgeClass}">
                         <span class="favorite-star ${isFav ? 'active' : ''}" onclick="toggleFavorite('${d.name}')">★</span>
-                        <div class="card-header">
-                            <h3>${d.name}</h3>
-                            <span class="status-badge ${badgeClass}">${badgeLabel}</span>
+                        <div>
+                            <div class="card-header">
+                                <h3>${d.name}</h3>
+                                <span class="status-badge ${badgeClass}">${badgeLabel}</span>
+                            </div>
+                            <div class="info-row"><span>Sıcaklık:</span><span class="val">${temp} °C</span></div>
+                            <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">${wind} km/s</span></div>
+                            <div class="info-row"><span>Bağıl Nem:</span><span class="val">${humidity}%</span></div>
+                            <div class="info-row"><span>Yağış Miktarı:</span><span class="val">${rain} mm</span></div>
+                            <div class="info-row"><span>Öne Çıkan Ürünler:</span><span class="val" style="font-size:11px;">${d.crops.slice(0, 3).join(', ')}</span></div>
+                            <div class="info-row"><span>Durum:</span><span class="val">${statusText}</span></div>
                         </div>
-                        <div class="info-row"><span>Sıcaklık:</span><span class="val">${temp} °C</span></div>
-                        <div class="info-row"><span>Rüzgar Hızı:</span><span class="val">${wind} km/s</span></div>
-                        <div class="info-row"><span>Bağıl Nem:</span><span class="val">${humidity}%</span></div>
-                        <div class="info-row"><span>Öne Çıkan Ürünler:</span><span class="val" style="font-size:11px;">${d.crops.slice(0, 3).join(', ')}</span></div>
-                        <div class="info-row"><span>Durum:</span><span class="val">${statusText}</span></div>
                         <button class="card-btn" onclick="openModal(${origIndex})">🔍 Detaylı Bilgi & Tahmin</button>
                     </div>
                 `;
@@ -930,7 +946,7 @@
                 const matchesRisk = (risk === 'all') || (risk === cardRisk);
 
                 if(matchesSearch && matchesRisk) {
-                    card.style.display = 'block';
+                    card.style.display = 'flex';
                 } else {
                     card.style.display = 'none';
                 }
