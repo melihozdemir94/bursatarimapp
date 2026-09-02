@@ -90,7 +90,7 @@
         
         select, input { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 14px; margin-bottom: 12px; outline: none; background: var(--card-bg); color: var(--text-color); }
         
-        .alert-item { background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 10px 12px; border-radius: 4px; margin-bottom: 10px; font-size: 13px; color: #856404; }
+        .alert-item { background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 10px 12px; border-radius: 4px; margin-bottom: 10px; font-size: 13px; color: #856404; line-height: 1.4; }
         .alert-item.danger { background-color: #f8d7da; border-left-color: #dc3545; color: #721c24; }
         .alert-item.wind { background-color: #e3f2fd; border-left-color: #0288d1; color: #01579b; }
         .alert-item.frost { background-color: #e0f7fa; border-left-color: #00bcd4; color: #006064; }
@@ -716,7 +716,6 @@
         function initMap() {
             map = L.map('mapContainer').setView([40.1885, 29.0610], 9);
             
-            // APK ve Mobil WebView ortamlarında API anahtarı veya kısıtlama istemeyen tam ücretsiz Esri Harita Sunucusu
             L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
                 attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, IGN, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), swisstopo, MapmyIndia, Â© OpenStreetMap contributors, and the GIS User Community',
                 maxZoom: 18
@@ -750,13 +749,16 @@
                 sortedData.sort((a, b) => a.name === fav ? -1 : b.name === fav ? 1 : 0);
             }
 
-            let generalAlerts = [];
             let frostDetected = false;
             const currentMonthPests = getCurrentMonthPests();
 
-            const monthNames = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylul", "Ekim", "Kasım", "Aralık"];
-            const activeMonthName = monthNames[new Date().getMonth()];
-            generalAlerts.push(`<b>🦠 ${activeMonthName} Dönemi Aktif Zararlı Takibi:</b> Bölgede özellikle <i>${currentMonthPests.map(p => p.name).join(', ')}</i> popülasyonu aktif dönemdedir. Saha kontrollerinizi aksatmayınız.`);
+            // Benzer Bildirimleri Gruplamak İçin Depo Objesi
+            const alertGroups = {
+                frost: { districts: [], temps: [] },
+                highWind: { districts: [], winds: [] },
+                rain: { districts: [], rains: [] },
+                borderWind: { districts: [], winds: [] }
+            };
 
             for(let i = 0; i < sortedData.length; i++) {
                 const d = sortedData[i];
@@ -795,25 +797,29 @@
                             badgeLabel = "Yüksek Don Riski";
                             pinColorClass = "red";
                             frostDetected = true;
-                            generalAlerts.push(`<b>🚨 ${d.name}:</b> Gece don riski (${temp}°C)! Seraları ve fidanları koruyun.`);
+                            alertGroups.frost.districts.push(d.name);
+                            alertGroups.frost.temps.push(temp);
                         } else if(wind >= 25) {
                             statusText = "💨 Şiddetli Rüzgar!";
                             badgeClass = "danger";
                             badgeLabel = "Şiddetli Rüzgar";
                             pinColorClass = "red";
-                            generalAlerts.push(`<b>💨 ${d.name}:</b> Yüksek rüzgar (${wind} km/s). Zirai ilaçlama yapmayın, seraları sabitleyin.`);
+                            alertGroups.highWind.districts.push(d.name);
+                            alertGroups.highWind.winds.push(wind);
                         } else if(rain > 0.5) {
                             statusText = "🌧️ Yağış / Sağanak Var";
                             badgeClass = "warning";
                             badgeLabel = "Yağış Uyarısı";
                             pinColorClass = "yellow";
-                            generalAlerts.push(`<b>🌧️ ${d.name}:</b> Yağış var (${rain} mm). İlaçlama yapılması yıkanma sebebiyle etkisizdir.`);
+                            alertGroups.rain.districts.push(d.name);
+                            alertGroups.rain.rains.push(rain);
                         } else if(wind >= 12 && wind < 25) {
                             statusText = "⚠️ Orta Rüzgar" + pestAlertText;
                             badgeClass = "warning";
                             badgeLabel = "Hassas İlaçlama";
                             pinColorClass = "yellow";
-                            generalAlerts.push(`<b>⚠️ ${d.name}:</b> İlaçlama için sınır rüzgar hızı (${wind} km/s). İlaç sürüklenme riskine dikkat.`);
+                            alertGroups.borderWind.districts.push(d.name);
+                            alertGroups.borderWind.winds.push(wind);
                         } else {
                             statusText = "☀️ Tarımsal Şartlar Uygun" + pestAlertText;
                             badgeClass = "normal";
@@ -832,7 +838,6 @@
                             });
                             marker.setIcon(newIcon);
 
-                            // Saha Radarından eklenen not varsa ekle
                             const userRadarNote = userRadarReports[d.name] ? `<div style="margin-top:4px; font-size:11px; background:#e1f5fe; color:#0288d1; padding:3px; border-radius:3px;"><b>📡 Çiftçi Bildirimi:</b> ${userRadarReports[d.name]}</div>` : '';
 
                             const popupHtml = `
@@ -887,15 +892,66 @@
 
             document.getElementById('frostFlashBanner').style.display = frostDetected ? 'block' : 'none';
 
+            // BENZER BİLDİRİMLERİ TEK BİLDİRİMDE BİRLEŞTİRME MANTIĞI
+            let generalAlerts = [];
+            const monthNames = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylul", "Ekim", "Kasım", "Aralık"];
+            const activeMonthName = monthNames[new Date().getMonth()];
+            
+            // Dönem Zararlı Takibi (Genel)
+            generalAlerts.push({
+                type: 'calendar',
+                html: `<b>🦠 ${activeMonthName} Dönemi Aktif Zararlı Takibi:</b> Bölgede özellikle <i>${currentMonthPests.map(p => p.name).join(', ')}</i> popülasyonu aktif dönemdedir. Saha kontrollerinizi aksatmayınız.`
+            });
+
+            // Yardımcı Fonksiyon: İlçe İsim Dizisini Formatlar
+            const formatDistrictList = (list) => {
+                if (list.length <= 4) return list.join(', ');
+                return `${list.slice(0, 3).join(', ')} ve ${list.length - 3} ilçe daha`;
+            };
+
+            // 1. Don Riski Birlestirilmis Bildirimi
+            if (alertGroups.frost.districts.length > 0) {
+                const listStr = formatDistrictList(alertGroups.frost.districts);
+                const minTemp = Math.min(...alertGroups.frost.temps);
+                generalAlerts.push({
+                    type: 'danger',
+                    html: `<b>🚨 Kritik Zirai Don Riski (${alertGroups.frost.districts.length} İlçe):</b> <b>${listStr}</b> ilçelerimizde sıcaklık kritik seviyelere inmiştir (En düşük: ${minTemp}°C). Seraları ve hassas fidanları korumaya alınız.`
+                });
+            }
+
+            // 2. Şiddetli Rüzgar Birlestirilmis Bildirimi
+            if (alertGroups.highWind.districts.length > 0) {
+                const listStr = formatDistrictList(alertGroups.highWind.districts);
+                const maxWind = Math.max(...alertGroups.highWind.winds);
+                generalAlerts.push({
+                    type: 'danger',
+                    html: `<b>💨 Şiddetli Rüzgar Uyarısı (${alertGroups.highWind.districts.length} İlçe):</b> <b>${listStr}</b> ilçelerimizde rüzgar hızı yüksek seviyededir (Maks: ${maxWind} km/s). Zirai ilaçlama yapmayınız, örtü altı tesisleri sabitleyiniz.`
+                });
+            }
+
+            // 3. Yağış Birlestirilmis Bildirimi
+            if (alertGroups.rain.districts.length > 0) {
+                const listStr = formatDistrictList(alertGroups.rain.districts);
+                generalAlerts.push({
+                    type: 'wind',
+                    html: `<b>🌧️ Yağış İkazı (${alertGroups.rain.districts.length} İlçe):</b> <b>${listStr}</b> ilçelerimizde yağış tespiti yapılmıştır. İlaçlama yapılması yıkanma riski nedeniyle önerilmez.`
+                });
+            }
+
+            // 4. İlaçlama Sınır Rüzgar Hızı Birlestirilmis Bildirimi
+            if (alertGroups.borderWind.districts.length > 0) {
+                const listStr = formatDistrictList(alertGroups.borderWind.districts);
+                const avgWind = (alertGroups.borderWind.winds.reduce((a, b) => a + b, 0) / alertGroups.borderWind.winds.length).toFixed(1);
+                generalAlerts.push({
+                    type: 'wind',
+                    html: `<b>⚠️ İlaçlama Sınır Rüzgar Hızı (${alertGroups.borderWind.districts.length} İlçe):</b> <b>${listStr}</b> ilçelerinde rüzgar hızı ilaçlama sınırındadır (Ort: ${avgWind} km/s). İlaç sürüklenme riskine karşı dikkatli olunması önerilir.`
+                });
+            }
+
+            // Ekran Kartlarını Bas
             const alertsBox = document.getElementById('generalAlertsContainer');
             if(generalAlerts.length > 0) {
-                alertsBox.innerHTML = generalAlerts.map(a => {
-                    let typeClass = "safe";
-                    if(a.includes("🚨") || a.includes("Don")) typeClass = "danger";
-                    else if(a.includes("💨") || a.includes("🌧️") || a.includes("⚠️")) typeClass = "wind";
-                    else if(a.includes("🦠")) typeClass = "calendar";
-                    return `<div class="alert-item ${typeClass}">${a}</div>`;
-                }).join('');
+                alertsBox.innerHTML = generalAlerts.map(a => `<div class="alert-item ${a.type}">${a.html}</div>`).join('');
             } else {
                 alertsBox.innerHTML = `<div class="alert-item safe">✅ Bursa genelinde meteorolojik risk bulunmamaktadır. Tarımsal faaliyetler normal sürdürülebilir.</div>`;
             }
@@ -1221,7 +1277,7 @@
                 grid.innerHTML += `
                     <div class="district-card">
                         <h3 style="color:var(--primary-green); border-bottom:1px solid #ddd; padding-bottom:5px; margin-bottom:10px;">${p.name}</h3>
-                        <div class="info-row"><span>İdeal Toprak pH:</span><span class="val">${p.ph}</span></div>
+                        <div class="info-row"><span>İideal Toprak pH:</span><span class="val">${p.ph}</span></div>
                         <div class="info-row"><span>Dikim Mesafesi:</span><span class="val">${p.spacing}</span></div>
                         <div class="info-row"><span>Gübreleme Programı:</span><span class="val">${p.fertilizer}</span></div>
                         <div class="info-row"><span>Sulama İhtiyacı:</span><span class="val">${p.water}</span></div>
