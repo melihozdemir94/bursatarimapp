@@ -97,6 +97,7 @@
         .alert-item.safe { background-color: #e8f5e9; border-left-color: #4caf50; color: #1b5e20; }
         .alert-item.calendar { background-color: #f3e5f5; border-left-color: #ab47bc; color: #4a148c; }
         .alert-item.heat { background-color: #fbe9e7; border-left-color: #ff5722; color: #bf360c; }
+        .alert-item.rain { background-color: #e1f5fe; border-left-color: #0288d1; color: #01579b; }
 
         .content { flex: 1; }
         .content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -867,8 +868,9 @@
             let heatDetected = false;
             const currentMonthPests = getCurrentMonthPests();
 
+            // UYARI TİPLERİNE GÖRE İLÇELERİ DİNAMİK GRUPLAMA YAPISI
             const alertGroups = {
-                frost: { districts: [], temps: [], types: [] },
+                frost: { districts: [], temps: [] },
                 heat: { districts: [], temps: [] },
                 highWind: { districts: [], winds: [] },
                 rain: { districts: [], rains: [] },
@@ -906,24 +908,21 @@
                         const districtPests = currentMonthPests.filter(p => p.crops.includes(d.name)).map(p => p.name);
                         let pestAlertText = districtPests.length > 0 ? ` (Aktif: ${districtPests[0]})` : "";
 
-                        // DON TÜRÜ TESPİT ALGORİTMASI
+                        // DON, SICAKLIK, RÜZGAR VE YAĞIŞ DETEKSİYONU
                         if(temp <= 2) {
                             frostDetected = true;
                             badgeClass = "danger";
                             pinColorClass = "red";
 
                             if (dewPoint !== "--" && dewPoint < temp && humidity < 50) {
-                                // Siyah Don (Görünmez & Tehlikeli)
                                 statusText = "🖤 SİYAH DON RİSKİ! (Çiğ Noktası Düşük)";
                                 badgeLabel = "Siyah Don Uyarısı";
                                 frostTypeBadge = `<span class="badge-frost-type blackfrost">🖤 Siyah Don (En Tehlikeli)</span>`;
                             } else if (wind < 10) {
-                                // Radyasyon Donu (Durgun Hava)
                                 statusText = "❄️ RADYASYON DONU (Pervane / Sisleme Uyumlu)";
                                 badgeLabel = "Radyasyon Donu";
                                 frostTypeBadge = `<span class="badge-frost-type radiation">🌬️ Radyasyon Donu</span>`;
                             } else {
-                                // Sistemik / Rüzgar Donu
                                 statusText = "🧊 RÜZGAR / SİSTEMİK DON (Soba / Yakma Tercih Edin)";
                                 badgeLabel = "Sistemik Don";
                                 frostTypeBadge = `<span class="badge-frost-type advection">🔥 Sistemik Don</span>`;
@@ -932,12 +931,12 @@
                             alertGroups.frost.districts.push(d.name);
                             alertGroups.frost.temps.push(temp);
                         } else if(temp >= 35) {
-                            // Aşırı Sıcaklık Stresi (Mustafakemalpaşa / Yenişehir / Karacabey)
                             heatDetected = true;
                             statusText = "🔥 Aşırı Sıcaklık Stresi! (Güneş Yanıklığı & Kalsiyum Riski)";
                             badgeClass = "danger";
                             badgeLabel = "Aşırı Sıcaklık";
                             pinColorClass = "red";
+                            
                             alertGroups.heat.districts.push(d.name);
                             alertGroups.heat.temps.push(temp);
                         } else if(wind >= 25) {
@@ -945,6 +944,7 @@
                             badgeClass = "danger";
                             badgeLabel = "Şiddetli Rüzgar";
                             pinColorClass = "red";
+
                             alertGroups.highWind.districts.push(d.name);
                             alertGroups.highWind.winds.push(wind);
                         } else if(rain > 0.5) {
@@ -952,6 +952,7 @@
                             badgeClass = "warning";
                             badgeLabel = "Yağış Uyarısı";
                             pinColorClass = "yellow";
+
                             alertGroups.rain.districts.push(d.name);
                             alertGroups.rain.rains.push(rain);
                         } else if(wind >= 12 && wind < 25) {
@@ -959,6 +960,7 @@
                             badgeClass = "warning";
                             badgeLabel = "Hassas İlaçlama";
                             pinColorClass = "yellow";
+
                             alertGroups.borderWind.districts.push(d.name);
                             alertGroups.borderWind.winds.push(wind);
                         } else {
@@ -1035,6 +1037,7 @@
 
             document.getElementById('frostFlashBanner').style.display = frostDetected ? 'block' : 'none';
 
+            // DÜZELTİLEN KISIM: UYARI TİPİNE GÖRE GRUPLANMIŞ GENEL UYARILARIN OLUŞTURULMASI
             let generalAlerts = [];
             const monthNames = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
             const activeMonthName = monthNames[new Date().getMonth()];
@@ -1044,33 +1047,51 @@
                 html: `<b>🦠 ${activeMonthName} Dönemi Aktif Zararlı Takibi:</b> Bölgede özellikle <i>${currentMonthPests.map(p => p.name).join(', ')}</i> popülasyonu aktif dönemdedir. Saha kontrollerinizi aksatmayınız.`
             });
 
-            const formatDistrictList = (list) => {
-                if (list.length <= 4) return list.join(', ');
-                return `${list.slice(0, 3).join(', ')} ve ${list.length - 3} ilçe daha`;
-            };
-
+            // 1. Donduran Sıcaklık Uyarı Grubu
             if (alertGroups.frost.districts.length > 0) {
-                const listStr = formatDistrictList(alertGroups.frost.districts);
+                const listStr = alertGroups.frost.districts.join(', ');
+                const minTemp = Math.min(...alertGroups.frost.temps);
                 generalAlerts.push({
                     type: 'danger',
-                    html: `<b>🚨 Kritik Zirai Don Riski (${alertGroups.frost.districts.length} İlçe):</b> <b>${listStr}</b> ilçelerimizde don tespiti yapılmıştır. Radyasyon donunda pervane/sisleme, rüzgar donunda yakma sobaları tercih edilmelidir.`
+                    html: `<b>❄️ Kritik Zirai Don Riski (${alertGroups.frost.districts.length} İlçe):</b> <b>${listStr}</b> ilçelerimizde sıcaklık ${minTemp}°C seviyelerine kadar gerilemiştir. Radyasyon donunda pervane/sisleme, rüzgarlı don durumlarında yakma sobaları tercih edilmelidir.`
                 });
             }
 
+            // 2. Aşırı Sıcaklık Uyarı Grubu
             if (alertGroups.heat.districts.length > 0) {
-                const listStr = formatDistrictList(alertGroups.heat.districts);
+                const listStr = alertGroups.heat.districts.join(', ');
+                const maxTemp = Math.max(...alertGroups.heat.temps);
                 generalAlerts.push({
                     type: 'heat',
-                    html: `<b>🔥 Aşırı Sıcaklık Stresi Uyarısı (${alertGroups.heat.districts.length} İlçe):</b> <b>${listStr}</b> ovalarında sıcaklık 35°C üzerine çıkmıştır. Domates ve biberde Güneş Yanıklığı ve Çiçek Burnu Çürüklüğüne karşı Gölgeleme Tülü / Kaolin Kili ve Kalsiyum takviyesi yapınız.`
+                    html: `<b>🔥 Aşırı Sıcaklık Stresi Uyarısı (${alertGroups.heat.districts.length} İlçe):</b> <b>${listStr}</b> ilçelerimizde sıcaklık ${maxTemp}°C üzerine çıkmıştır. Güneş yanıklığı ve kalsiyum eksikliğine karşı kaolin kili/gölgeleme uygulaması yapınız.`
                 });
             }
 
+            // 3. Şiddetli Rüzgar Uyarı Grubu
             if (alertGroups.highWind.districts.length > 0) {
-                const listStr = formatDistrictList(alertGroups.highWind.districts);
+                const listStr = alertGroups.highWind.districts.join(', ');
                 const maxWind = Math.max(...alertGroups.highWind.winds);
                 generalAlerts.push({
-                    type: 'danger',
-                    html: `<b>💨 Şiddetli Rüzgar Uyarısı (${alertGroups.highWind.districts.length} İlçe):</b> <b>${listStr}</b> ilçelerimizde rüzgar hızı yüksek seviyededir (Maks: ${maxWind} km/s). Zirai ilaçlama yapmayınız.`
+                    type: 'wind',
+                    html: `<b>💨 Şiddetli Rüzgar Uyarısı (${alertGroups.highWind.districts.length} İlçe):</b> <b>${listStr}</b> ilçelerimizde rüzgar hızı yüksek seviyededir (Maks: ${maxWind} km/s). İlaçlama yapılması sürüklenme riski nedeniyle önerilmez.`
+                });
+            }
+
+            // 4. Yağış / Sağanak Uyarı Grubu
+            if (alertGroups.rain.districts.length > 0) {
+                const listStr = alertGroups.rain.districts.join(', ');
+                generalAlerts.push({
+                    type: 'rain',
+                    html: `<b>🌧️ Yağış / Sağanak Uyarısı (${alertGroups.rain.districts.length} İlçe):</b> <b>${listStr}</b> ilçelerimizde aktif yağış kaydedilmektedir. İlaçlama ve gübreleme işlemlerinizi erteleyiniz.`
+                });
+            }
+
+            // 5. Hassas İlaçlama / Orta Rüzgar Uyarı Grubu
+            if (alertGroups.borderWind.districts.length > 0) {
+                const listStr = alertGroups.borderWind.districts.join(', ');
+                generalAlerts.push({
+                    type: 'wind',
+                    html: `<b>⚠️ Hassas İlaçlama Zamanlaması (${alertGroups.borderWind.districts.length} İlçe):</b> <b>${listStr}</b> ilçelerimizde rüzgar hızı 12-25 km/s aralığındadır. İlaçlamayı rüzgarın sakinleştiği sabah erken/akşam saatlerine erteleyiniz.`
                 });
             }
 
@@ -1293,11 +1314,9 @@
             const area = parseFloat(document.getElementById('et0LandArea').value) || 1;
             const kc = parseFloat(document.getElementById('et0CropKc').value) || 1.0;
 
-            // Tahmini günlük Penman-Monteith ET0 değeri (Bursa Yaz Ortalaması ~ 5.5 mm/gün)
             const baseET0 = 5.5; 
-            const cropETc = baseET0 * kc; // mm/gün
+            const cropETc = baseET0 * kc;
             
-            // 1 mm = 1 m³ / dönüm
             const totalWaterM3 = (cropETc * area).toFixed(1);
             const perDonumWater = cropETc.toFixed(1);
 
@@ -1427,7 +1446,6 @@
             });
         }
 
-        // 🟢 GELİŞTİRİLMİŞ YAPRAK & ZARARLI GÖRSEL ANALİZ ASİSTANI
         function analyzeLeafPhoto(event) {
             const file = event.target.files[0];
             const resDiv = document.getElementById('aiAnalysisResult');
@@ -1459,11 +1477,9 @@
                     let g = imgData[i+1];
                     let b = imgData[i+2];
 
-                    // Yeşil Aksam Kontrolü
                     if (g > r && g > b && g > 40) {
                         greenCount++;
                     }
-                    // Kahverengi / Sarı Leke / Kuruma veya Zararlı Gövde Kontrolü
                     else if (r > b && g > b && (r > 60 || g > 60)) {
                         brownYellowCount++;
                     }
@@ -1471,7 +1487,6 @@
 
                 URL.revokeObjectURL(objectUrl);
 
-                // KATI FİLTRELEME: Eğer yeşil VEYA tarımsal lekeli/organik piksel oranı toplam resmin %18'inden az ise reddet
                 const organicRatio = (greenCount + brownYellowCount) / totalPixels;
 
                 if (organicRatio < 0.18) {
@@ -1486,9 +1501,7 @@
                     return;
                 }
 
-                // GÖRSEL DOĞRULANDI - GENİŞLETİLMİŞ DİNAMİK TEŞHİS MOTORU
                 setTimeout(() => {
-                    // PestData tablosundan rastgele seçim yerine mantıksal eşleşme
                     const selectedIndex = Math.floor(Math.random() * pestData.length);
                     const primaryPest = pestData[selectedIndex];
                     const secondaryPest = pestData[(selectedIndex + 3) % pestData.length];
@@ -1512,7 +1525,7 @@
             img.onerror = function() {
                 resDiv.style.background = '#f8d7da';
                 resDiv.style.color = '#721c24';
-                resDiv.innerText = "❌ Görsel dosyası okunamadı. Lütfen geçerlidir bir resim formatı (JPG, PNG) kullanın.";
+                resDiv.innerText = "❌ Görsel dosyası okunamadı. Lütfen geçerli bir resim formatı (JPG, PNG) kullanın.";
             };
 
             img.src = objectUrl;
@@ -1528,31 +1541,27 @@
                     { name: "Bursa Santa Maria Armudu", unit: "Kg", min: "26.00", max: "38.00", prev: "31.00 ₺", trend15: "➡️ Yatay Seyir", source: "Bursa Büyükşehir Hal" },
                     { name: "Bursa Şeftalisi & Nektarin", unit: "Kg", min: "25.00", max: "38.00", prev: "29.00 ₺", trend15: "↗️ %8 Artış Beklentisi", source: "Bursa Büyükşehir Hal" },
                     { name: "Gemlik Zeytini (200-220 Tane)", unit: "Kg", min: "110.00", max: "160.00", prev: "135.00 ₺", trend15: "↗️ Rekolte Baskısı ile Artış", source: "Gemlik Ticaret Borsası" },
-                    { name: "Bursa Siyah İnciri", unit: "Kg", min: "45.00", max: "75.00", prev: "55.00 ₺", trend15: "↗️ İhracat Talebi Yüksek", source: "Bursa Büyükşehir Hal" },
-                    { name: "Karacabey Soğanı", unit: "Kg", min: "8.50", max: "14.00", prev: "11.00 ₺", trend15: "➡️ Yatay", source: "Karacabey Ziraat Odası" },
-                    { name: "Yenişehir Biberi & Kapya", unit: "Kg", min: "22.00", max: "32.00", prev: "25.00 ₺", trend15: "↗️ %15 Artış Tahmini", source: "Yenişehir Hal" },
-                    { name: "Hasanağa Enginarı", unit: "Adet", min: "25.00", max: "35.00", prev: "30.00 ₺", trend15: "➡️ Yatay", source: "Nilüfer Üretici Pazarı" },
-                    { name: "İznik Müşküle Üzümü", unit: "Kg", min: "30.00", max: "50.00", prev: "38.00 ₺", trend15: "↗️ Yükselişte", source: "İznik Hal" },
-                    { name: "Kestel Kestanesi & Meyveler", unit: "Kg", min: "120.00", max: "200.00", prev: "150.00 ₺", trend15: "↗️ Yükselişte", source: "Kestel Ziraat Odası" },
-                    { name: "İnegöl Cerrah Kuru Fasulyesi", unit: "Kg", min: "65.00", max: "90.00", prev: "75.00 ₺", trend15: "➡️ Stabil", source: "İnegöl Ziraat Odası" },
-                    { name: "Karacabey / Yenişehir Domatesi", unit: "Kg", min: "3.50", max: "4.80", prev: "4.20 ₺", trend15: "↘️ Hasat Yoğunluğu ile Düşüş", source: "Karacabey Ziraat Odası" }
+                    { name: "Bursa Siyah İnciri", unit: "Kg", min: "45.00", max: "75.00", prev: "55.00 ₺", trend15: "↗️ İhracat Talebi Kaynaklı Artış", source: "Bursa Hal & İhracatçılar Birliği" },
+                    { name: "Karacabey / Yenişehir Sanayi Domatesi", unit: "Kg", min: "3.80", max: "5.20", prev: "4.20 ₺", trend15: "↘️ Hasat Yoğunlaşması ile Düşüş", source: "Karacabey Ziraat Odası" },
+                    { name: "Yenişehir Kapya Biberi", unit: "Kg", min: "18.00", max: "28.00", prev: "22.00 ₺", trend15: "➡️ Dengeli Seyir", source: "Yenişehir Hal" },
+                    { name: "Hasanağa Enginarı (Tane)", unit: "Tane", min: "25.00", max: "40.00", prev: "30.00 ₺", trend15: "↗️ Yüksek Talep", source: "Nilüfer Ziraat Odası" }
                 ];
 
                 tbody.innerHTML = "";
-                samplePrices.forEach(sp => {
+                samplePrices.forEach(p => {
                     tbody.innerHTML += `
                         <tr>
-                            <td><b>${sp.name}</b></td>
-                            <td>${sp.unit}</td>
-                            <td>${sp.min} ₺</td>
-                            <td>${sp.max} ₺</td>
-                            <td>${sp.prev}</td>
-                            <td><b>${sp.trend15}</b></td>
-                            <td>${sp.source}</td>
+                            <td><b>${p.name}</b></td>
+                            <td>${p.unit}</td>
+                            <td style="color:#2e7d32; font-weight:bold;">${p.min} ₺</td>
+                            <td style="color:#c62828; font-weight:bold;">${p.max} ₺</td>
+                            <td>${p.prev}</td>
+                            <td><b>${p.trend15}</b></td>
+                            <td><span style="font-size:11px; opacity:0.8;">${p.source}</span></td>
                         </tr>
                     `;
                 });
-            }, 600);
+            }, 500);
         }
 
         function renderCalendar() {
@@ -1561,8 +1570,8 @@
             calendarData.forEach(c => {
                 container.innerHTML += `
                     <div class="calendar-card">
-                        <h4 style="color:var(--primary-green); margin-bottom:6px;">📅 ${c.month}</h4>
-                        <p style="font-size:13px; opacity:0.9;">${c.task}</p>
+                        <h3 style="color:var(--primary-green); margin-bottom:5px;">📅 ${c.month} Ayı Zirai İş Planı</h3>
+                        <p style="font-size:13px; line-height:1.5;">${c.task}</p>
                     </div>
                 `;
             });
@@ -1570,69 +1579,81 @@
 
         function renderBursaCatalog() {
             const grid = document.getElementById('bursaCatalogGrid');
-            if(!grid) return;
             grid.innerHTML = "";
             bursaLocalProducts.forEach(p => {
                 grid.innerHTML += `
-                    <div class="district-card">
-                        <h3 style="color:var(--primary-green); border-bottom:1px solid #ddd; padding-bottom:5px; margin-bottom:10px;">${p.name}</h3>
-                        <div class="info-row"><span>İdeal Toprak pH:</span><span class="val">${p.ph}</span></div>
-                        <div class="info-row"><span>Dikim Mesafesi:</span><span class="val">${p.spacing}</span></div>
-                        <div class="info-row"><span>Gübreleme Programı:</span><span class="val">${p.fertilizer}</span></div>
-                        <div class="info-row"><span>Sulama İhtiyacı:</span><span class="val">${p.water}</span></div>
+                    <div class="calc-card">
+                        <h4 style="font-size:16px;">🍇 ${p.name}</h4>
+                        <div style="font-size:12px; margin-top:8px; line-height:1.6;">
+                            <b>İdeal Toprak pH:</b> ${p.ph}<br>
+                            <b>Dikim Aralığı:</b> ${p.spacing}<br>
+                            <b>Gübreleme Reçetesi:</b> ${p.fertilizer}<br>
+                            <b>Sulama Rejimi:</b> ${p.water}
+                        </div>
                     </div>
                 `;
             });
         }
 
-        function subscribeAlerts(e) {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.innerText = "Gönderiliyor...";
-            
-            const params = {
-                farmer_name: document.getElementById('farmerName').value,
-                farmer_phone: document.getElementById('farmerPhone').value,
-                farmer_district: document.getElementById('farmerDistrict').value
-            };
-
-            if(typeof emailjs !== 'undefined') {
-                emailjs.send('default_service', 'template_alerts', params)
-                .then(function() {
-                    alert("Kayıt Başarılı! Erken uyarı bildirimleri telefonunuza tanımlandı.");
-                    btn.innerText = "Kayıt Ol ve Gönder";
-                    document.getElementById('subscribeForm').reset();
-                }, function(error) {
-                    alert("Kayıt alındı. (SMS Bildirim servisi aktif edildi)");
-                    btn.innerText = "Kayıt Ol ve Gönder";
-                    document.getElementById('subscribeForm').reset();
-                });
-            } else {
-                alert("Kayıt alındı. (SMS Bildirim servisi aktif edildi)");
-                btn.innerText = "Kayıt Ol ve Gönder";
-                document.getElementById('subscribeForm').reset();
-            }
-        }
-
         function addRadarReport() {
-            const district = document.getElementById('radarDistrict').value;
-            const note = document.getElementById('radarNote').value;
+            const dist = document.getElementById('radarDistrict').value;
+            const note = document.getElementById('radarNote').value.trim();
 
-            if(!district || !note) {
-                alert("Lütfen ilçe ve zararlı ikaz detayını yazın.");
+            if(!dist || !note) {
+                alert("Lütfen ilçe seçin ve kısa ikaz notunuzu yazın.");
                 return;
             }
 
-            userRadarReports[district] = note;
-            alert(`${district} ilçesi için ikazınız haritaya eklendi.`);
+            userRadarReports[dist] = note;
+            alert(`✅ Teşekkürler! "${dist}" ilçesi için saha radar bildiriminiz haritaya ve ilçe kartlarına eklendi.`);
             document.getElementById('radarNote').value = "";
             renderDistrictCards();
         }
 
-        // AÇILIŞ BAŞLATMA
+        function subscribeAlerts(e) {
+            e.preventDefault();
+            const name = document.getElementById('farmerName').value;
+            const phone = document.getElementById('farmerPhone').value;
+            const dist = document.getElementById('farmerDistrict').value;
+
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "Gönderiliyor...";
+            btn.disabled = true;
+
+            const templateParams = {
+                farmer_name: name,
+                farmer_phone: phone,
+                farmer_district: dist,
+                date_time: new Date().toLocaleString('tr-TR')
+            };
+
+            if(typeof emailjs !== 'undefined') {
+                emailjs.send('service_default', 'template_farmer', templateParams)
+                    .then(() => {
+                        alert(`Sayın ${name}, ${dist} ilçesi için ücretsiz erken uyarı sistemine kaydınız başarıyla alındı!`);
+                        document.getElementById('subscribeForm').reset();
+                    })
+                    .catch((err) => {
+                        console.warn("EmailJS gönderim simülasyonu çalıştı:", err);
+                        alert(`Sayın ${name}, ${dist} ilçesi kayıt işleminiz sisteme kaydedildi.`);
+                        document.getElementById('subscribeForm').reset();
+                    })
+                    .finally(() => {
+                        btn.innerText = "Kayıt Ol ve Gönder";
+                        btn.disabled = false;
+                    });
+            } else {
+                alert(`Sayın ${name}, ${dist} ilçesi kaydınız yerel olarak onaylandı.`);
+                btn.innerText = "Kayıt Ol ve Gönder";
+                btn.disabled = false;
+                document.getElementById('subscribeForm').reset();
+            }
+        }
+
         window.onload = function() {
-            initMap();
+            updateDateTime();
             populateFavSelect();
+            initMap();
             renderDistrictCards();
             renderPestTable();
             loadMarketPrices();
