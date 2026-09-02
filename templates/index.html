@@ -757,7 +757,6 @@
 
             for(let i = 0; i < sortedData.length; i++) {
                 const d = sortedData[i];
-                const origIndex = districtsData.findIndex(item => item.name === d.name);
 
                 const url = `https://api.open-meteo.com/v1/forecast?latitude=${d.lat}&longitude=${d.lon}&current_weather=true&hourly=temperature_2m,relative_humidity_2m,windspeed_10m,rain&daily=temperature_2m_max,temperature_2m_min,windspeed_10m_max,rain_sum&timezone=auto`;
 
@@ -842,7 +841,7 @@
                                     <b>Durum:</b> ${statusText}<br>
                                     ${districtPests.length > 0 ? `<div style="margin-top:4px; font-size:11px; color:#c62828;"><b>⚠️ Dönem Zararlısı:</b> ${districtPests.join(', ')}</div>` : ''}
                                     ${userRadarNote}
-                                    <button onclick="openModal(${origIndex})" style="background:#1b5e20; color:white; border:none; padding:5px 10px; border-radius:4px; margin-top:8px; cursor:pointer; width:100%;">Detaylı Rapor</button>
+                                    <button onclick="openModal('${d.name}')" style="background:#1b5e20; color:white; border:none; padding:5px 10px; border-radius:4px; margin-top:8px; cursor:pointer; width:100%;">Detaylı Rapor</button>
                                 </div>
                             `;
                             marker.bindPopup(popupHtml);
@@ -876,7 +875,7 @@
                             <div class="info-row"><span>Öne Çıkan Ürünler:</span><span class="val" style="font-size:11px;">${d.crops.slice(0, 3).join(', ')}</span></div>
                             <div class="info-row"><span>Durum:</span><span class="val">${statusText}</span></div>
                         </div>
-                        <button class="card-btn" onclick="openModal(${origIndex})">🔍 Detaylı Bilgi & Tahmin</button>
+                        <button class="card-btn" onclick="openModal('${d.name}')">🔍 Detaylı Bilgi & Tahmin</button>
                     </div>
                 `;
                 grid.innerHTML += cardHtml;
@@ -949,8 +948,16 @@
             });
         }
 
-        function openModal(index) {
-            const d = districtsData[index];
+        function openModal(districtIdentifier) {
+            let d;
+            if (typeof districtIdentifier === 'number') {
+                d = districtsData[districtIdentifier];
+            } else {
+                d = districtsData.find(item => item.name === districtIdentifier);
+            }
+
+            if (!d) return;
+
             const data = fetchedWeatherData[d.name];
 
             document.getElementById('modalDistrictName').innerText = d.name + " Zirai Hava Durumu Raporu";
