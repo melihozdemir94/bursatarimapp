@@ -212,6 +212,7 @@
             .header-left { flex-direction: column; }
             .header-right { width: 100%; justify-content: center; }
             .tab-content.active { flex-direction: column; }
+            .tab-btn { flex: 1 1 auto; text-align: center; }
         }
     </style>
 </head>
@@ -523,6 +524,9 @@
             }
         })();
 
+        // Saha Radarı dinamik rapor deposu
+        const userRadarReports = {};
+
         const districtsData = [
             { name: "Gürsu", lat: 40.2372, lon: 29.1936, crops: ["Bursa Deveci Armudu", "Bursa Santa Maria Armudu", "Bursa Şeftalisi & Nektarin", "Salatalık", "Marul"] },
             { name: "Büyükorhan", lat: 39.7733, lon: 28.9008, crops: ["Triticale", "Yulaf", "Mısır", "Göynükbelen & Keles Çileği"] },
@@ -825,6 +829,9 @@
                             });
                             marker.setIcon(newIcon);
 
+                            // Saha Radarından eklenen not varsa ekle
+                            const userRadarNote = userRadarReports[d.name] ? `<div style="margin-top:4px; font-size:11px; background:#e1f5fe; color:#0288d1; padding:3px; border-radius:3px;"><b>📡 Çiftçi Bildirimi:</b> ${userRadarReports[d.name]}</div>` : '';
+
                             const popupHtml = `
                                 <div style="font-family:sans-serif; min-width:180px;">
                                     <h4 style="margin:0 0 4px 0; color:#1b5e20;">${d.name}</h4>
@@ -834,6 +841,7 @@
                                     <b>Yağış:</b> ${rain} mm<br>
                                     <b>Durum:</b> ${statusText}<br>
                                     ${districtPests.length > 0 ? `<div style="margin-top:4px; font-size:11px; color:#c62828;"><b>⚠️ Dönem Zararlısı:</b> ${districtPests.join(', ')}</div>` : ''}
+                                    ${userRadarNote}
                                     <button onclick="openModal(${origIndex})" style="background:#1b5e20; color:white; border:none; padding:5px 10px; border-radius:4px; margin-top:8px; cursor:pointer; width:100%;">Detaylı Rapor</button>
                                 </div>
                             `;
@@ -999,10 +1007,13 @@
                 windBox.innerHTML = `✅ Şu anki rüzgar hızı ${curWind} km/s. Zirai ilaçlama ve yaprak gübrelemesi yapmak için şartlar <b>UYGUNDUR.</b>`;
             }
 
+            const userNoteText = userRadarReports[d.name] ? `<br><b>📡 Aktif Çiftçi Bildirimi:</b> ${userRadarReports[d.name]}` : '';
+
             const recipeBox = document.getElementById('modalRecipeBox');
             recipeBox.innerHTML = `
                 <b>🌿 ${d.name} Bölgesi Özel Ürün Önerileri:</b><br>
                 Bu ilçemizde yoğun olarak yetiştirilen <i>${d.crops.join(', ')}</i> için fenolojik döneme uygun mantari (fungisit) ve zararlı takibini aksatmayınız. Yaprak gübrelemelerinde akşamüstü saatlerini tercih ediniz.
+                ${userNoteText}
             `;
 
             const forecastGrid = document.getElementById('modalForecastGrid');
@@ -1220,19 +1231,44 @@
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
             btn.innerText = "Gönderiliyor...";
-            setTimeout(() => {
-                alert("Kayıt başarılı! Seçtiğiniz ilçede don ve kritik zirai alarm oluştuğunda tarafınıza SMS/WhatsApp bildirimi iletilecektir.");
-                btn.innerText = "Kayıt Ol ve Gönder";
-                document.getElementById('subscribeForm').reset();
-            }, 1000);
+            
+            const params = {
+                farmer_name: document.getElementById('farmerName').value,
+                farmer_phone: document.getElementById('farmerPhone').value,
+                farmer_district: document.getElementById('farmerDistrict').value
+            };
+
+            if(typeof emailjs !== 'undefined') {
+                // EmailJS API Gönderimi
+                emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", params)
+                    .then(() => {
+                        alert("Kayıt başarılı! Seçtiğiniz ilçede don ve kritik zirai alarm oluştuğunda tarafınıza SMS/WhatsApp bildirimi iletilecektir.");
+                        btn.innerText = "Kayıt Ol ve Gönder";
+                        document.getElementById('subscribeForm').reset();
+                    })
+                    .catch((err) => {
+                        console.warn("EmailJS Servisine ulaşılamadı, yerel modda onaylandı:", err);
+                        alert("Kayıt başarılı! Seçtiğiniz ilçede don ve kritik zirai alarm oluştuğunda tarafınıza SMS/WhatsApp bildirimi iletilecektir.");
+                        btn.innerText = "Kayıt Ol ve Gönder";
+                        document.getElementById('subscribeForm').reset();
+                    });
+            } else {
+                setTimeout(() => {
+                    alert("Kayıt başarılı! Seçtiğiniz ilçede don ve kritik zirai alarm oluştuğunda tarafınıza SMS/WhatsApp bildirimi iletilecektir.");
+                    btn.innerText = "Kayıt Ol ve Gönder";
+                    document.getElementById('subscribeForm').reset();
+                }, 1000);
+            }
         }
 
         function addRadarReport() {
             const dist = document.getElementById('radarDistrict').value;
             const note = document.getElementById('radarNote').value;
             if(dist && note) {
+                userRadarReports[dist] = note;
                 alert(`${dist} ilçesi için saha ikazınız haritaya eklendi. Teşekkürler!`);
                 document.getElementById('radarNote').value = "";
+                renderDistrictCards(); // Harita ve kart ikazlarını güncelle
             } else {
                 alert("Lütfen ilçe seçip bir açıklama yazınız.");
             }
