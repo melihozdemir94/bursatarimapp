@@ -716,11 +716,10 @@
         function initMap() {
             map = L.map('mapContainer').setView([40.1885, 29.0610], 9);
             
-            // APK ve Mobil platform engellemelerine takılmayan kesintisiz kiremit sunucusu
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                subdomains: 'abcd',
-                maxZoom: 19
+            // APK ve Mobil WebView ortamlarında API anahtarı veya kısıtlama istemeyen tam ücretsiz Esri Harita Sunucusu
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, IGN, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), swisstopo, MapmyIndia, Â© OpenStreetMap contributors, and the GIS User Community',
+                maxZoom: 18
             }).addTo(map);
 
             districtsData.forEach((d) => {
@@ -755,7 +754,7 @@
             let frostDetected = false;
             const currentMonthPests = getCurrentMonthPests();
 
-            const monthNames = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+            const monthNames = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylul", "Ekim", "Kasım", "Aralık"];
             const activeMonthName = monthNames[new Date().getMonth()];
             generalAlerts.push(`<b>🦠 ${activeMonthName} Dönemi Aktif Zararlı Takibi:</b> Bölgede özellikle <i>${currentMonthPests.map(p => p.name).join(', ')}</i> popülasyonu aktif dönemdedir. Saha kontrollerinizi aksatmayınız.`);
 
@@ -1243,7 +1242,6 @@
             };
 
             if(typeof emailjs !== 'undefined') {
-                // EmailJS API Gönderimi
                 emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", params)
                     .then(() => {
                         alert("Kayıt başarılı! Seçtiğiniz ilçede don ve kritik zirai alarm oluştuğunda tarafınıza SMS/WhatsApp bildirimi iletilecektir.");
@@ -1272,7 +1270,7 @@
                 userRadarReports[dist] = note;
                 alert(`${dist} ilçesi için saha ikazınız haritaya eklendi. Teşekkürler!`);
                 document.getElementById('radarNote').value = "";
-                renderDistrictCards(); // Harita ve kart ikazlarını güncelle
+                renderDistrictCards();
             } else {
                 alert("Lütfen ilçe seçip bir açıklama yazınız.");
             }
