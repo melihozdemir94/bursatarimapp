@@ -67,16 +67,6 @@
             gap: 15px;
         }
 
-        .site-logo {
-            height: 48px;
-            width: auto;
-            object-fit: contain;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 2px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
         header h1 { font-size: 20px; font-weight: 600; }
         .header-right { display: flex; align-items: center; gap: 12px; }
         .datetime-box { text-align: right; font-size: 13px; background: rgba(0, 0, 0, 0.2); padding: 5px 12px; border-radius: 6px; }
@@ -233,8 +223,6 @@
 
     <header>
         <div class="header-left">
-            <!-- DÜZELTİLME: Göreli dosya yolu kullanıldı -->
-            <img src="logo.png" alt="Bursa Tarım App Logo" class="site-logo" onerror="this.style.display='none'">
             <h1>Bursa Tarımsal Erken Uyarı Sistemi</h1>
         </div>
         <div class="header-right">
@@ -528,11 +516,10 @@
     </div>
 
     <script>
-        // EMAILJS İNİTİALİZASYONU (Güvenli Kontrol Eklendi)
+        // EMAILJS İNİTİALİZASYONU
         (function(){
             if(typeof emailjs !== 'undefined'){
-                // Gerektiğinde kendi public key'inizi ekleyebilirsiniz.
-                // emailjs.init("YOUR_PUBLIC_KEY");
+                emailjs.init("h7WQL2mykERx25PTm");
             }
         })();
 
