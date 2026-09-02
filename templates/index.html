@@ -34,7 +34,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); transition: background 0.3s, color 0.3s; }
 
-        /* GECE DONU ERKEN SESLİ / GÖRSEL ALARM ŞERİDİ */
         .frost-flash-banner {
             display: none;
             background-color: #d32f2f;
@@ -52,7 +51,6 @@
             to { background-color: #8b0000; opacity: 0.85; }
         }
 
-        /* HEADER & LOGO ALANI STİLLERİ */
         header { 
             background-color: var(--primary-green); 
             color: white; 
@@ -88,7 +86,6 @@
         .btn-toggle-mode { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
         .btn-toggle-mode:hover { background: rgba(255,255,255,0.4); }
 
-        /* TAB / SEKME MENÜSÜ */
         .tab-nav { max-width: 1400px; margin: 15px auto 0; padding: 0 20px; display: flex; gap: 8px; flex-wrap: wrap; }
         .tab-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 10px 18px; border-radius: 8px 8px 0 0; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s; }
         .tab-btn.active { background: var(--primary-green); color: white; border-color: var(--primary-green); }
@@ -115,12 +112,10 @@
         .content-header h2 { font-size: 20px; }
         .last-update-tag { font-size: 12px; background: var(--border-color); padding: 4px 10px; border-radius: 12px; }
 
-        /* HARİTA BOYUTLANDIRMA VE RENDER DÜZELTMELERİ */
         #mapContainer { height: 380px; width: 100%; border-radius: 10px; margin-bottom: 25px; border: 1px solid var(--border-color); box-shadow: 0 2px 6px rgba(0,0,0,0.05); z-index: 1; }
         .leaflet-container { width: 100%; height: 100%; border-radius: 10px; }
         .leaflet-tile-container img { width: 256px !important; height: 256px !important; }
 
-        /* ÖZEL HARİTA PİN STİLLERİ */
         .custom-map-pin {
             display: flex;
             align-items: center;
@@ -140,7 +135,6 @@
 
         .district-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
         
-        /* KARTLARI EŞİT YÜKSEKLİKTE HİZALAMAK İÇİN FLEXBOX DÜZENİ */
         .district-card { 
             background: var(--card-bg); 
             border-radius: 10px; 
@@ -152,6 +146,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            word-break: break-word;
         }
         .district-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .favorite-star { position: absolute; top: 15px; right: 15px; cursor: pointer; font-size: 18px; color: #ccc; }
@@ -171,10 +166,6 @@
         .card-btn { display: block; width: 100%; text-align: center; padding: 10px; margin-top: 12px; background-color: var(--primary-green); color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; text-decoration: none; font-size: 13px; transition: background 0.2s; }
         .card-btn:hover { opacity: 0.9; }
 
-        .whatsapp-btn { background-color: #25D366; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .whatsapp-btn:hover { background-color: #1eb954; }
-
-        /* MODAL STİLLERİ */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
         .modal-container { background: var(--card-bg); width: 92%; max-width: 850px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: modalAnim 0.3s ease-out; position: relative; max-height: 90vh; overflow-y: auto; color: var(--text-color); }
         
@@ -232,53 +223,6 @@
             .header-right { width: 100%; justify-content: center; }
             .tab-content.active { flex-direction: column; }
         }
-
-        /* UYARI BİLDİRİMİ YANIP SÖNME EFEKTLERİ */
-        .alert-item.danger {
-            animation: alertDangerPulse 1.4s infinite alternate ease-in-out;
-        }
-
-        .alert-item.wind, .alert-item.warning {
-            animation: alertWarningPulse 1.8s infinite alternate ease-in-out;
-        }
-
-        .status-badge.danger {
-            animation: badgeFlashDanger 0.9s infinite alternate;
-        }
-
-        .status-badge.warning {
-            animation: badgeFlashWarning 1.4s infinite alternate;
-        }
-
-        .district-card[data-risk="danger"] {
-            border: 2px solid #dc3545 !important;
-            animation: cardBorderFlash 1.5s infinite alternate;
-        }
-
-        @keyframes alertDangerPulse {
-            0% { background-color: #f8d7da; border-left-color: #dc3545; box-shadow: 0 0 3px rgba(220, 53, 69, 0.2); }
-            100% { background-color: #f5c6cb; border-left-color: #bd2130; box-shadow: 0 0 12px rgba(220, 53, 69, 0.55); }
-        }
-
-        @keyframes alertWarningPulse {
-            0% { background-color: #fff3cd; border-left-color: #ffc107; box-shadow: 0 0 3px rgba(255, 193, 7, 0.2); }
-            100% { background-color: #ffe8a1; border-left-color: #d39e00; box-shadow: 0 0 10px rgba(255, 193, 7, 0.45); }
-        }
-
-        @keyframes badgeFlashDanger {
-            from { opacity: 1; transform: scale(1); }
-            to { opacity: 0.7; transform: scale(1.05); }
-        }
-
-        @keyframes badgeFlashWarning {
-            from { opacity: 1; }
-            to { opacity: 0.75; }
-        }
-
-        @keyframes cardBorderFlash {
-            0% { box-shadow: 0 0 4px rgba(220, 53, 69, 0.2); }
-            100% { box-shadow: 0 0 14px rgba(220, 53, 69, 0.6); }
-        }
     </style>
 </head>
 <body>
@@ -289,8 +233,8 @@
 
     <header>
         <div class="header-left">
-            <!-- LOGO SOL ÜST KÖŞEYE EKLENDİ -->
-            <img src="/logo.png" alt="Bursa Tarım App Logo" class="site-logo">
+            <!-- DÜZELTİLME: Göreli dosya yolu kullanıldı -->
+            <img src="logo.png" alt="Bursa Tarım App Logo" class="site-logo" onerror="this.style.display='none'">
             <h1>Bursa Tarımsal Erken Uyarı Sistemi</h1>
         </div>
         <div class="header-right">
@@ -314,7 +258,6 @@
 
     <div class="layout">
         
-        <!-- 1. SEKME: RİSK HARİTASI & İLÇELER -->
         <div id="main-tab" class="tab-content active">
             <div class="sidebar">
                 <div class="side-card" style="background: #f1f8e9; border-color: #c8e6c9;">
@@ -374,12 +317,10 @@
                 </div>
 
                 <div id="mapContainer"></div>
-
                 <div class="district-grid" id="districtGrid"></div>
             </div>
         </div>
 
-        <!-- 2. SEKME: ZİRAİ HESAPLAYICILAR -->
         <div id="calc-tab" class="tab-content">
             <div class="tab-panel-inner">
                 <h2>🧮 Çiftçi Zirai Hesaplama Araçları</h2>
@@ -464,7 +405,6 @@
             </div>
         </div>
 
-        <!-- 3. SEKME: HASTALIK & TEŞHİS REHBERİ -->
         <div id="pest-tab" class="tab-content">
             <div class="tab-panel-inner">
                 <h2>🔬 Zararlı & Hastalık Teşhis Asistanı</h2>
@@ -493,7 +433,6 @@
             </div>
         </div>
 
-        <!-- 4. SEKME: BURSA HAL & ZİRAAT FİYATLARI -->
         <div id="market-tab" class="tab-content">
             <div class="tab-panel-inner">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
@@ -522,7 +461,6 @@
             </div>
         </div>
 
-        <!-- 5. SEKME: AYLIK ZİRAİ TAKVİM -->
         <div id="calendar-tab" class="tab-content">
             <div class="tab-panel-inner">
                 <h2>📅 Bursa Bölgesi Aylık Zirai Takvim & İş Planı</h2>
@@ -530,7 +468,6 @@
             </div>
         </div>
 
-        <!-- 6. SEKME: BURSA ÇEŞİT VERİ BANKASI -->
         <div id="bursa-catalog-tab" class="tab-content">
             <div class="tab-panel-inner">
                 <h2>🍇 Bursa Yerel Ürün Veri Bankası & Yetiştiricilik Kılavuzu</h2>
@@ -541,7 +478,6 @@
 
     </div>
 
-    <!-- HAVA DURUMU POPUP MODAL -->
     <div class="modal-overlay" id="weatherModal">
         <div class="modal-container">
             <button class="modal-close" onclick="closeModal()">✕</button>
@@ -592,12 +528,14 @@
     </div>
 
     <script>
-        // EMAILJS İNİTİALİZASYONU
+        // EMAILJS İNİTİALİZASYONU (Güvenli Kontrol Eklendi)
         (function(){
-            emailjs.init("YOUR_PUBLIC_KEY");
+            if(typeof emailjs !== 'undefined'){
+                // Gerektiğinde kendi public key'inizi ekleyebilirsiniz.
+                // emailjs.init("YOUR_PUBLIC_KEY");
+            }
         })();
 
-        // 17 BURSA İLÇESİ - KOORDİNATLAR VE TARIMSAL ÜRÜNLER
         const districtsData = [
             { name: "Gürsu", lat: 40.2372, lon: 29.1936, crops: ["Bursa Deveci Armudu", "Bursa Santa Maria Armudu", "Bursa Şeftalisi & Nektarin", "Salatalık", "Marul"] },
             { name: "Büyükorhan", lat: 39.7733, lon: 28.9008, crops: ["Triticale", "Yulaf", "Mısır", "Göynükbelen & Keles Çileği"] },
@@ -618,7 +556,6 @@
             { name: "Kestel", lat: 40.1983, lon: 29.2125, crops: ["Kestel Kestanesi & Meyveler", "Bursa Şeftalisi & Nektarin", "Bursa Deveci Armudu", "Ahududu", "Böğürtlen"] }
         ];
 
-        // BURSA YEREL ÜRÜN VERİ BANKASI
         const bursaLocalProducts = [
             { name: "Bursa Deveci Armudu", ph: "6.0 - 7.0", spacing: "4m x 3m", fertilizer: "Kışın Tabana NPK (15-15-15), Çiçeklenme Öncesi Çinko & Bor", water: "Haftada 2 Kez Damlama (Yüksek)" },
             { name: "Bursa Santa Maria Armudu", ph: "6.0 - 7.2", spacing: "4m x 2.5m", fertilizer: "Erken İlkbaharda Azot Takviyesi, Yapraktan Kalsiyum", water: "7-10 Günde Bir Düzenli Sulama" },
@@ -637,7 +574,6 @@
             { name: "Keles & Harmancık Kirazı", ph: "6.0 - 7.5", spacing: "6m x 5m", fertilizer: "Erken İlkbaharda Azot, Meyve Tutumunda Çinko ve Potasyum", water: "Meyve Gelişim ve Hasat Sonrası Kritik Sulama" }
         ];
 
-        // HASTALIK VE ZARARLI LİSTESİ
         const pestData = [
             { crop: "Gemlik Zeytini", pest: "Zeytin Sineği (Bactrocera oleae)", symptom: "Meyve üzerinde 'V' şeklinde vuruk izleri, dökülme ve yağ kalitesinde düşüş.", cure: "Deltamethrin veya Phosmet etken maddeli ilaçlama (PHI: 21 gün)." },
             { crop: "Gemlik Zeytini", pest: "Zeytin Halkalı Leke (Spilocaea oleagina)", symptom: "Yapraklarda koyu yeşil/siyah çember şeklinde lekeler, erken yaprak dökümü.", cure: "%1'lik Bordo Bulamacı veya Bakır Hidroksit (PHI: 14 gün)." },
@@ -657,7 +593,6 @@
             { crop: "Keles & Harmancık Kirazı", pest: "Kiraz Sinek Zararlısı (Rhagoletis cerasi)", symptom: "Meyve etinde kurtlanma, yumuşama ve dökülme.", cure: "Sarı yapışkan tuzaklar ve Spinosad etken maddeli ilaçlama (PHI: 7-14 gün)." }
         ];
 
-        // AYLIK ZİRAİ TAKVİM VERİSİ (12 AYA BÖLÜNMÜŞ)
         const calendarData = [
             { month: "Ocak", task: "Meyve ağaçlarında kış budamasına başlanması. Zeytin, armut, şeftali ve kestane alanlarında kışlık bakırlı ilaçlama (Bordo Bulamacı) uygulaması. Toprak analizi numunelerinin alınması ve taban gübrelemesi planlaması." },
             { month: "Şubat", task: "Kış budamasının tamamlanması. Zeytin bahçelerinde taban gübrelemesi. Armut ve şeftalide göz kabarma öncesi gövde ilaçlamaları. Seralarda fide yetiştiricilik harçlarının hazırlanması." },
@@ -677,7 +612,6 @@
         let fetchedWeatherData = {};
         let currentChart = null;
 
-        // GÜNCEL AYIN ZARARLI RİSKLERİNİ BULMA HESAPLAYICISI
         function getCurrentMonthPests() {
             const currentMonth = new Date().getMonth();
             if (currentMonth >= 4 && currentMonth <= 8) {
@@ -694,7 +628,6 @@
             }
         }
 
-        // DİNAMİK HAVA DURUMU ARKA PLAN ANİMASYONU (CANVAS)
         let animationFrameId = null;
         function updateWeatherAnimation(weatherCode, isDay) {
             const canvas = document.getElementById('popup-weather-bg');
@@ -767,7 +700,6 @@
             if(particleType !== 'none') draw();
         }
 
-        // CANLI SAAT / TARİH FONKSİYONU
         function updateDateTime() {
             const now = new Date();
             document.getElementById('liveDate').innerText = now.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -775,7 +707,6 @@
         }
         setInterval(updateDateTime, 1000);
 
-        // SEKME DEĞİŞTİRME MEKANİZMASI VE HARİTA YENİLEME
         function switchTab(tabId, btn) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -787,19 +718,17 @@
             }
         }
 
-        // KOYU MOD TOGGLE
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
         }
 
-        // HARİTA İNİTİALİZASYONU
         function initMap() {
             map = L.map('mapContainer').setView([40.1885, 29.0610], 9);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap katkıda bulunanlar'
             }).addTo(map);
 
-            districtsData.forEach((d, idx) => {
+            districtsData.forEach((d) => {
                 const defaultIcon = L.divIcon({
                     className: 'custom-map-pin green',
                     html: '•',
@@ -816,7 +745,6 @@
             setTimeout(() => { map.invalidateSize(); }, 300);
         }
 
-        // İLÇE KARTLARINI RENDER ETME VE OPEN-METEO API ENTEGRASYONU
         async function renderDistrictCards() {
             const grid = document.getElementById('districtGrid');
             grid.innerHTML = "";
@@ -832,7 +760,7 @@
             let frostDetected = false;
             const currentMonthPests = getCurrentMonthPests();
 
-            const monthNames = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylul", "Ekim", "Kasım", "Aralık"];
+            const monthNames = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
             const activeMonthName = monthNames[new Date().getMonth()];
             generalAlerts.push(`<b>🦠 ${activeMonthName} Dönemi Aktif Zararlı Takibi:</b> Bölgede özellikle <i>${currentMonthPests.map(p => p.name).join(', ')}</i> popülasyonu aktif dönemdedir. Saha kontrollerinizi aksatmayınız.`);
 
@@ -977,7 +905,6 @@
             document.getElementById('lastUpdateText').innerText = "Son Güncelleme: " + new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
         }
 
-        // FAVORİ İLÇE YÖNETİMİ
         function populateFavSelect() {
             const select = document.getElementById('favDistrictSelect');
             const farmerSel = document.getElementById('farmerDistrict');
@@ -1008,7 +935,6 @@
             renderDistrictCards();
         }
 
-        // FİLTRELEME
         function filterDistricts() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const risk = document.getElementById('riskFilter').value;
@@ -1028,7 +954,6 @@
             });
         }
 
-        // MODAL (POPUP) AÇMA VE GRAFİK ÇİZME
         function openModal(index) {
             const d = districtsData[index];
             const data = fetchedWeatherData[d.name];
@@ -1142,7 +1067,6 @@
             if(animationFrameId) cancelAnimationFrame(animationFrameId);
         }
 
-        // HESAPLAYICILAR
         function calculatePesticideDose() {
             const tank = parseFloat(document.getElementById('tankVolume').value);
             const dose = parseFloat(document.getElementById('recommendedDose').value);
@@ -1187,7 +1111,6 @@
         }
 
         function calculateLabor() {
-            const crop = document.getElementById('laborCrop').value;
             const area = parseFloat(document.getElementById('laborArea').value);
             let workers = Math.ceil(area * 1.5);
             document.getElementById('laborResult').innerText = `Hasat için tahmini gereken toplam işçi/gün sayısı: ${workers} Kişi`;
@@ -1204,7 +1127,6 @@
             }
         }
 
-        // HASTALIK TEŞHİS VE TABLO FİLTRELEME
         function renderPestTable() {
             const tbody = document.getElementById('pestTableBody');
             tbody.innerHTML = "";
@@ -1238,7 +1160,6 @@
             }, 1500);
         }
 
-        // BURSA HAL FİYATLARI
         function loadMarketPrices(force = false) {
             const tbody = document.getElementById('marketTableBody');
             tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;'>Fiyatlar güncelleniyor...</td></tr>";
@@ -1278,7 +1199,6 @@
             }, 600);
         }
 
-        // AYLIK ZİRAİ TAKVİM RENDER
         function renderCalendar() {
             const container = document.getElementById('calendarContainer');
             container.innerHTML = "";
@@ -1292,7 +1212,6 @@
             });
         }
 
-        // BURSA YEREL ÇEŞİT VERİ BANKASI RENDER
         function renderBursaCatalog() {
             const grid = document.getElementById('bursaCatalogGrid');
             if(!grid) return;
@@ -1310,7 +1229,6 @@
             });
         }
 
-        // FORM GÖNDERİMİ
         function subscribeAlerts(e) {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
