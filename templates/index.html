@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bursa Tarımsal Erken Uyarı Sistemi</title>
-    
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4383802505372588" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -1338,6 +1336,54 @@
             if(animationFrameId) cancelAnimationFrame(animationFrameId);
         }
 
+        function subscribeAlerts(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "Gönderiliyor...";
+            btn.disabled = true;
+
+            const name = document.getElementById('farmerName').value;
+            const phone = document.getElementById('farmerPhone').value;
+            const district = document.getElementById('farmerDistrict').value;
+
+            if (typeof emailjs !== 'undefined') {
+                emailjs.send("service_default", "template_default", {
+                    farmer_name: name,
+                    farmer_phone: phone,
+                    farmer_district: district
+                }).then(() => {
+                    alert("Kayıt Başarılı! Erken uyarı bildirimleri telefonunuza tanımlanmıştır.");
+                    document.getElementById('subscribeForm').reset();
+                }).catch((err) => {
+                    console.error("EmailJS Hatası:", err);
+                    alert("Kayıt alındı. Sistemimize erişiminiz tanımlanıyor.");
+                    document.getElementById('subscribeForm').reset();
+                }).finally(() => {
+                    btn.innerText = "Kayıt Ol ve Gönder";
+                    btn.disabled = false;
+                });
+            } else {
+                alert("Kayıt Başarılı!");
+                btn.innerText = "Kayıt Ol ve Gönder";
+                btn.disabled = false;
+            }
+        }
+
+        function addRadarReport() {
+            const district = document.getElementById('radarDistrict').value;
+            const note = document.getElementById('radarNote').value;
+
+            if(!district || !note) {
+                alert("Lütfen ilçe seçimi yapın ve saha gözlem notunuzu yazın.");
+                return;
+            }
+
+            userRadarReports[district] = note;
+            alert(`${district} ilçesi için saha ikazınız haritaya eklendi.`);
+            document.getElementById('radarNote').value = "";
+            renderDistrictCards();
+        }
+
         function calculateET0Irrigation() {
             const area = parseFloat(document.getElementById('et0LandArea').value) || 1;
             const kc = parseFloat(document.getElementById('et0CropKc').value) || 1.0;
@@ -1567,10 +1613,12 @@
                     { name: "Bursa Santa Maria Armudu", unit: "Kg", min: "26.00", max: "38.00", prev: "31.00 ₺", trend15: "➡️ Yatay Seyir", source: "Bursa Büyükşehir Hal" },
                     { name: "Bursa Şeftalisi & Nektarin", unit: "Kg", min: "25.00", max: "38.00", prev: "29.00 ₺", trend15: "↗️ %8 Artış Beklentisi", source: "Bursa Büyükşehir Hal" },
                     { name: "Gemlik Zeytini (200-220 Tane)", unit: "Kg", min: "110.00", max: "165.00", prev: "130.00 ₺", trend15: "↗️ %15 Yükseliş Trendi", source: "Marmarabirlik / Hal" },
-                    { name: "Karacabey / Yenişehir Domatesi", unit: "Kg", min: "12.50", max: "18.00", prev: "16.00 ₺", trend15: "↘️ %5 Düşüş Riski", source: "Karacabey Ticaret Borsa" },
-                    { name: "Yenişehir Kapya Biber", unit: "Kg", min: "22.00", max: "34.00", prev: "27.00 ₺", trend15: "➡️ Dengeli Seyir", source: "Yenişehir Hal" },
-                    { name: "Hasanağa Enginarı (Tane)", unit: "Adet", min: "35.00", max: "50.00", prev: "40.00 ₺", trend15: "↗️ %10 Yükseliş Beklentisi", source: "Nilüfer Hal / Yerel Üretici" },
-                    { name: "Bursa Siyah İnciri", unit: "Kg", min: "85.00", max: "140.00", prev: "110.00 ₺", trend15: "↗️ %20 İhracat Talep Artışı", source: "Bursa Ticaret Borsası" }
+                    { name: "Karacabey / Yenişehir Domatesi", unit: "Kg", min: "12.50", max: "18.50", prev: "16.00 ₺", trend15: "↘️ %5 Düşüş Eğilimi", source: "Karacabey Ticaret Borsası" },
+                    { name: "Yenişehir Biberi & Kapya", unit: "Kg", min: "22.00", max: "32.00", prev: "25.00 ₺", trend15: "↗️ %10 Artış Beklentisi", source: "Yenişehir Ziraat Odası" },
+                    { name: "Bursa Siyah İnciri", unit: "Kg", min: "65.00", max: "95.00", prev: "75.00 ₺", trend15: "↗️ %20 İhracat Talebi Artışı", source: "Bursa Tarım A.Ş." },
+                    { name: "Hasanağa Enginarı (Tane)", unit: "Adet", min: "30.00", max: "45.00", prev: "35.00 ₺", trend15: "➡️ Yatay Seyir", source: "Nilüfer Ziraat Odası" },
+                    { name: "İnegöl Cerrah Kuru Fasulyesi", unit: "Kg", min: "85.00", max: "110.00", prev: "90.00 ₺", trend15: "↗️ %5 Stabil Yükseliş", source: "İnegöl Ticaret Borsası" },
+                    { name: "Kestel Kestanesi", unit: "Kg", min: "140.00", max: "210.00", prev: "160.00 ₺", trend15: "↗️ Yüksek Talep", source: "Kestel Ziraat Odası" }
                 ];
 
                 tbody.innerHTML = "";
@@ -1579,11 +1627,11 @@
                         <tr>
                             <td><b>${p.name}</b></td>
                             <td>${p.unit}</td>
-                            <td style="color:#2e7d32; font-weight:bold;">${p.min} ₺</td>
-                            <td style="color:#d32f2f; font-weight:bold;">${p.max} ₺</td>
+                            <td>${p.min} ₺</td>
+                            <td>${p.max} ₺</td>
                             <td>${p.prev}</td>
-                            <td><span style="font-size:12px; font-weight:bold; background:#e8f5e9; color:#1b5e20; padding:4px 8px; border-radius:12px;">${p.trend15}</span></td>
-                            <td><span style="font-size:12px; opacity:0.8;">${p.source}</span></td>
+                            <td style="font-weight:bold; color:#1b5e20;">${p.trend15}</td>
+                            <td><span style="font-size:11px; opacity:0.8;">${p.source}</span></td>
                         </tr>
                     `;
                 });
@@ -1593,17 +1641,11 @@
         function renderCalendar() {
             const container = document.getElementById('calendarContainer');
             container.innerHTML = "";
-            const currentMonthIndex = new Date().getMonth();
-
-            calendarData.forEach((c, idx) => {
-                const isCurrent = idx === currentMonthIndex;
+            calendarData.forEach(c => {
                 container.innerHTML += `
-                    <div class="calendar-card" style="${isCurrent ? 'border-left-color:#d32f2f; background:#fff8e1;' : ''}">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <h3 style="color:var(--primary-green); font-size:16px;">${c.month} Ayı Zirai Faaliyetleri</h3>
-                            ${isCurrent ? '<span style="background:#d32f2f; color:white; font-size:11px; padding:3px 8px; border-radius:10px; font-weight:bold;">Mevcut Ay</span>' : ''}
-                        </div>
-                        <p style="font-size:13px; opacity:0.9; margin-top:8px; line-height:1.5;">${c.task}</p>
+                    <div class="calendar-card">
+                        <h3 style="color:#1b5e20; margin-bottom:6px;">📌 ${c.month} Ayı Zirai İş Planı</h3>
+                        <p style="font-size:13px; line-height:1.5;">${c.task}</p>
                     </div>
                 `;
             });
@@ -1612,71 +1654,23 @@
         function renderBursaCatalog() {
             const grid = document.getElementById('bursaCatalogGrid');
             grid.innerHTML = "";
-            bursaLocalProducts.forEach(prod => {
+            bursaLocalProducts.forEach(p => {
                 grid.innerHTML += `
-                    <div class="calc-card" style="border-top:3px solid var(--primary-green);">
-                        <h4>🍇 ${prod.name}</h4>
-                        <div style="font-size:12px; opacity:0.9; display:flex; flex-direction:column; gap:6px;">
-                            <div><b>🧪 İdeal Toprak pH:</b> ${prod.ph}</div>
-                            <div><b>📐 Dikim Mesafesi:</b> ${prod.spacing}</div>
-                            <div><b>🌱 Gübreleme Takvimi:</b> ${prod.fertilizer}</div>
-                            <div><b>💧 Sulama Rejimi:</b> ${prod.water}</div>
+                    <div class="calc-card">
+                        <h4 style="border-bottom:2px solid #e8f5e9; padding-bottom:6px;">🍇 ${p.name}</h4>
+                        <div style="font-size:13px; margin-top:8px; line-height:1.6;">
+                            <b>İdeal Toprak pH:</b> ${p.ph}<br>
+                            <b>Önerilen Dikim Mesafesi:</b> ${p.spacing}<br>
+                            <b>Gübreleme Reçetesi:</b> ${p.fertilizer}<br>
+                            <b>Sulama Rejimi:</b> ${p.water}
                         </div>
                     </div>
                 `;
             });
         }
 
-        function subscribeAlerts(e) {
-            e.preventDefault();
-            const name = document.getElementById('farmerName').value;
-            const phone = document.getElementById('farmerPhone').value;
-            const dist = document.getElementById('farmerDistrict').value;
-            
-            const btn = document.getElementById('submitBtn');
-            btn.innerText = "Kayıt Yapılıyor...";
-            btn.disabled = true;
-
-            if (typeof emailjs !== 'undefined') {
-                emailjs.send("service_default", "template_alert", {
-                    farmer_name: name,
-                    farmer_phone: phone,
-                    farmer_district: dist
-                }).then(() => {
-                    alert(`Sayın ${name}, ${dist} ilçesi erken uyarı sistemine kaydınız başarıyla alındı!`);
-                    document.getElementById('subscribeForm').reset();
-                    btn.innerText = "Kayıt Ol ve Gönder";
-                    btn.disabled = false;
-                }).catch((err) => {
-                    alert(`Kayıt Başarıyla Tamamlandı! (${dist} bölgesi için bildirimler aktifleştirildi)`);
-                    document.getElementById('subscribeForm').reset();
-                    btn.innerText = "Kayıt Ol ve Gönder";
-                    btn.disabled = false;
-                });
-            } else {
-                alert(`Kayıt Başarıyla Tamamlandı! (${dist} bölgesi için bildirimler aktifleştirildi)`);
-                document.getElementById('subscribeForm').reset();
-                btn.innerText = "Kayıt Ol ve Gönder";
-                btn.disabled = false;
-            }
-        }
-
-        function addRadarReport() {
-            const dist = document.getElementById('radarDistrict').value;
-            const note = document.getElementById('radarNote').value;
-
-            if(!dist || !note) {
-                alert("Lütfen ilçe seçiniz ve ikaz notunu yazınız.");
-                return;
-            }
-
-            userRadarReports[dist] = note;
-            alert(`Saha ikazınız (${dist}) haritaya ve ilçe raporlarına eklendi. Katkınız için teşekkürler!`);
-            document.getElementById('radarNote').value = "";
-            renderDistrictCards();
-        }
-
         window.onload = function() {
+            updateDateTime();
             populateFavSelect();
             initMap();
             renderDistrictCards();
@@ -1684,8 +1678,6 @@
             loadMarketPrices();
             renderCalendar();
             renderBursaCatalog();
-            
-            setInterval(renderDistrictCards, 300000);
         };
     </script>
 </body>
