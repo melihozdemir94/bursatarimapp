@@ -30,7 +30,7 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); transition: background 0.3s, color 0.3s; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); transition: background 0.3s, color 0.3s; display: flex; flex-direction: column; min-height: 100vh; }
 
         .frost-flash-banner {
             display: none;
@@ -88,6 +88,7 @@
             white-space: nowrap;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
             scrollbar-width: thin;
+            width: 100%;
         }
         .tab-btn { 
             background: transparent; 
@@ -119,7 +120,7 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
 
-        .layout { display: flex; max-width: 1400px; margin: 0 auto 25px; padding: 20px; gap: 25px; background: var(--card-bg); border-radius: 0 0 12px 12px; border: 1px solid var(--border-color); border-top: none; }
+        .layout { display: flex; max-width: 1400px; width: 100%; margin: 0 auto 25px; padding: 20px; gap: 25px; background: var(--card-bg); border-radius: 0 0 12px 12px; border: 1px solid var(--border-color); border-top: none; flex: 1; }
         .tab-content { display: none; width: 100%; }
         .tab-content.active { display: flex; }
 
@@ -250,6 +251,23 @@
         .badge-frost-type.advection { background-color: #ede7f6; color: #4a148c; border: 1px solid #ab47bc; }
         .badge-frost-type.blackfrost { background-color: #212121; color: #ffffff; }
 
+        /* MİNİMAL ALT BİLGİ / FOOTER STİLİ */
+        footer {
+            text-align: center;
+            padding: 12px;
+            font-size: 11px;
+            color: rgba(128, 128, 128, 0.6);
+            background: transparent;
+            margin-top: auto;
+        }
+        footer a {
+            color: rgba(128, 128, 128, 0.7);
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+
         @media (max-width: 900px) {
             .layout { flex-direction: column; }
             .sidebar { width: 100%; }
@@ -262,6 +280,11 @@
     </style>
 </head>
 <body>
+
+    <!-- GİZLİ MÜHÜR & GİZLİ İMZA (Kopyalandığında fark edilmez) -->
+    <div style="display:none !important; visibility:hidden !important; opacity:0 !important; width:0 !important; height:0 !important; position:absolute !important; left:-9999px !important;" aria-hidden="true">
+        Bu sistem, web altyapısı ve tüm algoritma mimarisi Melih Özdemir tarafından özel olarak geliştirilmiştir. All rights reserved by Melih Özdemir.
+    </div>
 
     <div id="frostFlashBanner" class="frost-flash-banner">
         ⚠️ KRİTİK ZİRAİ DON RİSKİ UYARISI! Sıcaklık 2°C Altına İnen İlçeler Tespiti Edildi! ❄️
@@ -642,6 +665,11 @@
         </div>
     </div>
 
+    <!-- MİNİMAL ALT BİLGİ & TELİF / GİZLİLİK POLİTİKASI -->
+    <footer>
+        Bu site Melih ÖZDEMİR tarafından yapılıp geliştirilmektedir. | <a href="https://l24.im/avcR" target="_blank" rel="noopener noreferrer">Gizlilik Politikası</a>
+    </footer>
+
     <script>
         // EMAILJS İNİTİALİZASYONU
         (function(){
@@ -649,6 +677,15 @@
                 emailjs.init("h7WQL2mykERx25PTm");
             }
         })();
+
+        // GİZLİ MÜHÜR - JAVASCRIPT SEVİYESİNDE SİSTEM SAHİBİ İMZASI
+        const _APP_DEVELOPER_STAMP = {
+            author: "Melih ÖZDEMİR",
+            system: "Bursa Tarımsal Erken Uyarı & Akıllı Ziraat Sistemi",
+            site: "https://bursatarimapp.onrender.com/",
+            privacy: "https://l24.im/avcR",
+            copyProtect: true
+        };
 
         const userRadarReports = {};
 
@@ -1570,59 +1607,21 @@
                     resDiv.style.color = '#1b5e20';
                     resDiv.innerHTML = `
                         ✅ <b>AI Teşhis Tamamlandı (%94 Güvenilirlik):</b><br>
-                        <b>Tespit Edilen Zararlı/Hastalık:</b> Erken Yanıklık (Alternaria solani) / Mantari Leke<br>
-                        <b>Önerilen Etken Madde:</b> Azoxystrobin veya Mancozeb uygulaması.<br>
-                        <b>PHI (Hasat Bekleme Süresi):</b> 7 Gün.
+                        <b>Tespit Edilen Zararlı/Hastalık:</b> Erken Yanıklık / Mantari Leke Başlangıcı<br>
+                        <b>Önerilen Tedavi:</b> Bakır içerikli koruyucu fungisit veya sistemik ilaç uygulaması önerilir.
                     `;
                 }
-            }, 1800);
-        }
-
-        async function loadMarketPrices(forceRefresh = false) {
-            const tbody = document.getElementById('marketTableBody');
-            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Bursa Hal Borsa Verileri ve 15 Günlük AI Trend Algoritması Çalışıyor...</td></tr>`;
-
-            setTimeout(() => {
-                const sampleMarket = [
-                    { name: "Bursa Deveci Armudu (1. Kalite)", unit: "Kg", min: "35.00", max: "45.00", prev: "38.00", trend: "📈 %8 Yükseliş Bekleniyor (İhracat Talebi)", source: "Gürsu / Kestel Hali" },
-                    { name: "Gemlik Zeytini (Sofralık / Extra)", unit: "Kg", min: "110.00", max: "160.00", prev: "130.00", trend: "➡️ Yatay / Dengeli", source: "Gemlik / Orhangazi Borsa" },
-                    { name: "Karacabey / Yenişehir Sanayi Domatesi", unit: "Kg", min: "4.20", max: "5.50", prev: "4.50", trend: "📉 %5 Hafif Düşüş (Hasat Yoğunluğu)", source: "Karacabey Hal Borsa" },
-                    { name: "Bursa Şeftalisi (Lüks)", unit: "Kg", min: "40.00", max: "55.00", prev: "42.00", trend: "📈 %12 Artış Eğilimi (Sezon Sonu)", source: "Bursa Büyükşehir Hal" },
-                    { name: "Bursa Siyah İnciri (Tescilli Coğrafi)", unit: "Kg", min: "85.00", max: "120.00", prev: "90.00", trend: "📈 Yüksek İhracat Fiyatı", source: "Osmangazi / Nilüfer Hal" },
-                    { name: "Hasanağa Enginarı (Tane)", unit: "Adet", min: "25.00", max: "35.00", prev: "28.00", trend: "➡️ Sabit Trend", source: "Nilüfer Üretici Pazarı" }
-                ];
-
-                tbody.innerHTML = "";
-                sampleMarket.forEach(m => {
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><b>${m.name}</b></td>
-                            <td>${m.unit}</td>
-                            <td>${m.min} ₺</td>
-                            <td>${m.max} ₺</td>
-                            <td>${m.prev} ₺</td>
-                            <td><span style="color:#2e7d32; font-weight:bold;">${m.trend}</span></td>
-                            <td><span style="font-size:12px; opacity:0.8;">${m.source}</span></td>
-                        </tr>
-                    `;
-                });
-            }, 600);
+            }, 1500);
         }
 
         function renderCalendar() {
             const container = document.getElementById('calendarContainer');
             container.innerHTML = "";
-
-            const currentMonthIdx = new Date().getMonth();
-
-            calendarData.forEach((c, idx) => {
-                const isCurrent = idx === currentMonthIdx;
+            calendarData.forEach(item => {
                 container.innerHTML += `
-                    <div class="calendar-card" style="${isCurrent ? 'border-left-color: #e65100; background: #fff3e0;' : ''}">
-                        <h4 style="color: ${isCurrent ? '#e65100' : 'var(--primary-green)'}; font-size:16px;">
-                            ${c.month} Ayı Zirai Faaliyetleri ${isCurrent ? '📌 (İÇİNDE BULUNDUĞUMUZ AY)' : ''}
-                        </h4>
-                        <p style="font-size:13px; margin-top:6px; line-height:1.5;">${c.task}</p>
+                    <div class="calendar-card">
+                        <h3 style="color:var(--primary-green); margin-bottom:5px;">📅 ${item.month} Ayı Zirai Faaliyetleri</h3>
+                        <p style="font-size:13px; line-height:1.5;">${item.task}</p>
                     </div>
                 `;
             });
@@ -1631,20 +1630,50 @@
         function renderBursaCatalog() {
             const grid = document.getElementById('bursaCatalogGrid');
             grid.innerHTML = "";
-
-            bursaLocalProducts.forEach(p => {
+            bursaLocalProducts.forEach(item => {
                 grid.innerHTML += `
                     <div class="calc-card">
-                        <h4 style="font-size:16px; border-bottom:1px solid var(--border-color); padding-bottom:6px;">🍇 ${p.name}</h4>
-                        <div style="font-size:13px; margin-top:8px; line-height:1.6;">
-                            <b>İdeal Toprak pH:</b> ${p.ph}<br>
-                            <b>Dikim Aralığı:</b> ${p.spacing}<br>
-                            <b>Gübreleme Reçetesi:</b> ${p.fertilizer}<br>
-                            <b>Sulama İhtiyacı:</b> ${p.water}
-                        </div>
+                        <h4 style="font-size:16px;">🍇 ${item.name}</h4>
+                        <p style="font-size:12px; margin-bottom:4px;"><b>İdeal pH:</b> ${item.ph}</p>
+                        <p style="font-size:12px; margin-bottom:4px;"><b>Dikim Mesafesi:</b> ${item.spacing}</p>
+                        <p style="font-size:12px; margin-bottom:4px;"><b>Gübreleme Reçetesi:</b> ${item.fertilizer}</p>
+                        <p style="font-size:12px;"><b>Sulama Rejimi:</b> ${item.water}</p>
                     </div>
                 `;
             });
+        }
+
+        function loadMarketPrices(manual = false) {
+            const tbody = document.getElementById('marketTableBody');
+            if (manual) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Fiyatlar güncelleniyor...</td></tr>`;
+            }
+
+            setTimeout(() => {
+                const samplePrices = [
+                    { name: "Gemlik Zeytini (Sofralık 200-230 Dane)", unit: "Kg", min: "120.00", max: "160.00", last: "135.00", trend: "📈 %5 Artış Bekleniyor", source: "Gemlik Ticaret Borsası" },
+                    { name: "Bursa Deveci Armudu (1. Kalite)", unit: "Kg", min: "45.00", max: "65.00", last: "50.00", trend: "➡️ Yatay / Dengeli", source: "Gürsu Hal Fiyatları" },
+                    { name: "Bursa Şeftalisi (Lüks)", unit: "Kg", min: "35.00", max: "55.00", last: "40.00", trend: "📉 %8 Düşüş Tahmini (Yoğun Hasat)", source: "Bursa Büyükşehir Hal" },
+                    { name: "Karacabey Sanayi Domatesi", unit: "Kg", min: "3.80", max: "4.50", last: "4.00", trend: "➡️ Yatay", source: "Karacabey Ziraat Odası" },
+                    { name: "Yenişehir Kapya Biber", unit: "Kg", min: "22.00", max: "32.00", last: "25.00", trend: "📈 %10 Yükseliş Bekleniyor", source: "Yenişehir Hal" },
+                    { name: "Bursa Siyah İnciri (İhracatlık)", unit: "Kg", min: "90.00", max: "140.00", last: "110.00", trend: "📈 Yüksek İhracat Talebi", source: "Bursa Ticaret Borsası" }
+                ];
+
+                tbody.innerHTML = "";
+                samplePrices.forEach(p => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><b>${p.name}</b></td>
+                            <td>${p.unit}</td>
+                            <td>${p.min} ₺</td>
+                            <td>${p.max} ₺</td>
+                            <td>${p.last} ₺</td>
+                            <td><span style="color:#1b5e20; font-weight:bold;">${p.trend}</span></td>
+                            <td><small>${p.source}</small></td>
+                        </tr>
+                    `;
+                });
+            }, manual ? 600 : 0);
         }
 
         window.onload = function() {
@@ -1653,9 +1682,9 @@
             initMap();
             renderDistrictCards();
             renderPestTable();
-            loadMarketPrices();
             renderCalendar();
             renderBursaCatalog();
+            loadMarketPrices();
         };
     </script>
 </body>
