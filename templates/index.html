@@ -8,6 +8,10 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+    <!-- Leaflet Draw (Replantio Tarla Çizim Aracı Kütüphanesi) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
@@ -144,7 +148,7 @@
         .content-header h2 { font-size: 20px; }
         .last-update-tag { font-size: 12px; background: var(--border-color); padding: 4px 10px; border-radius: 12px; }
 
-        #mapContainer, #ndviMapContainer { height: 380px; width: 100%; border-radius: 10px; margin-bottom: 25px; border: 1px solid var(--border-color); box-shadow: 0 2px 6px rgba(0,0,0,0.05); z-index: 1; }
+        #mapContainer, #replantioMapContainer { height: 420px; width: 100%; border-radius: 10px; margin-bottom: 25px; border: 1px solid var(--border-color); box-shadow: 0 2px 6px rgba(0,0,0,0.05); z-index: 1; }
         .leaflet-container { width: 100%; height: 100%; border-radius: 10px; }
         .leaflet-tile-container img { width: 256px !important; height: 256px !important; }
 
@@ -251,7 +255,11 @@
         .badge-frost-type.advection { background-color: #ede7f6; color: #4a148c; border: 1px solid #ab47bc; }
         .badge-frost-type.blackfrost { background-color: #212121; color: #ffffff; }
 
-        /* MİNİMAL ALT BİLGİ / FOOTER STİLİ */
+        /* PARSEL STİLLERİ */
+        .parcel-item { background: rgba(0,0,0,0.02); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .parcel-item h5 { font-size: 14px; color: var(--primary-green); margin-bottom: 2px; }
+        .parcel-item p { font-size: 12px; opacity: 0.8; }
+
         footer {
             text-align: center;
             padding: 12px;
@@ -281,7 +289,6 @@
 </head>
 <body>
 
-    
     <div style="display:none !important; visibility:hidden !important; opacity:0 !important; width:0 !important; height:0 !important; position:absolute !important; left:-9999px !important;" aria-hidden="true">
         Bu sistem, web altyapısı ve tüm algoritma mimarisi Melih Özdemir tarafından özel olarak geliştirilmiştir. All rights reserved by Melih Özdemir.
     </div>
@@ -306,7 +313,7 @@
 
     <div class="tab-nav">
         <button class="tab-btn active" onclick="switchTab('main-tab', this)">🗺️ Risk Haritası & İlçeler</button>
-        <button class="tab-btn" onclick="switchTab('ndvi-tab', this)">🛰️ Sentinel-2 NDVI & Parsel Analizi</button>
+        <button class="tab-btn" onclick="switchTab('replantio-tab', this)">🗺️ Replantio Tarla & Parsel Çizimi</button>
         <button class="tab-btn" onclick="switchTab('calc-tab', this)">🧮 Zirai Hesaplayıcılar & ET0</button>
         <button class="tab-btn" onclick="switchTab('pest-tab', this)">🔬 Hastalık & Derece-Gün Tahmini</button>
         <button class="tab-btn" onclick="switchTab('market-tab', this)">📈 Bursa Hal & 15 Günlük Fiyat Trendi</button>
@@ -379,47 +386,55 @@
             </div>
         </div>
 
-        <div id="ndvi-tab" class="tab-content">
+        <!-- REPLANTIO PARSEL & TARLA YÖNETİMİ SEKMESİ -->
+        <div id="replantio-tab" class="tab-content">
             <div class="tab-panel-inner">
-                <h2>🛰️ Sentinel-2 Uydu Verileri ile Parsel Canlılık & Su Stresi İndeksi (NDVI)</h2>
-                <p style="font-size:13px; opacity:0.8;">Tarlanıza gitmeden klorofil miktarı, bitki örtüsü yoğunluğu ve su stresini uydu fotoğraflarıyla takip edin.</p>
+                <h2>🌱 Replantio - İnteraktif Tarla Çizimi & Parsel Yönetim Portalı</h2>
+                <p style="font-size:13px; opacity:0.8;">Harita üzerindeki poligon çizim araçlarını kullanarak kendi bahçenizi/tarlanızı çizin, otomatik dönüm hesaplayın ve parsel kaydınızı oluşturun.</p>
                 
                 <div style="display:flex; gap:15px; flex-wrap:wrap; background:rgba(0,0,0,0.02); padding:15px; border-radius:8px; border:1px solid var(--border-color);">
-                    <div style="flex:1; min-width:220px;">
-                        <label style="font-size:12px; font-weight:bold;">İlçe & Parsel Seçin:</label>
-                        <select id="ndviDistrictSelect" onchange="updateNdviMap()">
+                    <div style="flex:1; min-width:200px;">
+                        <label style="font-size:12px; font-weight:bold;">1. Tarlanızı Haritada Büyütün / İnceleyin:</label>
+                        <select id="replantioDistrictSelect" onchange="centerReplantioMap()">
                             <option value="Mustafakemalpaşa">Mustafakemalpaşa Ova Tarlaları</option>
-                            <option value="Karacabey">Karacabey Domates Ova Parseli</option>
-                            <option value="Yenişehir">Yenişehir Biber Ovası</option>
-                            <option value="Gemlik">Gemlik Zeytinlik Parseli</option>
-                            <option value="Gürsu">Gürsu Armut Bahçesi</option>
+                            <option value="Karacabey">Karacabey Ova Tarlaları</option>
+                            <option value="Yenişehir">Yenişehir Biber & Sebze Ovası</option>
+                            <option value="Gemlik">Gemlik Zeytin Bahçeleri</option>
+                            <option value="Gürsu">Gürsu Armut Bahçeleri</option>
+                            <option value="İnegöl">İnegöl Tarım Tarlaları</option>
                         </select>
                     </div>
-                    <div style="flex:1; min-width:220px;">
-                        <label style="font-size:12px; font-weight:bold;">Görüntü Katmanı / İndeks:</label>
-                        <select id="ndviLayerSelect" onchange="updateNdviMap()">
-                            <option value="ndvi">NDVI (Bitki Sağlığı & Klorofil)</option>
-                            <option value="ndwi">NDWI (Bitki Su Stresi & Nem)</option>
-                            <option value="rgb">Doğal Renk Uydu Görüntüsü</option>
-                        </select>
+                    <div style="flex:1; min-width:200px;">
+                        <label style="font-size:12px; font-weight:bold;">2. Çizilecek Parsel Adı:</label>
+                        <input type="text" id="newParcelName" placeholder="Örn: Evin Arkasındaki Zeytinlik" style="margin:0;">
                     </div>
-                    <div style="display:flex; align-items:flex-end;">
-                        <button class="card-btn" style="margin:0; padding:10px 20px;" onclick="updateNdviMap()">🛰️ Analizi Güncelle</button>
+                    <div style="flex:1; min-width:200px;">
+                        <label style="font-size:12px; font-weight:bold;">3. Ekilen Ürün / Bitki Türü:</label>
+                        <select id="newParcelCrop" style="margin:0;">
+                            <option value="Gemlik Zeytini">Gemlik Zeytini</option>
+                            <option value="Deveci / Santa Maria Armut">Deveci / Santa Maria Armut</option>
+                            <option value="Karacabey Domatesi">Karacabey Domatesi</option>
+                            <option value="Yenişehir Biberi">Yenişehir Biberi</option>
+                            <option value="Şeftali & Nektarin">Şeftali & Nektarin</option>
+                            <option value="Diğer / Boş Tarla">Diğer / Boş Tarla</option>
+                        </select>
                     </div>
                 </div>
 
-                <div id="ndviMapContainer" style="margin-top:15px;"></div>
+                <div id="replantioMapContainer" style="margin-top:10px;"></div>
 
                 <div class="calc-grid">
                     <div class="calc-card">
-                        <h4>🌱 Ort. Klorofil Skoru (NDVI)</h4>
-                        <div style="font-size:24px; font-weight:bold; color:#2e7d32;" id="ndviScoreVal">0.74 (Yüksek Sağlık)</div>
-                        <p style="font-size:12px; opacity:0.8; margin-top:5px;">0.2 altı çorak/su, 0.3-0.5 orta stres, 0.6-0.9 yoğun yeşil aksam.</p>
+                        <h4>📏 Çizilen Parsel Alan Detayları</h4>
+                        <div style="font-size:22px; font-weight:bold; color:#2e7d32;" id="drawnAreaVal">0.00 Dönüm (0 m²)</div>
+                        <p style="font-size:12px; opacity:0.8; margin-top:5px;">Haritadaki sol üst çizim simgesini ⬡ seçerek tarlanızın etrafını tıklayarak birleştirin.</p>
+                        <button class="card-btn" onclick="saveCurrentParcel()">💾 Bu Parseli Kaydet</button>
                     </div>
                     <div class="calc-card">
-                        <h4>💧 Bitki Su Stresi Durumu</h4>
-                        <div style="font-size:24px; font-weight:bold; color:#0288d1;" id="ndwiScoreVal">%12 Hafif Su İhtiyacı</div>
-                        <p style="font-size:12px; opacity:0.8; margin-top:5px;">Sentinel-2 bant B8 ve B11 kızılötesi su emilim analizi.</p>
+                        <h4>📋 Kayıtlı Tarlalarım & Parsel Listem</h4>
+                        <div id="savedParcelsList">
+                            <p style="font-size:12px; opacity:0.7;">Henüz kaydedilmiş bir parseliniz bulunmamaktadır.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -665,20 +680,17 @@
         </div>
     </div>
 
-    
     <footer>
         Bu site Melih ÖZDEMİR tarafından yapılıp geliştirilmektedir. | <a href="https://l24.im/avcR" target="_blank" rel="noopener noreferrer">Gizlilik Politikası</a>
     </footer>
 
     <script>
-        // EMAILJS İNİTİALİZASYONU
         (function(){
             if(typeof emailjs !== 'undefined'){
                 emailjs.init("h7WQL2mykERx25PTm");
             }
         })();
 
-        
         const _APP_DEVELOPER_STAMP = {
             author: "Melih ÖZDEMİR",
             system: "Bursa Tarımsal Erken Uyarı & Akıllı Ziraat Sistemi",
@@ -761,9 +773,14 @@
             { month: "Aralık", task: "Zeytin hasadının tamamlanması ve dip temizliği. Meyve ağaçlarında kışa hazırlık ve kök boğazı doldurma işlemleri. Gece donlarına karşı seralarda ısıtma ve örtü tedbirlerinin alınması." }
         ];
 
-        let map, ndviMap, districtMarkersMap = {};
+        let map, replantioMap, districtMarkersMap = {};
         let fetchedWeatherData = {};
         let currentChart = null;
+
+        // REPLANTIO PARSEL ÇİZİM DEĞİŞKENLERİ
+        let replantioDrawnItems = new L.FeatureGroup();
+        let lastCalculatedAreaM2 = 0;
+        let lastCalculatedDonum = 0;
 
         function getCurrentMonthPests() {
             const currentMonth = new Date().getMonth();
@@ -869,8 +886,8 @@
             if(tabId === 'main-tab' && map) {
                 setTimeout(() => { map.invalidateSize(); }, 200);
             }
-            if(tabId === 'ndvi-tab') {
-                initNdviMap();
+            if(tabId === 'replantio-tab') {
+                initReplantioMap();
             }
         }
 
@@ -903,29 +920,115 @@
             setTimeout(() => { map.invalidateSize(); }, 300);
         }
 
-        function initNdviMap() {
-            if(!ndviMap) {
-                ndviMap = L.map('ndviMapContainer').setView([40.0353, 28.4117], 12);
+        // REPLANTIO HARİTASINI BAŞLATMA VE ÇİZİM ARAÇLARINI YÜKLEME
+        function initReplantioMap() {
+            if(!replantioMap) {
+                replantioMap = L.map('replantioMapContainer').setView([40.0353, 28.4117], 13);
+                
                 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                    attribution: 'Sentinel-2 / Esri World Imagery'
-                }).addTo(ndviMap);
+                    attribution: 'Replantio / Esri World Imagery'
+                }).addTo(replantioMap);
+
+                replantioMap.addLayer(replantioDrawnItems);
+
+                const drawControl = new L.Control.Draw({
+                    draw: {
+                        polygon: {
+                            allowIntersection: false,
+                            showArea: true
+                        },
+                        rectangle: true,
+                        polyline: false,
+                        circle: false,
+                        marker: false,
+                        circlemarker: false
+                    },
+                    edit: {
+                        featureGroup: replantioDrawnItems,
+                        remove: true
+                    }
+                });
+                replantioMap.addControl(drawControl);
+
+                replantioMap.on(L.Draw.Event.CREATED, function (e) {
+                    const layer = e.layer;
+                    replantioDrawnItems.clearLayers();
+                    replantioDrawnItems.addLayer(layer);
+
+                    const latlngs = layer.getLatLngs()[0];
+                    if (latlngs) {
+                        const areaM2 = L.GeometryUtil.geodesicArea(latlngs);
+                        lastCalculatedAreaM2 = Math.round(areaM2);
+                        lastCalculatedDonum = (areaM2 / 1000).toFixed(2);
+
+                        document.getElementById('drawnAreaVal').innerText = `${lastCalculatedDonum} Dönüm (${lastCalculatedAreaM2.toLocaleString('tr-TR')} m²)`;
+                    }
+                });
             }
-            setTimeout(() => { ndviMap.invalidateSize(); }, 200);
-            updateNdviMap();
+            setTimeout(() => { replantioMap.invalidateSize(); }, 200);
+            renderSavedParcels();
         }
 
-        function updateNdviMap() {
-            if(!ndviMap) return;
-            const district = document.getElementById('ndviDistrictSelect').value;
+        function centerReplantioMap() {
+            if(!replantioMap) return;
+            const district = document.getElementById('replantioDistrictSelect').value;
             const target = districtsData.find(d => d.name.includes(district) || district.includes(d.name)) || districtsData[4];
-            
-            ndviMap.setView([target.lat, target.lon], 13);
+            replantioMap.setView([target.lat, target.lon], 13);
+        }
 
-            let score = (0.65 + Math.random() * 0.22).toFixed(2);
-            let stress = (8 + Math.floor(Math.random() * 12));
+        function saveCurrentParcel() {
+            const name = document.getElementById('newParcelName').value.trim();
+            const crop = document.getElementById('newParcelCrop').value;
 
-            document.getElementById('ndviScoreVal').innerText = `${score} (Canlı & Sağlıklı Yeşil Aksam)`;
-            document.getElementById('ndwiScoreVal').innerText = `%${stress} Düşük / Dengeli Su Stresi`;
+            if(!name) {
+                alert("Lütfen parsel için bir isim yazın (Örn: Dere Boyu Tarlası).");
+                return;
+            }
+            if(lastCalculatedAreaM2 === 0) {
+                alert("Lütfen harita üzerinden önce tarlanızı çizin.");
+                return;
+            }
+
+            const parcels = JSON.parse(localStorage.getItem('myParcels') || '[]');
+            parcels.push({
+                id: Date.now(),
+                name: name,
+                crop: crop,
+                donum: lastCalculatedDonum,
+                areaM2: lastCalculatedAreaM2
+            });
+
+            localStorage.setItem('myParcels', JSON.stringify(parcels));
+            alert(`"${name}" adlı parseliniz başarıyla kaydedildi!`);
+            document.getElementById('newParcelName').value = "";
+            renderSavedParcels();
+        }
+
+        function renderSavedParcels() {
+            const container = document.getElementById('savedParcelsList');
+            const parcels = JSON.parse(localStorage.getItem('myParcels') || '[]');
+
+            if(parcels.length === 0) {
+                container.innerHTML = `<p style="font-size:12px; opacity:0.7;">Henüz kaydedilmiş bir parseliniz bulunmamaktadır.</p>`;
+                return;
+            }
+
+            container.innerHTML = parcels.map((p) => `
+                <div class="parcel-item">
+                    <div>
+                        <h5>🌾 ${p.name}</h5>
+                        <p><b>Ürün:</b> ${p.crop} | <b>Alan:</b> ${p.donum} Dönüm (${p.areaM2} m²)</p>
+                    </div>
+                    <button onclick="deleteParcel(${p.id})" style="background:#c62828; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:11px;">Sil</button>
+                </div>
+            `).join('');
+        }
+
+        function deleteParcel(id) {
+            let parcels = JSON.parse(localStorage.getItem('myParcels') || '[]');
+            parcels = parcels.filter(p => p.id !== id);
+            localStorage.setItem('myParcels', JSON.stringify(parcels));
+            renderSavedParcels();
         }
 
         async function renderDistrictCards() {
@@ -1632,7 +1735,6 @@
             `).join('');
         }
 
-        // SAYFA YÜKLENDİĞİNDE ÇALIŞACAK ANA BAŞLANGIÇ
         window.addEventListener('DOMContentLoaded', () => {
             updateDateTime();
             populateFavSelect();
