@@ -8,12 +8,11 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- Leaflet Draw (Replantio Tarla Çizim Aracı Kütüphanesi) -->
+    <!-- Leaflet Draw (Replantio Çizim Kütüphanesi) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <style>
@@ -63,12 +62,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.15); 
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
+        .header-left { display: flex; align-items: center; gap: 15px; }
         header h1 { font-size: 20px; font-weight: 600; }
         .header-right { display: flex; align-items: center; gap: 12px; }
         .datetime-box { text-align: right; font-size: 13px; background: rgba(0, 0, 0, 0.2); padding: 5px 12px; border-radius: 6px; }
@@ -78,7 +72,6 @@
         .btn-toggle-mode { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
         .btn-toggle-mode:hover { background: rgba(255,255,255,0.4); }
 
-        /* SEKME (TAB) DÜZENLEMELERİ */
         .tab-nav { 
             max-width: 1400px; 
             margin: 20px auto 0; 
@@ -110,19 +103,9 @@
             opacity: 0.8;
             flex-shrink: 0;
         }
-        .tab-btn:hover { 
-            background: rgba(0, 0, 0, 0.05); 
-            opacity: 1;
-        }
-        body.dark-mode .tab-btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-        }
-        .tab-btn.active { 
-            background: var(--primary-green); 
-            color: white; 
-            opacity: 1;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-        }
+        .tab-btn:hover { background: rgba(0, 0, 0, 0.05); opacity: 1; }
+        body.dark-mode .tab-btn:hover { background: rgba(255, 255, 255, 0.08); }
+        .tab-btn.active { background: var(--primary-green); color: white; opacity: 1; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
 
         .layout { display: flex; max-width: 1400px; width: 100%; margin: 0 auto 25px; padding: 20px; gap: 25px; background: var(--card-bg); border-radius: 0 0 12px 12px; border: 1px solid var(--border-color); border-top: none; flex: 1; }
         .tab-content { display: none; width: 100%; }
@@ -148,133 +131,92 @@
         .content-header h2 { font-size: 20px; }
         .last-update-tag { font-size: 12px; background: var(--border-color); padding: 4px 10px; border-radius: 12px; }
 
-        #mapContainer, #replantioMapContainer { height: 420px; width: 100%; border-radius: 10px; margin-bottom: 25px; border: 1px solid var(--border-color); box-shadow: 0 2px 6px rgba(0,0,0,0.05); z-index: 1; }
+        #mapContainer { height: 380px; width: 100%; border-radius: 10px; margin-bottom: 25px; border: 1px solid var(--border-color); box-shadow: 0 2px 6px rgba(0,0,0,0.05); z-index: 1; }
         .leaflet-container { width: 100%; height: 100%; border-radius: 10px; }
         .leaflet-tile-container img { width: 256px !important; height: 256px !important; }
 
         .custom-map-pin {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px !important;
-            height: 28px !important;
-            border-radius: 50%;
-            color: white;
-            font-weight: bold;
-            font-size: 13px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-            border: 2px solid white;
+            display: flex; align-items: center; justify-content: center; width: 28px !important; height: 28px !important; border-radius: 50%; color: white; font-weight: bold; font-size: 13px; box-shadow: 0 2px 6px rgba(0,0,0,0.4); border: 2px solid white;
         }
         .custom-map-pin.green { background-color: #2e7d32; }
         .custom-map-pin.yellow { background-color: #f57f17; }
         .custom-map-pin.red { background-color: #c62828; }
 
         .district-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
-        
-        .district-card { 
-            background: var(--card-bg); 
-            border-radius: 10px; 
-            padding: 18px; 
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05); 
-            border: 1px solid var(--border-color); 
-            transition: transform 0.2s, box-shadow 0.2s; 
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            word-break: break-word;
-        }
+        .district-card { background: var(--card-bg); border-radius: 10px; padding: 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: transform 0.2s, box-shadow 0.2s; position: relative; display: flex; flex-direction: column; justify-content: space-between; word-break: break-word; }
         .district-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .favorite-star { position: absolute; top: 15px; right: 15px; cursor: pointer; font-size: 18px; color: #ccc; }
         .favorite-star.active { color: #fbc02d; }
-        
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; padding-right: 25px; }
         .card-header h3 { font-size: 17px; color: var(--primary-green); }
-        
         .status-badge { font-size: 11px; padding: 4px 8px; border-radius: 12px; font-weight: bold; }
         .status-badge.normal { background-color: #e8f5e9; color: #2e7d32; }
         .status-badge.warning { background-color: #fff3cd; color: #856404; }
         .status-badge.danger { background-color: #f8d7da; color: #721c24; }
-
         .info-row { display: flex; justify-content: space-between; font-size: 13px; opacity: 0.85; margin-bottom: 6px; }
         .info-row span.val { font-weight: bold; opacity: 1; }
-
         .card-btn { display: block; width: 100%; text-align: center; padding: 10px; margin-top: 12px; background-color: var(--primary-green); color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; text-decoration: none; font-size: 13px; transition: background 0.2s; }
         .card-btn:hover { opacity: 0.9; }
 
+        /* REPLANTIO ÖZEL TASARIM STİLLERİ */
+        .replantio-container { display: flex; gap: 20px; width: 100%; min-height: 600px; }
+        .replantio-sidebar { width: 340px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
+        .replantio-map-wrap { flex: 1; position: relative; border-radius: 10px; overflow: hidden; border: 1px solid var(--border-color); min-height: 550px; }
+        #replantioMap { width: 100%; height: 100%; min-height: 550px; }
+        
+        .replantio-card { background: var(--card-bg); border-radius: 8px; padding: 15px; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .replantio-card h4 { font-size: 15px; color: var(--primary-green); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .field-list { max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+        .field-item { background: rgba(0,0,0,0.02); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; cursor: pointer; transition: all 0.2s; display: flex; justify-content: space-between; align-items: center; }
+        .field-item:hover { border-color: var(--primary-green); background: rgba(27, 94, 32, 0.04); }
+        .field-info { display: flex; flex-direction: column; gap: 2px; }
+        .field-name { font-weight: bold; font-size: 13px; color: var(--text-color); }
+        .field-meta { font-size: 11px; opacity: 0.75; }
+        .field-actions { display: flex; gap: 4px; }
+        .btn-icon { background: none; border: none; cursor: pointer; font-size: 14px; opacity: 0.7; padding: 2px; }
+        .btn-icon:hover { opacity: 1; }
+
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
         .modal-container { background: var(--card-bg); width: 92%; max-width: 850px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: modalAnim 0.3s ease-out; position: relative; max-height: 90vh; overflow-y: auto; color: var(--text-color); }
-        
-        @keyframes modalAnim {
-            from { transform: translateY(-30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
+        @keyframes modalAnim { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .modal-close { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.8); border: none; font-size: 20px; font-weight: bold; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; z-index: 10; color: #333; }
-
         .weather-banner { position: relative; height: 160px; padding: 20px; color: white; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; background: linear-gradient(to bottom, #1b5e20, #388e3c); }
         #popup-weather-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
         .banner-info { position: relative; z-index: 2; }
-
         .modal-body { padding: 20px; }
         .modal-section { margin-bottom: 20px; }
         .modal-section h4 { font-size: 15px; color: var(--primary-green); margin-bottom: 10px; border-bottom: 2px solid #e8f5e9; padding-bottom: 4px; }
-
         .hourly-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; }
         .hourly-card { background: rgba(0,0,0,0.03); border: 1px solid var(--border-color); border-radius: 8px; min-width: 100px; padding: 10px; text-align: center; flex-shrink: 0; }
-        
         .forecast-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
         .forecast-card { background: rgba(0,0,0,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; text-align: center; }
-
         .wind-warning-box { padding: 12px 14px; border-radius: 6px; font-size: 13px; font-weight: 500; margin-top: 6px; }
         .wind-warning-box.safe { background-color: #e8f5e9; color: #1b5e20; border: 1px solid #c8e6c9; }
         .wind-warning-box.unsafe { background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
-
         .recipe-box { background: #fdfffe; border: 1px dashed var(--primary-green); padding: 12px; border-radius: 8px; font-size: 13px; margin-top: 8px; }
-
         .tab-panel-inner { width: 100%; display: flex; flex-direction: column; gap: 20px; }
         .calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
         .calc-card { background: rgba(0,0,0,0.02); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; }
         .calc-card h4 { color: var(--primary-green); margin-bottom: 12px; font-size: 15px; }
         .result-box { background: #e8f5e9; color: #1b5e20; padding: 12px; border-radius: 6px; font-weight: bold; margin-top: 10px; font-size: 14px; }
-
         .data-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
         .data-table th, .data-table td { border: 1px solid var(--border-color); padding: 10px; text-align: left; }
         .data-table th { background: var(--primary-green); color: white; }
-
         .calendar-card { background: var(--card-bg); border-left: 5px solid var(--primary-green); border: 1px solid var(--border-color); border-left-width: 5px; border-radius: 8px; padding: 15px; margin-bottom: 12px; }
-
         .fenolojik-clock-container { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
         .clock-hour-chip { flex: 1 0 35px; padding: 6px 2px; text-align: center; border-radius: 4px; font-size: 11px; font-weight: bold; color: white; }
         .clock-hour-chip.good { background-color: #2e7d32; }
         .clock-hour-chip.bad { background-color: #c62828; }
         .clock-hour-chip.warning { background-color: #f57f17; }
-
         .badge-frost-type { display: inline-block; font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: bold; margin-top: 4px; }
         .badge-frost-type.radiation { background-color: #e0f7fa; color: #006064; border: 1px solid #00bcd4; }
         .badge-frost-type.advection { background-color: #ede7f6; color: #4a148c; border: 1px solid #ab47bc; }
         .badge-frost-type.blackfrost { background-color: #212121; color: #ffffff; }
 
-        /* PARSEL STİLLERİ */
-        .parcel-item { background: rgba(0,0,0,0.02); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .parcel-item h5 { font-size: 14px; color: var(--primary-green); margin-bottom: 2px; }
-        .parcel-item p { font-size: 12px; opacity: 0.8; }
-
-        footer {
-            text-align: center;
-            padding: 12px;
-            font-size: 11px;
-            color: rgba(128, 128, 128, 0.6);
-            background: transparent;
-            margin-top: auto;
-        }
-        footer a {
-            color: rgba(128, 128, 128, 0.7);
-            text-decoration: none;
-        }
-        footer a:hover {
-            text-decoration: underline;
-        }
+        footer { text-align: center; padding: 12px; font-size: 11px; color: rgba(128, 128, 128, 0.6); background: transparent; margin-top: auto; }
+        footer a { color: rgba(128, 128, 128, 0.7); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
 
         @media (max-width: 900px) {
             .layout { flex-direction: column; }
@@ -284,6 +226,8 @@
             .header-left { flex-direction: column; }
             .header-right { width: 100%; justify-content: center; }
             .tab-content.active { flex-direction: column; }
+            .replantio-container { flex-direction: column; }
+            .replantio-sidebar { width: 100%; }
         }
     </style>
 </head>
@@ -313,7 +257,7 @@
 
     <div class="tab-nav">
         <button class="tab-btn active" onclick="switchTab('main-tab', this)">🗺️ Risk Haritası & İlçeler</button>
-        <button class="tab-btn" onclick="switchTab('replantio-tab', this)">🗺️ Replantio Tarla & Parsel Çizimi</button>
+        <button class="tab-btn" onclick="switchTab('replantio-tab', this)">🌱 Replantio Tarla Yönetimi</button>
         <button class="tab-btn" onclick="switchTab('calc-tab', this)">🧮 Zirai Hesaplayıcılar & ET0</button>
         <button class="tab-btn" onclick="switchTab('pest-tab', this)">🔬 Hastalık & Derece-Gün Tahmini</button>
         <button class="tab-btn" onclick="switchTab('market-tab', this)">📈 Bursa Hal & 15 Günlük Fiyat Trendi</button>
@@ -386,56 +330,62 @@
             </div>
         </div>
 
-        <!-- REPLANTIO PARSEL & TARLA YÖNETİMİ SEKMESİ -->
+        <!-- REPLANTIO TARLA / PARSEL YÖNETİMİ SEKMESİ -->
         <div id="replantio-tab" class="tab-content">
-            <div class="tab-panel-inner">
-                <h2>🌱 Replantio - İnteraktif Tarla Çizimi & Parsel Yönetim Portalı</h2>
-                <p style="font-size:13px; opacity:0.8;">Harita üzerindeki poligon çizim araçlarını kullanarak kendi bahçenizi/tarlanızı çizin, otomatik dönüm hesaplayın ve parsel kaydınızı oluşturun.</p>
-                
-                <div style="display:flex; gap:15px; flex-wrap:wrap; background:rgba(0,0,0,0.02); padding:15px; border-radius:8px; border:1px solid var(--border-color);">
-                    <div style="flex:1; min-width:200px;">
-                        <label style="font-size:12px; font-weight:bold;">1. Tarlanızı Haritada Büyütün / İnceleyin:</label>
-                        <select id="replantioDistrictSelect" onchange="centerReplantioMap()">
-                            <option value="Mustafakemalpaşa">Mustafakemalpaşa Ova Tarlaları</option>
-                            <option value="Karacabey">Karacabey Ova Tarlaları</option>
-                            <option value="Yenişehir">Yenişehir Biber & Sebze Ovası</option>
-                            <option value="Gemlik">Gemlik Zeytin Bahçeleri</option>
-                            <option value="Gürsu">Gürsu Armut Bahçeleri</option>
-                            <option value="İnegöl">İnegöl Tarım Tarlaları</option>
+            <div class="replantio-container">
+                <!-- Sol Kontrol ve Listeleme Paneli -->
+                <div class="replantio-sidebar">
+                    <div class="replantio-card">
+                        <h4>🌱 Tarla / Parsel Ekle</h4>
+                        <p style="font-size:11px; opacity:0.8; margin-bottom:10px;">Haritadaki çizim araçlarını (⬡) kullanarak tarlanızın etrafını çizin.</p>
+                        
+                        <label style="font-size:12px; font-weight:bold;">Bölge / İlçe Hızlı Odak:</label>
+                        <select id="replantioDistrictSelect" onchange="focusReplantioDistrict()">
+                            <option value="Mustafakemalpaşa">Mustafakemalpaşa</option>
+                            <option value="Karacabey">Karacabey</option>
+                            <option value="Yenişehir">Yenişehir</option>
+                            <option value="Gemlik">Gemlik</option>
+                            <option value="Gürsu">Gürsu</option>
+                            <option value="İnegöl">İnegöl</option>
+                            <option value="Mudanya">Mudanya</option>
+                            <option value="İznik">İznik</option>
                         </select>
-                    </div>
-                    <div style="flex:1; min-width:200px;">
-                        <label style="font-size:12px; font-weight:bold;">2. Çizilecek Parsel Adı:</label>
-                        <input type="text" id="newParcelName" placeholder="Örn: Evin Arkasındaki Zeytinlik" style="margin:0;">
-                    </div>
-                    <div style="flex:1; min-width:200px;">
-                        <label style="font-size:12px; font-weight:bold;">3. Ekilen Ürün / Bitki Türü:</label>
-                        <select id="newParcelCrop" style="margin:0;">
+
+                        <label style="font-size:12px; font-weight:bold;">Parsel / Tarla Adı:</label>
+                        <input type="text" id="repFieldName" placeholder="Örn: Dere Boyu Zeytinliği">
+
+                        <label style="font-size:12px; font-weight:bold;">Mevcut Mahsul / Ürün:</label>
+                        <select id="repFieldCrop">
                             <option value="Gemlik Zeytini">Gemlik Zeytini</option>
-                            <option value="Deveci / Santa Maria Armut">Deveci / Santa Maria Armut</option>
+                            <option value="Bursa Deveci Armudu">Bursa Deveci Armudu</option>
                             <option value="Karacabey Domatesi">Karacabey Domatesi</option>
                             <option value="Yenişehir Biberi">Yenişehir Biberi</option>
-                            <option value="Şeftali & Nektarin">Şeftali & Nektarin</option>
-                            <option value="Diğer / Boş Tarla">Diğer / Boş Tarla</option>
+                            <option value="Bursa Şeftalisi">Bursa Şeftalisi</option>
+                            <option value="Narenciye / Meyve">Narenciye / Meyve</option>
+                            <option value="Boş / Dinlenmede">Boş / Dinlenmede</option>
                         </select>
+
+                        <div style="background:rgba(27,94,32,0.08); padding:10px; border-radius:6px; margin-bottom:10px;">
+                            <div style="font-size:11px; opacity:0.8;">Hesaplanan Çizim Alanı:</div>
+                            <div style="font-size:16px; font-weight:bold; color:var(--primary-green);" id="repCalculatedArea">0 Dönüm (0 m²)</div>
+                        </div>
+
+                        <button class="card-btn" style="margin-top:0;" onclick="saveReplantioField()">💾 Tarlayı Kaydet</button>
+                    </div>
+
+                    <div class="replantio-card" style="flex:1;">
+                        <h4>📋 Kayıtlı Tarlalarım <span id="fieldCountBadge" style="font-size:12px; background:var(--primary-green); color:white; padding:2px 8px; border-radius:10px;">0</span></h4>
+                        <input type="text" id="repSearchField" onkeyup="filterReplantioFields()" placeholder="Tarlalarımda ara..." style="padding:6px; font-size:12px;">
+                        
+                        <div class="field-list" id="replantioFieldsList">
+                            <p style="font-size:12px; opacity:0.6; text-align:center; padding:20px 0;">Henüz kayıtlı bir tarlanız yok. Harita üzerinden çizin.</p>
+                        </div>
                     </div>
                 </div>
 
-                <div id="replantioMapContainer" style="margin-top:10px;"></div>
-
-                <div class="calc-grid">
-                    <div class="calc-card">
-                        <h4>📏 Çizilen Parsel Alan Detayları</h4>
-                        <div style="font-size:22px; font-weight:bold; color:#2e7d32;" id="drawnAreaVal">0.00 Dönüm (0 m²)</div>
-                        <p style="font-size:12px; opacity:0.8; margin-top:5px;">Haritadaki sol üst çizim simgesini ⬡ seçerek tarlanızın etrafını tıklayarak birleştirin.</p>
-                        <button class="card-btn" onclick="saveCurrentParcel()">💾 Bu Parseli Kaydet</button>
-                    </div>
-                    <div class="calc-card">
-                        <h4>📋 Kayıtlı Tarlalarım & Parsel Listem</h4>
-                        <div id="savedParcelsList">
-                            <p style="font-size:12px; opacity:0.7;">Henüz kaydedilmiş bir parseliniz bulunmamaktadır.</p>
-                        </div>
-                    </div>
+                <!-- Sağ İnteraktif Uydu Haritası -->
+                <div class="replantio-map-wrap">
+                    <div id="replantioMap"></div>
                 </div>
             </div>
         </div>
@@ -777,10 +727,12 @@
         let fetchedWeatherData = {};
         let currentChart = null;
 
-        // REPLANTIO PARSEL ÇİZİM DEĞİŞKENLERİ
+        // REPLANTIO CORE MOTORU VE DEĞİŞKENLERİ
         let replantioDrawnItems = new L.FeatureGroup();
+        let lastGeoJSON = null;
         let lastCalculatedAreaM2 = 0;
         let lastCalculatedDonum = 0;
+        let mapPolygons = {};
 
         function getCurrentMonthPests() {
             const currentMonth = new Date().getMonth();
@@ -920,33 +872,28 @@
             setTimeout(() => { map.invalidateSize(); }, 300);
         }
 
-        // REPLANTIO HARİTASINI BAŞLATMA VE ÇİZİM ARAÇLARINI YÜKLEME
+        /* REPLANTIO CORE SİSTEM ENTEGRASYONU */
         function initReplantioMap() {
             if(!replantioMap) {
-                replantioMap = L.map('replantioMapContainer').setView([40.0353, 28.4117], 13);
+                replantioMap = L.map('replantioMap').setView([40.0353, 28.4117], 13);
                 
                 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                    attribution: 'Replantio / Esri World Imagery'
+                    attribution: 'Replantio / Esri World Imagery',
+                    maxZoom: 19
                 }).addTo(replantioMap);
 
                 replantioMap.addLayer(replantioDrawnItems);
 
                 const drawControl = new L.Control.Draw({
                     draw: {
-                        polygon: {
-                            allowIntersection: false,
-                            showArea: true
-                        },
+                        polygon: { allowIntersection: false, showArea: true, metric: true },
                         rectangle: true,
                         polyline: false,
                         circle: false,
                         marker: false,
                         circlemarker: false
                     },
-                    edit: {
-                        featureGroup: replantioDrawnItems,
-                        remove: true
-                    }
+                    edit: { featureGroup: replantioDrawnItems, remove: true }
                 });
                 replantioMap.addControl(drawControl);
 
@@ -955,80 +902,133 @@
                     replantioDrawnItems.clearLayers();
                     replantioDrawnItems.addLayer(layer);
 
+                    lastGeoJSON = layer.toGeoJSON();
                     const latlngs = layer.getLatLngs()[0];
                     if (latlngs) {
                         const areaM2 = L.GeometryUtil.geodesicArea(latlngs);
                         lastCalculatedAreaM2 = Math.round(areaM2);
                         lastCalculatedDonum = (areaM2 / 1000).toFixed(2);
 
-                        document.getElementById('drawnAreaVal').innerText = `${lastCalculatedDonum} Dönüm (${lastCalculatedAreaM2.toLocaleString('tr-TR')} m²)`;
+                        document.getElementById('repCalculatedArea').innerText = `${lastCalculatedDonum} Dönüm (${lastCalculatedAreaM2.toLocaleString('tr-TR')} m²)`;
                     }
                 });
             }
             setTimeout(() => { replantioMap.invalidateSize(); }, 200);
-            renderSavedParcels();
+            loadReplantioFieldsFromStorage();
         }
 
-        function centerReplantioMap() {
+        function focusReplantioDistrict() {
             if(!replantioMap) return;
-            const district = document.getElementById('replantioDistrictSelect').value;
-            const target = districtsData.find(d => d.name.includes(district) || district.includes(d.name)) || districtsData[4];
-            replantioMap.setView([target.lat, target.lon], 13);
+            const districtName = document.getElementById('replantioDistrictSelect').value;
+            const target = districtsData.find(d => d.name.includes(districtName) || districtName.includes(d.name)) || districtsData[0];
+            replantioMap.flyTo([target.lat, target.lon], 14, { duration: 1.5 });
         }
 
-        function saveCurrentParcel() {
-            const name = document.getElementById('newParcelName').value.trim();
-            const crop = document.getElementById('newParcelCrop').value;
+        function saveReplantioField() {
+            const name = document.getElementById('repFieldName').value.trim();
+            const crop = document.getElementById('repFieldCrop').value;
 
             if(!name) {
-                alert("Lütfen parsel için bir isim yazın (Örn: Dere Boyu Tarlası).");
+                alert("Lütfen tarlanız için bir ad tanımlayın.");
                 return;
             }
-            if(lastCalculatedAreaM2 === 0) {
-                alert("Lütfen harita üzerinden önce tarlanızı çizin.");
+            if(!lastGeoJSON || lastCalculatedAreaM2 === 0) {
+                alert("Lütfen önce haritadaki araçları kullanarak bir tarla alanı çizin.");
                 return;
             }
 
-            const parcels = JSON.parse(localStorage.getItem('myParcels') || '[]');
-            parcels.push({
-                id: Date.now(),
+            const fields = JSON.parse(localStorage.getItem('replantioFields') || '[]');
+            const newField = {
+                id: 'field_' + Date.now(),
                 name: name,
                 crop: crop,
                 donum: lastCalculatedDonum,
-                areaM2: lastCalculatedAreaM2
-            });
+                areaM2: lastCalculatedAreaM2,
+                geojson: lastGeoJSON,
+                createdAt: new Date().toLocaleDateString('tr-TR')
+            };
 
-            localStorage.setItem('myParcels', JSON.stringify(parcels));
-            alert(`"${name}" adlı parseliniz başarıyla kaydedildi!`);
-            document.getElementById('newParcelName').value = "";
-            renderSavedParcels();
+            fields.push(newField);
+            localStorage.setItem('replantioFields', JSON.stringify(fields));
+
+            alert(`"${name}" tarlası Replantio veritabanına kaydedildi.`);
+            document.getElementById('repFieldName').value = "";
+            replantioDrawnItems.clearLayers();
+            lastGeoJSON = null;
+            lastCalculatedAreaM2 = 0;
+            document.getElementById('repCalculatedArea').innerText = "0 Dönüm (0 m²)";
+
+            loadReplantioFieldsFromStorage();
         }
 
-        function renderSavedParcels() {
-            const container = document.getElementById('savedParcelsList');
-            const parcels = JSON.parse(localStorage.getItem('myParcels') || '[]');
+        function loadReplantioFieldsFromStorage() {
+            const listContainer = document.getElementById('replantioFieldsList');
+            const fields = JSON.parse(localStorage.getItem('replantioFields') || '[]');
+            
+            document.getElementById('fieldCountBadge').innerText = fields.length;
 
-            if(parcels.length === 0) {
-                container.innerHTML = `<p style="font-size:12px; opacity:0.7;">Henüz kaydedilmiş bir parseliniz bulunmamaktadır.</p>`;
+            if(fields.length === 0) {
+                listContainer.innerHTML = `<p style="font-size:12px; opacity:0.6; text-align:center; padding:20px 0;">Henüz kayıtlı bir tarlanız yok. Harita üzerinden çizin.</p>`;
                 return;
             }
 
-            container.innerHTML = parcels.map((p) => `
-                <div class="parcel-item">
-                    <div>
-                        <h5>🌾 ${p.name}</h5>
-                        <p><b>Ürün:</b> ${p.crop} | <b>Alan:</b> ${p.donum} Dönüm (${p.areaM2} m²)</p>
+            Object.keys(mapPolygons).forEach(key => {
+                if(replantioMap.hasLayer(mapPolygons[key])) replantioMap.removeLayer(mapPolygons[key]);
+            });
+            mapPolygons = {};
+
+            let html = "";
+            fields.forEach(f => {
+                html += `
+                    <div class="field-item" onclick="zoomToReplantioField('${f.id}')">
+                        <div class="field-info">
+                            <span class="field-name">🌾 ${f.name}</span>
+                            <span class="field-meta"><b>Ürün:</b> ${f.crop}</span>
+                            <span class="field-meta"><b>Alan:</b> ${f.donum} Dönüm (${f.areaM2.toLocaleString('tr-TR')} m²)</span>
+                        </div>
+                        <div class="field-actions">
+                            <button class="btn-icon" onclick="deleteReplantioField(event, '${f.id}')" title="Tarlayı Sil">🗑️</button>
+                        </div>
                     </div>
-                    <button onclick="deleteParcel(${p.id})" style="background:#c62828; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:11px;">Sil</button>
-                </div>
-            `).join('');
+                `;
+
+                if(replantioMap && f.geojson) {
+                    const polyLayer = L.geoJSON(f.geojson, {
+                        style: { color: '#2e7d32', weight: 3, opacity: 0.85, fillColor: '#4caf50', fillOpacity: 0.35 }
+                    }).addTo(replantioMap);
+
+                    polyLayer.bindPopup(`<b>🌾 ${f.name}</b><br>Ürün: ${f.crop}<br>Alan: ${f.donum} Dönüm`);
+                    mapPolygons[f.id] = polyLayer;
+                }
+            });
+
+            listContainer.innerHTML = html;
         }
 
-        function deleteParcel(id) {
-            let parcels = JSON.parse(localStorage.getItem('myParcels') || '[]');
-            parcels = parcels.filter(p => p.id !== id);
-            localStorage.setItem('myParcels', JSON.stringify(parcels));
-            renderSavedParcels();
+        function zoomToReplantioField(id) {
+            const poly = mapPolygons[id];
+            if(poly && replantioMap) {
+                replantioMap.flyToBounds(poly.getBounds(), { padding: [50, 50], duration: 1.2 });
+                poly.openPopup();
+            }
+        }
+
+        function deleteReplantioField(event, id) {
+            event.stopPropagation();
+            if(confirm("Bu tarlayı silmek istediğinize emin misiniz?")) {
+                let fields = JSON.parse(localStorage.getItem('replantioFields') || '[]');
+                fields = fields.filter(f => f.id !== id);
+                localStorage.setItem('replantioFields', JSON.stringify(fields));
+                loadReplantioFieldsFromStorage();
+            }
+        }
+
+        function filterReplantioFields() {
+            const query = document.getElementById('repSearchField').value.toLowerCase();
+            document.querySelectorAll('.field-item').forEach(item => {
+                const text = item.innerText.toLowerCase();
+                item.style.display = text.includes(query) ? 'flex' : 'none';
+            });
         }
 
         async function renderDistrictCards() {
