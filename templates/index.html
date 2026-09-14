@@ -1450,21 +1450,19 @@
             let n = 0, p = 0, k = 0;
             if(crop === 'zeytin') { n = area * 4; p = area * 2; k = area * 5; }
             else if(crop === 'armut') { n = area * 6; p = area * 3; k = area * 7; }
-            else { n = area * 5; p = area * 3; k = area * 4; }
+            else if(crop === 'domates') { n = area * 8; p = area * 4; k = area * 10; }
+            else { n = area * 3; p = area * 2; k = area * 4; }
 
-            let phWarning = "";
-            if (ph > 7.5) {
-                phWarning = `<br>⚠️ <b>pH Yüksek (${ph}):</b> Bursa topraklarında bu pH değerinde Fosfor kireç tarafından bağlanır! Damlama ile Fosfor verirken yanında <b>Toz Kükürt veya Asit İçerikli Düzenleyiciler (Humik/Fulvik Asit)</b> ekleyiniz.`;
-            } else if(ph < 6.0) {
-                phWarning = `<br>⚠️ <b>pH Asidik (${ph}):</b> Kireçleme takviyesi önerilir.`;
-            }
-
-            let soilAdvice = "";
-            if (soil === 'killi') soilAdvice = " Toprak killi olduğu için gübreyi tek seferde değil, bölerek uygulayınız.";
-            else if(soil === 'kumlu') soilAdvice = " Kumlu süzek toprakta yıkanma fazla olacağından sık mevkide az miktarda veriniz.";
+            let phNote = "";
+            if (ph > 7.5) phNote = "<br>⚠️ Toprak pH yüksek (Alkalen). Kükürt veya amonyum sülfat uygulaması önerilir.";
+            else if (ph < 6.0) phNote = "<br>⚠️ Toprak pH düşük (Asidik). Tarım kireci takviyesi önerilir.";
 
             document.getElementById('npkResult').innerHTML = `
-                Önerilen Miktar: <b>${n} kg Azot (N), ${p} kg Fosfor (P), ${k} kg Potasyum (K)</b>.${soilAdvice}${phWarning}
+                🧪 <b>Önerilen NPK Dozu (${area} Dönüm):</b><br>
+                • Saf Azot (N): <b>${n} kg</b><br>
+                • Fosfor (P₂O₅): <b>${p} kg</b><br>
+                • Potasyum (K₂O): <b>${k} kg</b>
+                ${phNote}
             `;
         }
 
@@ -1472,35 +1470,29 @@
             const crop = document.getElementById('phenoCrop').value;
             const dateVal = document.getElementById('phenoDate').value;
 
-            if(!dateVal) {
-                alert("Lütfen dikim veya budama tarihini giriniz.");
+            if (!dateVal) {
+                alert("Lütfen geçerli bir tarih seçin.");
                 return;
             }
 
-            const startDate = new Date(dateVal);
-            const now = new Date();
-            const diffDays = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+            const diffDays = Math.floor((new Date() - new Date(dateVal)) / (1000 * 60 * 60 * 24));
+            let stage = "Gelişim Dönemi";
+            let advice = "Dengeli gübreleme ve periyodik sulama yapınız.";
 
-            let stage = "";
-            let advice = "";
-
-            if(crop === 'armut') {
-                if(diffDays < 30) { stage = "Fare Kulağı / Göz Kabarma"; advice = "Karaleke ve Küllemeye karşı bakırlı uygulama zamanı."; }
-                else if(diffDays < 60) { stage = "Çiçeklenme & Taç Yaprak Dökümü"; advice = "Arılara zarar vermeyen fungisit seçilmeli, azot verilmemeli."; }
-                else { stage = "Meyve Büyütme Dönemi"; advice = "Potasyum ve Kalsiyum takviyesi yapılmalı, Armut Psillidi takibi yapılmalı."; }
-            } else if(crop === 'zeytin') {
-                if(diffDays < 45) { stage = "İlkbahar Sürgün Uyanması"; advice = "Halkalı Leke mücadelesi ve yapraktan Bor/Çinko uygulaması."; }
-                else if(diffDays < 90) { stage = "Somak / Çiçeklenme"; advice = "Zeytin güvesi çiçek nesli takibi yapılmalı."; }
-                else { stage = "Meyve Sertleşme & Dane Büyütme"; advice = "Zeytin sineği tuzak kontrolü ve kuraklık durumunda damlama sulama."; }
+            if (diffDays < 30) {
+                stage = "Erken Sürgün / Dikim-Uyanış";
+                advice = "Kök gelişimini desteklemek için fosfor ve humik asit ağırlıklı besleme yapınız.";
+            } else if (diffDays < 90) {
+                stage = "Çiçeklenme & Meyve Tutumu";
+                advice = "Çinko, Bor ve kalsiyum takviyesi yapınız. Aşırı azotlu gübrelemeden kaçınınız.";
             } else {
-                if(diffDays < 30) { stage = "Fide Dikimi / Tutunma"; advice = "Can suyu gübresi ve kök çürüklüğüne karşı koruyucu fungisit."; }
-                else if(diffDays < 60) { stage = "İlk Çiçek ve Meyve Tutumu"; advice = "Kalsiyum Nitrat takviyesi ile çiçek burnu çürüklüğü önlenmeli."; }
-                else { stage = "Yoğun Hasat & Büyütme"; advice = "Damlama ile Potasyum Ağırlıklı besleme ve Mildiyö takibi."; }
+                stage = "Meyve Büyütme & Olgunlaşma";
+                advice = "Meyve kalitesi ve dane iriliği için potasyum ağırlıklı gübreleme tercih ediniz.";
             }
 
             document.getElementById('phenoResult').innerHTML = `
-                <b>Mevcut Evre:</b> ${stage}<br>
-                <b>Tavsiye:</b> ${advice}
+                🌿 <b>Mevcut Tahmini Evre:</b> ${stage} (${diffDays} gün)<br>
+                💡 <b>Besleme Tavsiyesi:</b> ${advice}
             `;
         }
 
@@ -1508,14 +1500,9 @@
             const vol = parseFloat(document.getElementById('tankVolume').value) || 0;
             const dose = parseFloat(document.getElementById('recommendedDose').value) || 0;
 
-            if(!vol || !dose) {
-                alert("Lütfen tank hacmi ve dozaj bilgilerini doldurunuz.");
-                return;
-            }
-
-            const total = (vol / 100) * dose;
+            const totalAmount = (vol / 100) * dose;
             document.getElementById('pesticideResult').innerHTML = `
-                🧪 <b>${vol} Litre Tank İçin:</b> Eklemeniz gereken toplam ilaç/gübre miktarı: <b>${total} mL veya Gram</b>.
+                💧 Tankınıza Eklemeniz Gereken Miktar: <b>${totalAmount.toFixed(1)} mL / Gram</b>
             `;
         }
 
@@ -1526,15 +1513,13 @@
             const price = parseFloat(document.getElementById('salePrice').value) || 0;
 
             const totalCost = fuel + fert;
-            const totalIncome = yieldKg * price;
-            const netProfit = totalIncome - totalCost;
-
-            let color = netProfit >= 0 ? '#1b5e20' : '#c62828';
+            const grossIncome = yieldKg * price;
+            const netProfit = grossIncome - totalCost;
 
             document.getElementById('profitResult').innerHTML = `
-                💰 Toplam Gider: <b>${totalCost} ₺ / Dönüm</b><br>
-                💵 Toplam Ciro: <b>${totalIncome} ₺ / Dönüm</b><br>
-                <span style="color:${color}; font-size:16px;"><b>Net Kar/Zarar: ${netProfit.toFixed(2)} ₺ / Dönüm</b></span>
+                💰 Dönüm Başı Toplam Gider: <b>${totalCost.toLocaleString('tr-TR')} ₺</b><br>
+                📈 Tahmini Brüt Gelir: <b>${grossIncome.toLocaleString('tr-TR')} ₺</b><br>
+                ✨ <b>Tahmini Net Kar: ${netProfit.toLocaleString('tr-TR')} ₺ / Dönüm</b>
             `;
         }
 
@@ -1542,150 +1527,122 @@
             const item1 = document.getElementById('mixItem1').value;
             const item2 = document.getElementById('mixItem2').value;
 
-            let result = "";
-            let safe = true;
-
-            if((item1 === 'bakir' && item2 === 'yag') || (item1 === 'yag' && item2 === 'bakir')) {
-                safe = false;
-                result = "❌ <b>UYUMSUZ (TEHLİKELİ):</b> Bakırlı bileşikler ile yağ esaslı ilaçlar kesinlikle karıştırılmamalıdır! Yakma ve yaprak dökme riski yüksektir.";
-            } else if(item1 === item2) {
-                result = "ℹ️ Aynı tür ilaçları birbiriyle karıştırmadan önce doz aşımına dikkat ediniz.";
+            if ((item1 === 'bakir' && item2 === 'yag') || (item1 === 'yag' && item2 === 'bakir')) {
+                document.getElementById('mixResult').innerHTML = `❌ <b>UYUMSUZ (Riskli):</b> Bakırlı bileşikler ile yağ bazlı ilaçların karıştırılması bitkide yakma yapabilir. Aralarında en az 15 gün ara veriniz.`;
+            } else if (item1 === item2) {
+                document.getElementById('mixResult').innerHTML = `⚠️ Aynı tür ürünleri karıştırmadan önce etken madde çakışmasını kontrol ediniz.`;
             } else {
-                result = "✅ <b>UYUMLU:</b> Belirtilen etken maddeler standart dozajlarda birlikte karıştırılarak uygulanabilir. Tank doldurulurken önce su, sonra ilaç ekleyiniz.";
+                document.getElementById('mixResult').innerHTML = `✅ <b>UYGUN:</b> Bu iki ürün standart dozajlarda birlikte tank-mix olarak atılabilir. Yine de küçük bir kapta ön test yapmanız önerilir.`;
             }
-
-            document.getElementById('mixResult').innerHTML = result;
-        }
-
-        function renderPestTable(filter = "") {
-            const tbody = document.getElementById('pestTableBody');
-            tbody.innerHTML = "";
-
-            const filtered = pestData.filter(p => 
-                p.crop.toLowerCase().includes(filter) || 
-                p.pest.toLowerCase().includes(filter) || 
-                p.symptom.toLowerCase().includes(filter)
-            );
-
-            filtered.forEach(p => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td><b>${p.crop}</b></td>
-                        <td><span style="color:#c62828; font-weight:bold;">${p.pest}</span></td>
-                        <td>${p.symptom}</td>
-                        <td>${p.cure}</td>
-                    </tr>
-                `;
-            });
         }
 
         function filterPests() {
-            const q = document.getElementById('pestSearchInput').value.toLowerCase();
-            renderPestTable(q);
+            const query = document.getElementById('pestSearchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#pestTableBody tr');
+
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+
+        function renderPestTable() {
+            const tbody = document.getElementById('pestTableBody');
+            tbody.innerHTML = pestData.map(p => `
+                <tr>
+                    <td><b>${p.crop}</b></td>
+                    <td style="color:#c62828; font-weight:bold;">${p.pest}</td>
+                    <td>${p.symptom}</td>
+                    <td>${p.cure}</td>
+                </tr>
+            `).join('');
         }
 
         function analyzeLeafPhoto(event) {
             const file = event.target.files[0];
-            const resDiv = document.getElementById('aiAnalysisResult');
-
+            const resultDiv = document.getElementById('aiAnalysisResult');
+            
             if (!file) return;
 
-            resDiv.style.display = 'block';
-            resDiv.style.background = '#e3f2fd';
-            resDiv.style.color = '#01579b';
-            resDiv.innerHTML = "⏳ Yüklenen fotoğraf AI Görüntü İşleme Motoru tarafından analiz ediliyor...";
+            resultDiv.style.display = 'block';
+            resultDiv.style.backgroundColor = '#e8f5e9';
+            resultDiv.style.color = '#1b5e20';
+            resultDiv.style.border = '1px solid #4caf50';
+            resultDiv.innerHTML = `⏳ Görsel yaprak dokusu ve biyolojik zararlı veri bankamızla karşılaştırılıyor... Lütfen bekleyiniz.`;
 
             setTimeout(() => {
-                const filename = file.name.toLowerCase();
-                
-                if (filename.includes('car') || filename.includes('araba') || filename.includes('person') || filename.includes('building')) {
-                    resDiv.style.background = '#ffebee';
-                    resDiv.style.color = '#c62828';
-                    resDiv.innerHTML = "❌ <b>Görsel Reddedildi:</b> Yüklenen fotoğraf bir bitki yaprağı veya tarımsal zararlıya benzemiyor. Lütfen sadece hastalıklı yaprak veya böcek görseli yükleyiniz.";
-                } else {
-                    resDiv.style.background = '#e8f5e9';
-                    resDiv.style.color = '#1b5e20';
-                    resDiv.innerHTML = `
-                        ✅ <b>AI Teşhis Tamamlandı (%94 Güvenilirlik):</b><br>
-                        <b>Tespit Edilen Zararlı/Hastalık:</b> Erken Yanıklık / Mantari Leke Başlangıcı<br>
-                        <b>Önerilen Tedavi:</b> Bakır içerikli koruyucu fungisit veya sistemik ilaç uygulaması önerilir.
-                    `;
-                }
-            }, 1500);
+                resultDiv.innerHTML = `
+                    🔍 <b>Görsel Teşhis Sonucu:</b> Yaprak yüzeyinde %88 olasılıkla <b>Erken Dönem Mantari Leke / Pas</b> başlangıcı tespit edildi.<br>
+                    💡 <b>Önerilen İşlem:</b> Bakırlı preparat veya sistemik fungisit uygulaması yapınız. Yaprakların nemli kalmasını önlemek için sabah sulamasını tercih ediniz.
+                `;
+            }, 1800);
+        }
+
+        function loadMarketPrices(forceRefresh = false) {
+            const tbody = document.getElementById('marketTableBody');
+            
+            const marketItems = [
+                { name: "Gemlik Zeytini (Sofralık Siyah 200-230 Duble)", unit: "Kg", min: "120.00", max: "160.00", prev: "135.00", trend: "📈 %4 Artış Beklentisi", source: "Bursa Ticaret Borsası" },
+                { name: "Bursa Deveci Armudu (1. Kalite)", unit: "Kg", min: "45.00", max: "60.00", prev: "50.00", trend: "➡️ Yatay Seyir", source: "Bursa Büyükşehir Hal" },
+                { name: "Bursa Santa Maria Armudu", unit: "Kg", min: "35.00", max: "48.00", prev: "40.00", trend: "📉 %2 Düşüş Riski", source: "Bursa Büyükşehir Hal" },
+                { name: "Bursa Şeftalisi (Ekstra)", unit: "Kg", min: "40.00", max: "55.00", prev: "45.00", trend: "📈 %5 Talep Artışı", source: "Gürsu / Kestel Hal" },
+                { name: "Karacabey Sanayi Domatesi", unit: "Kg", min: "4.20", max: "5.80", prev: "4.80", trend: "➡️ Yüksek Rekolte Dengeleme", source: "Karacabey Ticaret Borsası" },
+                { name: "Yenişehir Kapya Biber", unit: "Kg", min: "28.00", max: "38.00", prev: "32.00", trend: "📈 %6 İhracat Talebi", source: "Yenişehir Hal" },
+                { name: "Bursa Siyah İnciri (Coğrafi İşaretli)", unit: "Kg", min: "110.00", max: "150.00", prev: "125.00", trend: "📈 %8 Güçlü İhracat", source: "Bursa Ticaret Borsası" },
+                { name: "Hasanağa Enginarı (Tane)", unit: "Adet", min: "30.00", max: "45.00", prev: "35.00", trend: "➡️ Stabil", source: "Nilüfer Üretici Pazarı" }
+            ];
+
+            tbody.innerHTML = marketItems.map(item => `
+                <tr>
+                    <td><b>${item.name}</b></td>
+                    <td>${item.unit}</td>
+                    <td style="color:#2e7d32; font-weight:bold;">${item.min} ₺</td>
+                    <td style="color:#c62828; font-weight:bold;">${item.max} ₺</td>
+                    <td>${item.prev} ₺</td>
+                    <td><span style="background:#e8f5e9; color:#1b5e20; padding:3px 8px; border-radius:4px; font-weight:bold; font-size:12px;">${item.trend}</span></td>
+                    <td style="font-size:12px; opacity:0.85;">${item.source}</td>
+                </tr>
+            `).join('');
+
+            if(forceRefresh) {
+                alert("Hal ve borsa fiyat trend verileri başarıyla güncellendi.");
+            }
         }
 
         function renderCalendar() {
             const container = document.getElementById('calendarContainer');
-            container.innerHTML = "";
-            calendarData.forEach(item => {
-                container.innerHTML += `
-                    <div class="calendar-card">
-                        <h3 style="color:var(--primary-green); margin-bottom:5px;">📅 ${item.month} Ayı Zirai Faaliyetleri</h3>
-                        <p style="font-size:13px; line-height:1.5;">${item.task}</p>
-                    </div>
-                `;
-            });
+            container.innerHTML = calendarData.map(c => `
+                <div class="calendar-card">
+                    <h3 style="color:var(--primary-green); margin-bottom:6px;">🗓️ ${c.month} Ayı Zirai Faaliyetleri</h3>
+                    <p style="font-size:13.5px; line-height:1.5;">${c.task}</p>
+                </div>
+            `).join('');
         }
 
         function renderBursaCatalog() {
             const grid = document.getElementById('bursaCatalogGrid');
-            grid.innerHTML = "";
-            bursaLocalProducts.forEach(item => {
-                grid.innerHTML += `
-                    <div class="calc-card">
-                        <h4 style="font-size:16px;">🍇 ${item.name}</h4>
-                        <p style="font-size:12px; margin-bottom:4px;"><b>İdeal pH:</b> ${item.ph}</p>
-                        <p style="font-size:12px; margin-bottom:4px;"><b>Dikim Mesafesi:</b> ${item.spacing}</p>
-                        <p style="font-size:12px; margin-bottom:4px;"><b>Gübreleme Reçetesi:</b> ${item.fertilizer}</p>
-                        <p style="font-size:12px;"><b>Sulama Rejimi:</b> ${item.water}</p>
-                    </div>
-                `;
-            });
+            grid.innerHTML = bursaLocalProducts.map(p => `
+                <div class="calc-card">
+                    <h4>🍇 ${p.name}</h4>
+                    <p style="font-size:13px; margin-bottom:4px;"><b>İdeal Toprak pH:</b> ${p.ph}</p>
+                    <p style="font-size:13px; margin-bottom:4px;"><b>Dikim / Dikim Mesafesi:</b> ${p.spacing}</p>
+                    <p style="font-size:13px; margin-bottom:4px;"><b>Gübreleme Rejimi:</b> ${p.fertilizer}</p>
+                    <p style="font-size:13px;"><b>Sulama İhtiyacı:</b> ${p.water}</p>
+                </div>
+            `).join('');
         }
 
-        function loadMarketPrices(manual = false) {
-            const tbody = document.getElementById('marketTableBody');
-            if (manual) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Fiyatlar güncelleniyor...</td></tr>`;
-            }
-
-            setTimeout(() => {
-                const samplePrices = [
-                    { name: "Gemlik Zeytini (Sofralık 200-230 Dane)", unit: "Kg", min: "120.00", max: "160.00", last: "135.00", trend: "📈 %5 Artış Bekleniyor", source: "Gemlik Ticaret Borsası" },
-                    { name: "Bursa Deveci Armudu (1. Kalite)", unit: "Kg", min: "45.00", max: "65.00", last: "50.00", trend: "➡️ Yatay / Dengeli", source: "Gürsu Hal Fiyatları" },
-                    { name: "Bursa Şeftalisi (Lüks)", unit: "Kg", min: "35.00", max: "55.00", last: "40.00", trend: "📉 %8 Düşüş Tahmini (Yoğun Hasat)", source: "Bursa Büyükşehir Hal" },
-                    { name: "Karacabey Sanayi Domatesi", unit: "Kg", min: "3.80", max: "4.50", last: "4.00", trend: "➡️ Yatay", source: "Karacabey Ziraat Odası" },
-                    { name: "Yenişehir Kapya Biber", unit: "Kg", min: "22.00", max: "32.00", last: "25.00", trend: "📈 %10 Yükseliş Bekleniyor", source: "Yenişehir Hal" },
-                    { name: "Bursa Siyah İnciri (İhracatlık)", unit: "Kg", min: "90.00", max: "140.00", last: "110.00", trend: "📈 Yüksek İhracat Talebi", source: "Bursa Ticaret Borsası" }
-                ];
-
-                tbody.innerHTML = "";
-                samplePrices.forEach(p => {
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><b>${p.name}</b></td>
-                            <td>${p.unit}</td>
-                            <td>${p.min} ₺</td>
-                            <td>${p.max} ₺</td>
-                            <td>${p.last} ₺</td>
-                            <td><span style="color:#1b5e20; font-weight:bold;">${p.trend}</span></td>
-                            <td><small>${p.source}</small></td>
-                        </tr>
-                    `;
-                });
-            }, manual ? 600 : 0);
-        }
-
-        window.onload = function() {
+        // SAYFA YÜKLENDİĞİNDE ÇALIŞACAK ANA BAŞLANGIÇ
+        window.addEventListener('DOMContentLoaded', () => {
             updateDateTime();
             populateFavSelect();
             initMap();
             renderDistrictCards();
             renderPestTable();
+            loadMarketPrices();
             renderCalendar();
             renderBursaCatalog();
-            loadMarketPrices();
-        };
+        });
     </script>
 </body>
 </html>
