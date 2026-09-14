@@ -135,9 +135,7 @@
         .leaflet-container { width: 100%; height: 100%; border-radius: 10px; }
         .leaflet-tile-container img { width: 256px !important; height: 256px !important; }
 
-        .custom-map-pin {
-            display: flex; align-items: center; justify-content: center; width: 28px !important; height: 28px !important; border-radius: 50%; color: white; font-weight: bold; font-size: 13px; box-shadow: 0 2px 6px rgba(0,0,0,0.4); border: 2px solid white;
-        }
+        .custom-map-pin { display: flex; align-items: center; justify-content: center; width: 28px !important; height: 28px !important; border-radius: 50%; color: white; font-weight: bold; font-size: 13px; box-shadow: 0 2px 6px rgba(0,0,0,0.4); border: 2px solid white; }
         .custom-map-pin.green { background-color: #2e7d32; }
         .custom-map-pin.yellow { background-color: #f57f17; }
         .custom-map-pin.red { background-color: #c62828; }
@@ -158,16 +156,19 @@
         .card-btn { display: block; width: 100%; text-align: center; padding: 10px; margin-top: 12px; background-color: var(--primary-green); color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; text-decoration: none; font-size: 13px; transition: background 0.2s; }
         .card-btn:hover { opacity: 0.9; }
 
-        /* REPLANTIO ÖZEL TASARIM STİLLERİ */
-        .replantio-container { display: flex; gap: 20px; width: 100%; min-height: 600px; }
-        .replantio-sidebar { width: 340px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
-        .replantio-map-wrap { flex: 1; position: relative; border-radius: 10px; overflow: hidden; border: 1px solid var(--border-color); min-height: 550px; }
-        #replantioMap { width: 100%; height: 100%; min-height: 550px; }
+        /* REPLANTIO ÖZEL MİMARİ & BİTKİ ÖNERİ MOTORU STİLLERİ */
+        .replantio-container { display: flex; gap: 20px; width: 100%; min-height: 620px; }
+        .replantio-sidebar { width: 360px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
+        .replantio-map-wrap { flex: 1; position: relative; border-radius: 10px; overflow: hidden; border: 1px solid var(--border-color); min-height: 600px; }
+        #replantioMap { width: 100%; height: 100%; min-height: 600px; }
         
         .replantio-card { background: var(--card-bg); border-radius: 8px; padding: 15px; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .replantio-card h4 { font-size: 15px; color: var(--primary-green); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         
-        .field-list { max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+        .crop-advice-box { background: #f1f8e9; border: 1px solid #c8e6c9; border-radius: 6px; padding: 12px; margin-top: 10px; font-size: 12.5px; color: #2e7d32; line-height: 1.5; }
+        .crop-advice-box h5 { font-size: 13px; margin-bottom: 4px; color: #1b5e20; }
+        
+        .field-list { max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
         .field-item { background: rgba(0,0,0,0.02); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; cursor: pointer; transition: all 0.2s; display: flex; justify-content: space-between; align-items: center; }
         .field-item:hover { border-color: var(--primary-green); background: rgba(27, 94, 32, 0.04); }
         .field-info { display: flex; flex-direction: column; gap: 2px; }
@@ -257,7 +258,7 @@
 
     <div class="tab-nav">
         <button class="tab-btn active" onclick="switchTab('main-tab', this)">🗺️ Risk Haritası & İlçeler</button>
-        <button class="tab-btn" onclick="switchTab('replantio-tab', this)">🌱 Replantio Tarla Yönetimi</button>
+        <button class="tab-btn" onclick="switchTab('replantio-tab', this)">🌱 Replantio Tarla & Bitki Danışmanı</button>
         <button class="tab-btn" onclick="switchTab('calc-tab', this)">🧮 Zirai Hesaplayıcılar & ET0</button>
         <button class="tab-btn" onclick="switchTab('pest-tab', this)">🔬 Hastalık & Derece-Gün Tahmini</button>
         <button class="tab-btn" onclick="switchTab('market-tab', this)">📈 Bursa Hal & 15 Günlük Fiyat Trendi</button>
@@ -330,13 +331,13 @@
             </div>
         </div>
 
-        <!-- REPLANTIO TARLA / PARSEL YÖNETİMİ SEKMESİ -->
+        <!-- REPLANTIO TARLA / PARSEL YÖNETİMİ & BİTKİ ÖNERİ SEKMESİ -->
         <div id="replantio-tab" class="tab-content">
             <div class="replantio-container">
-                <!-- Sol Kontrol ve Listeleme Paneli -->
+                <!-- Sol Kontrol, Form ve Bitki Öneri Motor Paneli -->
                 <div class="replantio-sidebar">
                     <div class="replantio-card">
-                        <h4>🌱 Tarla / Parsel Ekle</h4>
+                        <h4>🌱 Tarla Çizimi & Mahsul Tanımı</h4>
                         <p style="font-size:11px; opacity:0.8; margin-bottom:10px;">Haritadaki çizim araçlarını (⬡) kullanarak tarlanızın etrafını çizin.</p>
                         
                         <label style="font-size:12px; font-weight:bold;">Bölge / İlçe Hızlı Odak:</label>
@@ -354,23 +355,29 @@
                         <label style="font-size:12px; font-weight:bold;">Parsel / Tarla Adı:</label>
                         <input type="text" id="repFieldName" placeholder="Örn: Dere Boyu Zeytinliği">
 
-                        <label style="font-size:12px; font-weight:bold;">Mevcut Mahsul / Ürün:</label>
-                        <select id="repFieldCrop">
+                        <label style="font-size:12px; font-weight:bold;">Ekilmiş / Planlanan Mahsul:</label>
+                        <select id="repFieldCrop" onchange="updateCropAdvicePreview()">
                             <option value="Gemlik Zeytini">Gemlik Zeytini</option>
                             <option value="Bursa Deveci Armudu">Bursa Deveci Armudu</option>
                             <option value="Karacabey Domatesi">Karacabey Domatesi</option>
                             <option value="Yenişehir Biberi">Yenişehir Biberi</option>
-                            <option value="Bursa Şeftalisi">Bursa Şeftalisi</option>
-                            <option value="Narenciye / Meyve">Narenciye / Meyve</option>
-                            <option value="Boş / Dinlenmede">Boş / Dinlenmede</option>
+                            <option value="Bursa Şeftalisi">Bursa Şeftalisi & Nektarin</option>
+                            <option value="Bursa Siyah İnciri">Bursa Siyah İnciri</option>
+                            <option value="Göynükbelen Çileği">Göynükbelen & Keles Çileği</option>
                         </select>
 
-                        <div style="background:rgba(27,94,32,0.08); padding:10px; border-radius:6px; margin-bottom:10px;">
-                            <div style="font-size:11px; opacity:0.8;">Hesaplanan Çizim Alanı:</div>
-                            <div style="font-size:16px; font-weight:bold; color:var(--primary-green);" id="repCalculatedArea">0 Dönüm (0 m²)</div>
+                        <div style="background:rgba(27,94,32,0.08); padding:8px 10px; border-radius:6px; margin-bottom:10px;">
+                            <div style="font-size:11px; opacity:0.8;">Çizilen Tarla Alanı:</div>
+                            <div style="font-size:15px; font-weight:bold; color:var(--primary-green);" id="repCalculatedArea">0 Dönüm (0 m²)</div>
                         </div>
 
-                        <button class="card-btn" style="margin-top:0;" onclick="saveReplantioField()">💾 Tarlayı Kaydet</button>
+                        <!-- REPLANTIO DİNAMİK BİTKİ ÖNERİ KUTUSU -->
+                        <div class="crop-advice-box" id="cropAdvicePreview">
+                            <h5>💡 Replantio Bitki Tavsiye Aklı:</h5>
+                            <span id="cropAdviceText">Lütfen yukarıdan mahsul türünü seçiniz. Akıllı tavsiye kılavuzu yüklenecektir.</span>
+                        </div>
+
+                        <button class="card-btn" style="margin-top:10px;" onclick="saveReplantioField()">💾 Tarlayı Kaydet</button>
                     </div>
 
                     <div class="replantio-card" style="flex:1;">
@@ -716,12 +723,58 @@
             { month: "Mayıs", task: "Gemlik Zeytininde zeytin güvesi çiçek nesli takibi ve tuzak kontrolü. Armut ve şeftalide seyreltme işlemleri. Karacabey Soğanı ve kuru fasulye alanlarında birinci boğaz doldurma ve ot mücadelesi." },
             { month: "Haziran", task: "Keles & Harmancık Kirazında kiraz sineği tuzaklarının asılması ve ilçe bazlı hasat başlangıcı. Zeytin sineği popülasyon izleme tuzaklarının yerleştirilmesi. Sebze alanlarında damlama sulamanın yoğunlaşması." },
             { month: "Temmuz", task: "Zeytin sineği ve armut psillidi popülasyon takibi ve mücadele. Erkenci şeftali ve nektarin çeşitlerinde hasat. Domates, biber ve çilekte sulama ve potasyumlu üst gübreleme programları." },
-            { month: "Ağustos", task: "Bursa Deveci ve Santa Maria armudu ile Bursa Şeftalisi ana hasat dönemi. Zeytin sineği yaz nesli takibi. İncir bahçalarında file ve tuzak kontrolleri. Sebzelerde gece-gündüz sıcaklık farkı mantar kontrolleri." },
+            { month: "Ağustos", task: "Bursa Deveci ve Santa Maria armudu ile Bursa Şeftalisi ana hasat dönemi. Zeytin sineği yaz nesli takibi. İncir bahçalarında file me tuzak kontrolleri. Sebzelerde gece-gündüz sıcaklık farkı mantar kontrolleri." },
             { month: "Eylül", task: "Bursa Siyah İnciri ve İznik Müşküle Üzümü hasadı. Karacabey Soğanı ve domates alanlarında son söküm ve pazarlama. Kestel Kestanesi dip temizliği ve harvesting hazırlığı." },
             { month: "Ekim", task: "Gemlik Zeytini yeşil ve siyah dane hasat başlangıcı. Kestane toplanması. İnegöl Cerrah Kuru Fasulyesi harman ve depolama işlemleri. Hasadı biten tarlalarda sonbahar derin sürümü." },
             { month: "Kasım", task: "Gemlik Zeytininde yoğun yağlık ve sofralık hasat dönemi. Hasadı biten bahçelerde sonbahar bakırlı uygulamaları. Dökülen yaprakların toplanıp imha edilerek mantari aşının kırılması." },
             { month: "Aralık", task: "Zeytin hasadının tamamlanması ve dip temizliği. Meyve ağaçlarında kışa hazırlık ve kök boğazı doldurma işlemleri. Gece donlarına karşı seralarda ısıtma ve örtü tedbirlerinin alınması." }
         ];
+
+        // REPLANTIO BİTKİ ÖNERİ VERİ BANKASI
+        const replantioCropDatabase = {
+            "Gemlik Zeytini": {
+                ph: "6.5 - 8.0 (Tınlı-Kireçli)",
+                frostMin: "-6°C (Orta Dayanıklı)",
+                spacing: "5m x 5m",
+                advice: "Şubat sonu taban gübrelemesi yapın. Çiçek öncesi Bor & Çinko yaprak gübresi uygulayın. Zeytin sineği 1. dölüne karşı sarı tuzak kurun."
+            },
+            "Bursa Deveci Armudu": {
+                ph: "6.0 - 7.0 (Derin Tınlı)",
+                frostMin: "-12°C (Yüksek Dayanıklı)",
+                spacing: "4m x 3m",
+                advice: "Erken ilkbaharda Karaleke riskine karşı bakırlı kükürt atın. Meyve tutumu sonrası kalsiyum desteği vererek karabenekleşmeyi önleyin."
+            },
+            "Karacabey Domatesi": {
+                ph: "6.0 - 7.0 (Geçirgen Tınlı)",
+                frostMin: "0°C (Hassas)",
+                spacing: "140cm x 35cm",
+                advice: "Fide dikiminde fosfor ağırlıklı can suyu gübresi kullanın. Mildiyöye karşı yaprak nemini kontrol edip damlama ile potasyum verin."
+            },
+            "Yenişehir Biberi": {
+                ph: "6.0 - 6.8 (Süzek Humuslu)",
+                frostMin: "2°C (Hassas)",
+                spacing: "70cm x 40cm",
+                advice: "Kök boğazı çürüklüğüne karşı karık sulamadan kaçının. Meyve tutumunda potasyum nitrat ile meyve kalitesini yükseltin."
+            },
+            "Bursa Şeftalisi": {
+                ph: "6.0 - 6.8 (Süzek Kumlu-Tınlı)",
+                frostMin: "-8°C (Orta)",
+                spacing: "5m x 4m",
+                advice: "Gözler kabarmadan önce Yaprak Kıvırcıklığı (Klok) için Bakır Sülfat uygulayın. Meyve seyreltmesini aksatmayın."
+            },
+            "Bursa Siyah İnciri": {
+                ph: "6.5 - 7.5 (Alüvyal / Tınlı)",
+                frostMin: "-5°C (Orta)",
+                spacing: "7m x 7m",
+                advice: "Aşırı azotlu gübrelemeden kaçının. Kanlı Basra zararlısına karşı yazlık yağ kontrollerini sürdürün."
+            },
+            "Göynükbelen Çileği": {
+                ph: "5.5 - 6.5 (Hafif Asidik)",
+                frostMin: "-4°C (Orta)",
+                spacing: "30cm x 30cm",
+                advice: "Malçlama örtüsü kullanın. Çiçeklenme döneminde Fosfor ve yapraktan Bor verin; Kırmızı Örümcek takibini yapın."
+            }
+        };
 
         let map, replantioMap, districtMarkersMap = {};
         let fetchedWeatherData = {};
@@ -872,7 +925,7 @@
             setTimeout(() => { map.invalidateSize(); }, 300);
         }
 
-        /* REPLANTIO CORE SİSTEM ENTEGRASYONU */
+        /* REPLANTIO CORE SİSTEM & BİTKİ ÖNERİ ENTEGRASYONU */
         function initReplantioMap() {
             if(!replantioMap) {
                 replantioMap = L.map('replantioMap').setView([40.0353, 28.4117], 13);
@@ -914,7 +967,25 @@
                 });
             }
             setTimeout(() => { replantioMap.invalidateSize(); }, 200);
+            updateCropAdvicePreview();
             loadReplantioFieldsFromStorage();
+        }
+
+        function updateCropAdvicePreview() {
+            const cropName = document.getElementById('repFieldCrop').value;
+            const data = replantioCropDatabase[cropName];
+            const adviceTextEl = document.getElementById('cropAdviceText');
+
+            if(data) {
+                adviceTextEl.innerHTML = `
+                    <b>🌱 İdeal Toprak:</b> ${data.ph}<br>
+                    <b>❄️ Don Limiti:</b> ${data.frostMin}<br>
+                    <b>📐 Dikim Mesafesi:</b> ${data.spacing}<br>
+                    <b>📋 Replantio Bakım Önerisi:</b> ${data.advice}
+                `;
+            } else {
+                adviceTextEl.innerHTML = `Seçtiğiniz ürün için genel bakım kuralları geçerlidir.`;
+            }
         }
 
         function focusReplantioDistrict() {
@@ -980,7 +1051,7 @@
             let html = "";
             fields.forEach(f => {
                 html += `
-                    <div class="field-item" onclick="zoomToReplantioField('${f.id}')">
+                    <div class="field-item" onclick="zoomToReplantioField('${f.id}', '${f.crop}')">
                         <div class="field-info">
                             <span class="field-name">🌾 ${f.name}</span>
                             <span class="field-meta"><b>Ürün:</b> ${f.crop}</span>
@@ -997,7 +1068,8 @@
                         style: { color: '#2e7d32', weight: 3, opacity: 0.85, fillColor: '#4caf50', fillOpacity: 0.35 }
                     }).addTo(replantioMap);
 
-                    polyLayer.bindPopup(`<b>🌾 ${f.name}</b><br>Ürün: ${f.crop}<br>Alan: ${f.donum} Dönüm`);
+                    const cropInfo = replantioCropDatabase[f.crop] ? `<br><b>💡 Öneri:</b> ${replantioCropDatabase[f.crop].advice}` : '';
+                    polyLayer.bindPopup(`<b>🌾 ${f.name}</b><br>Ürün: ${f.crop}<br>Alan: ${f.donum} Dönüm ${cropInfo}`);
                     mapPolygons[f.id] = polyLayer;
                 }
             });
@@ -1005,11 +1077,16 @@
             listContainer.innerHTML = html;
         }
 
-        function zoomToReplantioField(id) {
+        function zoomToReplantioField(id, cropName) {
             const poly = mapPolygons[id];
             if(poly && replantioMap) {
                 replantioMap.flyToBounds(poly.getBounds(), { padding: [50, 50], duration: 1.2 });
                 poly.openPopup();
+                
+                if(cropName && replantioCropDatabase[cropName]) {
+                    document.getElementById('repFieldCrop').value = cropName;
+                    updateCropAdvicePreview();
+                }
             }
         }
 
